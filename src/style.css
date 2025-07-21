@@ -1,169 +1,134 @@
-
-
-
 /* Navbar Component styling  */
 
-
-.login-icon{
-    font-size: 25px;
-    color: black;
+.login-icon {
+  font-size: 25px;
+  color: black;
 }
 
 /* active */
-.nav-pills .nav-item .active{
-    background-color:  #009900
+.nav-pills .nav-item .active {
+  background-color: #009900;
 }
 
 .helpline {
-    height: 300px;
+  height: 300px;
 }
 
 .logo {
-    height: 50px;
+  height: 50px;
 }
-
-
-
 
 /* Banner Component styling */
-.banner-image{
-    background-image: url("./images/backimage.jpg");
-    background-repeat: no-repeat;
-    width: 100%;
-    height: 400px;
-    background-size: cover;
+.banner-image {
+  background-image: url("./images/backimage.jpg");
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 400px;
+  background-size: cover;
 }
 .banner-image h3 {
-    color: black;
-    padding-top: 20px;
-    padding-left: 20px;
-    font-weight: bold;
-
+  color: black;
+  padding-top: 20px;
+  padding-left: 20px;
+  font-weight: bold;
 }
-
-
 
 /* Start body Styling  */
 
-
 /* department component styling styling */
-
 
 /* Learning component styling */
 
-
 /* Notice component styling */
-.blank{
-    height: 200px;
+.blank {
+  height: 200px;
 }
 
 /* About component styling  */
 
-
 /* about component styling */
-.ChairmanPic{
-    
-    height: 450px;
-    object-fit: cover;    
+.ChairmanPic {
+  height: 450px;
+  object-fit: cover;
 }
-
-
 
 /* event component styling */
 .swiper-container {
-    width: 100%;
-    height: 300px;
- 
-  }
+  width: 100%;
+  height: 300px;
+}
 
-  .swiper-button-prev {
-      background-color:black;
-      border-radius: 50%;
-      height: 70px;
-      width: 40px;
-      color:  white
-  }
+.swiper-button-prev {
+  background-color: black;
+  border-radius: 50%;
+  height: 70px;
+  width: 40px;
+  color: white;
+}
 
-  
-  .swiper-button-next {
-    background-color:black;
-    border-radius: 50%;
-    height: 70px;
-    width: 40px;
-    color :  white;
+.swiper-button-next {
+  background-color: black;
+  border-radius: 50%;
+  height: 70px;
+  width: 40px;
+  color: white;
 }
 .slide-image {
-    height: 200px;
-    width: 100%;
-
+  height: 200px;
+  width: 100%;
 }
-
-
-
-
-
 
 /* gallery component styling */
 
-
-.nav-pills .nav-item .gallery-link{
-    border:  1px solid #009900;
-    font-weight: bold;
+.nav-pills .nav-item .gallery-link {
+  border: 1px solid #009900;
+  font-weight: bold;
 }
 
-.image-gallery-flex-container{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex-flow:wrap;
+.image-gallery-flex-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex-flow: wrap;
 }
-.image-gallery-flex-container .flex-item{
-    padding: 10px;
+.image-gallery-flex-container .flex-item {
+  padding: 10px;
 }
-
 
 /* playstore component styling */
 .playstore-image {
-    height: 300px;
-    width: 500px;
+  height: 300px;
+  width: 500px;
 }
 
-.playstore-link{
-    background-color: #009900;
-    border-radius: 10px;
-    margin: 5px;
-   
+.playstore-link {
+  background-color: #009900;
+  border-radius: 10px;
+  margin: 5px;
 }
 .playstore-link a {
-    color: white;
+  color: white;
 }
 
 /* end body Styling  */
 
-
-
-
-
-
 /* Footer styling  */
 
-.footer{
-    background-color: white;
-    padding: 20px;
-    padding-top: 50px;
-
+.footer {
+  background-color: white;
+  padding: 20px;
+  padding-top: 50px;
 }
 
 .icon {
-    font-size: 17px;
+  font-size: 17px;
 }
 .nav-link {
-    color:  #009900;
+  color: #009900;
 }
 
 .bar {
-    background-color: gray;
-    box-shadow: 10px 10px 100px;
-    border-width: 2px;
-    
+  background-color: gray;
+  box-shadow: 10px 10px 100px;
+  border-width: 2px;
 }
