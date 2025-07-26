@@ -1,5 +1,6 @@
 import React from "react";
 import Image1 from "../images/apps.png";
+import { COMMON } from "../constants";
 
 const Playstore = () => {
   return (
@@ -9,11 +10,7 @@ const Playstore = () => {
           <div className="row ">
             <div className="col-md">
               <h4> Download Our Mobile App </h4>
-              <p>
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                aliquyam erat
-              </p>
+              <p>{COMMON.DESCRIPTION}</p>
 
               <ul className="nav ">
                 <li className="nav-item playstore-link ">

@@ -1,6 +1,7 @@
 import React from "react";
 import Logo from "../images/logo/logo.png";
 import Helpline from "../images/helpline.png";
+import { COMMON } from "../constants";
 
 const Footer = () => {
   return (
@@ -10,21 +11,17 @@ const Footer = () => {
           <div className="row">
             <div className="col-md px-3">
               <img className="px-5" src={Logo} />
-              <p className="text-justify">
-                Lorem ipsum dolor sit amet,consetetur sadipscing elitr, sed diam
-                nonumy eirmod tempor invidunt utlabore et dolore magna aliquyam
-                erat,sed diam voluptua. At vero eos et
-              </p>
+              <p className="text-justify">{COMMON.DESCRIPTION}</p>
               <span className="icon">
-                <i class="fas fa-map-marker-alt"></i> &nbsp; N2, Shahjibazar{" "}
+                <i class="fas fa-map-marker-alt"></i> &nbsp; {COMMON.ADDRESS}{" "}
               </span>
               <br />
               <span className="icon">
-                <i class="fas fa-phone-alt"></i> &nbsp; 01709-641889{" "}
+                <i class="fas fa-phone-alt"></i> &nbsp; {COMMON.PHONE}{" "}
               </span>
               <br />
               <span className="icon">
-                <i class="fas fa-envelope"> </i> &nbsp; name@email.com{" "}
+                <i class="fas fa-envelope"> </i> &nbsp; {COMMON.EMAIL}{" "}
               </span>
             </div>
 
@@ -64,8 +61,7 @@ const Footer = () => {
           <div className="row p-3">
             <div className="col-md">
               <h6 className="text-center py-2">
-                {" "}
-                Site was last updated 22 JUL 2021 05:30:44{" "}
+                {COMMON.LAST_UPDATED}{" "}
               </h6>
             </div>
             <div className="col-md text-center">
@@ -99,7 +95,7 @@ const Footer = () => {
           <div className="row">
             <div className="col">
               <h6 className="text-center">
-                Copyright @ 2021 Website Develop & Maintains by TEXON Ltd{" "}
+                {COMMON.COPYRIGHT}{" "}
               </h6>
             </div>
           </div>
