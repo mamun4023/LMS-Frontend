@@ -1,111 +1,91 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { BookOpen, Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  BookOpen,
+  Mail,
+  User,
+  Lock,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Phone,
+} from "lucide-react";
+import { formValidator } from "../../validator/formValidator";
 
-interface FormData {
-  name: string;
-  email: string;
-  password: string;
-  role: 'admin' | 'librarian' | 'student';
-}
 
 interface FormErrors {
+  name?: string;
   email?: string;
+  phone?: string;
   password?: string;
-  general?: string;
 }
 
 export default function Register() {
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    password: '',
-    role: 'student'
-  });
-  
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const registerDataValidation = () => {
+    const isValidName = formValidator("name", name).isValid;
+    const isValidEmail = formValidator("email", email).isValid;
+    const isValidPhone = formValidator("phone", phone).isValid;
+    const isValidPassword = formValidator("password", password).isValid;
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    // Email validation
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    
-    // Clear error for this field when user starts typing
-    if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({
+    if (isValidName) {
+      setErrors((prev) => ({
         ...prev,
-        [name]: undefined
+        name: formValidator("name", name).message,
       }));
+      return false;
     }
+    if (isValidEmail) {
+      setErrors((prev) => ({
+        ...prev,
+        email: formValidator("email", email).message,
+      }));
+      return false;
+    }
+    if (isValidPhone) {
+      setErrors((prev) => ({
+        ...prev,
+        phone: formValidator("phoneNumber", phone).message,
+      }));
+      return false;
+    }
+    if (isValidPassword) {
+      setErrors((prev) => ({
+        ...prev,
+        password: formValidator("password", password).message,
+      }));
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async () => {
-    if (!validateForm()) {
+    if (!registerDataValidation()) {
       return;
     }
-
     setIsSubmitting(true);
     setErrors({});
 
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock authentication logic
-      const mockCredentials = {
-        admin: { email: 'admin@library.com', password: 'admin123' },
-        librarian: { email: 'librarian@library.com', password: 'librarian123' },
-        student: { email: 'student@library.com', password: 'student123' }
-      };
-
-      const validCredentials = mockCredentials[formData.role];
-      
-      if (formData.email === validCredentials.email && formData.password === validCredentials.password) {
-        alert(`Login successful as ${formData.role}!`);
-        // Here you would typically redirect to the appropriate dashboard
-        console.log('Redirecting to dashboard...', formData.role);
-      } else {
-        setErrors({ general: 'Invalid email or password' });
-      }
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      alert("Registration successful!");
     } catch (error) {
-      setErrors({ general: 'An error occurred. Please try again.' });
+      // setErrors({ general: "An error occurred. Please try again." });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSubmit();
     }
   };
@@ -120,7 +100,9 @@ export default function Register() {
               <BookOpen className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Library Management System</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Library Management System
+          </h1>
           <p className="text-gray-600">Sign in to your account</p>
         </div>
 
@@ -128,48 +110,73 @@ export default function Register() {
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="space-y-6">
             {/* General Error Message */}
-            {errors.general && (
+            {/* {errors.general && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
                 <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
                 <p className="text-sm text-red-700">{errors.general}</p>
               </div>
-            )}
-
-            {/* Role Selection */}
-            {/* <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
-                Login As
-              </label>
-              <select
-                id="role"
-                name="role"
-                value={formData.role}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-              >
-                <option value="student">Student</option>
-                <option value="librarian">Librarian</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div> */}
-
+            )} */}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Name
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
                   id="name"
                   name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  onKeyPress={handleKeyPress}
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    setErrors((prev) => ({
+                      ...prev,
+                      name: formValidator("name", e.target.value).message,
+                    }));
+                  }}
                   placeholder="Mr. John Doe"
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
+                    errors.name ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+              </div>
+              {errors.name && (
+                <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>{errors.name}</span>
+                </p>
+              )}
+            </div>
+
+            {/* Email Input */}
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setErrors((prev) => ({
+                      ...prev,
+                      email: formValidator("email", e.target.value).message,
+                    }));
+                  }}
+                  placeholder="you@example.com"
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                    errors.email ? "border-red-500" : "border-gray-300"
                   }`}
                 />
               </div>
@@ -183,49 +190,65 @@ export default function Register() {
 
             {/* Email Input */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Phone Number
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  onKeyPress={handleKeyPress}
-                  placeholder="you@example.com"
+                  type="number"
+                  id="phone"
+                  name="phone"
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    setErrors((prev) => ({
+                      ...prev,
+                      phone: formValidator("phoneNumber", e.target.value).message,
+                    }));
+                  }}
+                  placeholder="01712345678"
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
+                    errors.phone ? "border-red-500" : "border-gray-300"
                   }`}
                 />
               </div>
-              {errors.email && (
+              {errors.phone && (
                 <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
                   <AlertCircle className="w-4 h-4" />
-                  <span>{errors.email}</span>
+                  <span>{errors.phone}</span>
                 </p>
               )}
             </div>
 
             {/* Password Input */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  onKeyPress={handleKeyPress}
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setErrors((prev) => ({
+                      ...prev,
+                      password: formValidator("password", e.target.value).message,
+                    }));
+                  }}
                   placeholder="••••••••"
                   className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                    errors.password ? 'border-red-500' : 'border-gray-300'
+                    errors.password ? "border-red-500" : "border-gray-300"
                   }`}
                 />
                 <button
@@ -233,7 +256,11 @@ export default function Register() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
               {errors.password && (
@@ -244,8 +271,6 @@ export default function Register() {
               )}
             </div>
 
-     
-
             {/* Submit Button */}
             <button
               type="button"
@@ -255,39 +280,42 @@ export default function Register() {
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Signing in...
                 </span>
               ) : (
-                'Sign In'
+                "Sign In"
               )}
             </button>
           </div>
 
-          {/* Demo Credentials
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-xs text-gray-500 text-center mb-3">Demo Credentials:</p>
-            <div className="space-y-2 text-xs text-gray-600">
-              <div className="bg-gray-50 p-2 rounded">
-                <strong>Admin:</strong> admin@library.com / admin123
-              </div>
-              <div className="bg-gray-50 p-2 rounded">
-                <strong>Librarian:</strong> librarian@library.com / librarian123
-              </div>
-              <div className="bg-gray-50 p-2 rounded">
-                <strong>Student:</strong> student@library.com / student123
-              </div> 
-            </div>
-          </div> */}
-
           {/* Sign Up Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link to="/signin" className="text-blue-600 hover:text-blue-700 font-medium">
+              Don't have an account?{" "}
+              <Link
+                to="/signin"
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
                 Sign In
               </Link>
             </p>
