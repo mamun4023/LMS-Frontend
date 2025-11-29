@@ -1,24 +1,54 @@
 import React, { useState } from "react";
+import { formValidator } from "../../validator/formValidator";
+
+
+interface FormData {
+  oldPassword: string;
+  newPassword: string;
+}
+
+interface FormErrors {
+  oldPassword?: string;
+  newPassword?: string;
+}
 
 export default function ResetPasswordPage() {
-  const [form, setForm] = useState({
-    password: "",
-    confirmPassword: "",
+  const [formData, setFormData] = useState<FormData>({
+    oldPassword: "",
+    newPassword: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [errors, setErrors] = useState<FormErrors>({});
+
+
+  const validateForm = () => {
+    const isValidOldPassword = formValidator("password", formData.oldPassword).isValid;
+    const isValidNewPassword = formValidator("password", formData.newPassword)
+      .isValid;
+
+    if (isValidOldPassword) {
+      setErrors((prev) => ({
+        ...prev,
+        oldPassword: formValidator("password", formData.oldPassword).message,
+      }));
+      return false;
+    }
+    if (isValidNewPassword) {
+      setErrors((prev) => ({
+        ...prev,
+        newPassword: formValidator("password", formData.newPassword).message,
+      }));
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (form.password !== form.confirmPassword) {
-      alert("Passwords do not match!");
+    if (!validateForm()) {
       return;
     }
-
-    console.log("New Password:", form.password);
+    
   };
 
   return (
@@ -31,9 +61,18 @@ export default function ResetPasswordPage() {
             <label className="block mb-1 font-medium">New Password</label>
             <input
               type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
+              name="Old Password"
+              value={formData.oldPassword}
+              onChange={(e) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  oldPassword: e.target.value,
+                }));
+                setErrors((prev) => ({
+                  ...prev,
+                  oldPassword: formValidator("password", e.target.value).message,
+                }));
+              }}
               placeholder="••••••••"
               required
               className="w-full border p-3 rounded-xl focus:ring"
@@ -44,9 +83,18 @@ export default function ResetPasswordPage() {
             <label className="block mb-1 font-medium">Confirm Password</label>
             <input
               type="password"
-              name="confirmPassword"
-              value={form.confirmPassword}
-              onChange={handleChange}
+              name="New Password"
+              value={formData.newPassword}
+              onChange={(e) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  newPassword: e.target.value,
+                }));
+                setErrors((prev) => ({
+                  ...prev,
+                  newPassword: formValidator("password", e.target.value).message,
+                }));
+              }}
               placeholder="••••••••"
               required
               className="w-full border p-3 rounded-xl focus:ring"

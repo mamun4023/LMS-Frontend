@@ -1,110 +1,51 @@
-import React, { useState } from 'react';
-import { BookOpen, Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { BookOpen, Mail, AlertCircle } from "lucide-react";
+import { formValidator } from "../../validator/formValidator";
 
 interface FormData {
   email: string;
-  password: string;
-  role: 'admin' | 'librarian' | 'student';
 }
 
 interface FormErrors {
   email?: string;
-  password?: string;
   general?: string;
 }
 
 export default function LoginPage() {
   const [formData, setFormData] = useState<FormData>({
-    email: '',
-    password: '',
-    role: 'student'
+    email: "",
   });
-  
+
   const [errors, setErrors] = useState<FormErrors>({});
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const validateForm = () => {
+    const isValidEmail = formValidator("email", formData.email).isValid;
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    // Email validation
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    
-    // Clear error for this field when user starts typing
-    if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({
+    if (isValidEmail) {
+      setErrors((prev) => ({
         ...prev,
-        [name]: undefined
+        email: formValidator("email", formData.email).message,
       }));
+      return false;
     }
+    return true;
   };
 
   const handleSubmit = async () => {
     if (!validateForm()) {
       return;
     }
-
     setIsSubmitting(true);
     setErrors({});
 
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock authentication logic
-      const mockCredentials = {
-        admin: { email: 'admin@library.com', password: 'admin123' },
-        librarian: { email: 'librarian@library.com', password: 'librarian123' },
-        student: { email: 'student@library.com', password: 'student123' }
-      };
-
-      const validCredentials = mockCredentials[formData.role];
-      
-      if (formData.email === validCredentials.email && formData.password === validCredentials.password) {
-        alert(`Login successful as ${formData.role}!`);
-        // Here you would typically redirect to the appropriate dashboard
-        console.log('Redirecting to dashboard...', formData.role);
-      } else {
-        setErrors({ general: 'Invalid email or password' });
-      }
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      alert("Login successful!");
     } catch (error) {
-      setErrors({ general: 'An error occurred. Please try again.' });
+      // setErrors({ general: "An error occurred. Please try again." });
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSubmit();
     }
   };
 
@@ -118,7 +59,9 @@ export default function LoginPage() {
               <BookOpen className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Library Management System</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Library Management System
+          </h1>
           <p className="text-gray-600">Verify your email address</p>
         </div>
 
@@ -133,10 +76,12 @@ export default function LoginPage() {
               </div>
             )}
 
-
             {/* Email Input */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Email Address
               </label>
               <div className="relative">
@@ -146,11 +91,19 @@ export default function LoginPage() {
                   id="email"
                   name="email"
                   value={formData.email}
-                  onChange={handleInputChange}
-                  onKeyPress={handleKeyPress}
+                  onChange={(e) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }));
+                    setErrors((prev) => ({
+                      ...prev,
+                      email: formValidator("email", e.target.value).message,
+                    }));
+                  }}
                   placeholder="you@example.com"
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
+                    errors.email ? "border-red-500" : "border-gray-300"
                   }`}
                 />
               </div>
@@ -162,8 +115,6 @@ export default function LoginPage() {
               )}
             </div>
 
-
-
             {/* Submit Button */}
             <button
               type="button"
@@ -173,21 +124,37 @@ export default function LoginPage() {
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   sending...
                 </span>
               ) : (
-                'Submit'
+                "Submit"
               )}
             </button>
           </div>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Failed to send?{' '}
+              Failed to send?{" "}
               <button className="text-blue-600 hover:text-blue-700 font-medium">
                 Send Again
               </button>
