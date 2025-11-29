@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { BookOpen, Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { formValidator } from "../../validator/formValidator";
+
 interface FormData {
   email: string;
   password: string;
-  role: "admin" | "librarian" | "student";
 }
 
 interface FormErrors {
@@ -18,98 +19,48 @@ export default function LoginPage() {
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
-    role: "student",
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const validateForm = () => {
+    const isValidEmail = formValidator("email", formData.email).isValid;
+    const isValidPassword = formValidator("password", formData.password)
+      .isValid;
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    // Email validation
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Clear error for this field when user starts typing
-    if (errors[name as keyof FormErrors]) {
+    if (isValidEmail) {
       setErrors((prev) => ({
         ...prev,
-        [name]: undefined,
+        email: formValidator("email", formData.email).message,
       }));
+      return false;
     }
+    if (isValidPassword) {
+      setErrors((prev) => ({
+        ...prev,
+        password: formValidator("password", formData.password).message,
+      }));
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async () => {
     if (!validateForm()) {
       return;
     }
-
     setIsSubmitting(true);
     setErrors({});
 
-    // Simulate API call
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Mock authentication logic
-      const mockCredentials = {
-        admin: { email: "admin@library.com", password: "admin123" },
-        librarian: { email: "librarian@library.com", password: "librarian123" },
-        student: { email: "student@library.com", password: "student123" },
-      };
-
-      const validCredentials = mockCredentials[formData.role];
-
-      if (
-        formData.email === validCredentials.email &&
-        formData.password === validCredentials.password
-      ) {
-        alert(`Login successful as ${formData.role}!`);
-        // Here you would typically redirect to the appropriate dashboard
-        console.log("Redirecting to dashboard...", formData.role);
-      } else {
-        setErrors({ general: "Invalid email or password" });
-      }
+      alert("Login successful!");
     } catch (error) {
-      setErrors({ general: "An error occurred. Please try again." });
+      // setErrors({ general: "An error occurred. Please try again." });
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSubmit();
     }
   };
 
@@ -155,8 +106,16 @@ export default function LoginPage() {
                   id="email"
                   name="email"
                   value={formData.email}
-                  onChange={handleInputChange}
-                  onKeyPress={handleKeyPress}
+                  onChange={(e) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }));
+                    setErrors((prev) => ({
+                      ...prev,
+                      email: formValidator("email", e.target.value).message,
+                    }));
+                  }}
                   placeholder="you@example.com"
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                     errors.email ? "border-red-500" : "border-gray-300"
@@ -186,8 +145,17 @@ export default function LoginPage() {
                   id="password"
                   name="password"
                   value={formData.password}
-                  onChange={handleInputChange}
-                  onKeyPress={handleKeyPress}
+                  onChange={(e) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }));
+                    setErrors((prev) => ({
+                      ...prev,
+                      password: formValidator("password", e.target.value)
+                        .message,
+                    }));
+                  }}
                   placeholder="••••••••"
                   className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                     errors.password ? "border-red-500" : "border-gray-300"

@@ -12,6 +12,12 @@ import {
 } from "lucide-react";
 import { formValidator } from "../../validator/formValidator";
 
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+}
 
 interface FormErrors {
   name?: string;
@@ -21,46 +27,48 @@ interface FormErrors {
 }
 
 export default function Register() {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+  });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const registerDataValidation = () => {
-    const isValidName = formValidator("name", name).isValid;
-    const isValidEmail = formValidator("email", email).isValid;
-    const isValidPhone = formValidator("phone", phone).isValid;
-    const isValidPassword = formValidator("password", password).isValid;
+    const isValidName = formValidator("name", formData.name).isValid;
+    const isValidEmail = formValidator("email", formData.email).isValid;
+    const isValidPhone = formValidator("phoneNumber", formData.phone).isValid;
+    const isValidPassword = formValidator("password", formData.password).isValid;
 
     if (isValidName) {
       setErrors((prev) => ({
         ...prev,
-        name: formValidator("name", name).message,
+        name: formValidator("name", formData.name).message,
       }));
       return false;
     }
     if (isValidEmail) {
       setErrors((prev) => ({
         ...prev,
-        email: formValidator("email", email).message,
+        email: formValidator("email", formData.email).message,
       }));
       return false;
     }
     if (isValidPhone) {
       setErrors((prev) => ({
         ...prev,
-        phone: formValidator("phoneNumber", phone).message,
+        phone: formValidator("phoneNumber", formData.phone).message,
       }));
       return false;
     }
     if (isValidPassword) {
       setErrors((prev) => ({
         ...prev,
-        password: formValidator("password", password).message,
+        password: formValidator("password", formData.password).message,
       }));
       return false;
     }
@@ -130,9 +138,12 @@ export default function Register() {
                   type="text"
                   id="name"
                   name="name"
-                  value={name}
+                  value={formData.name}
                   onChange={(e) => {
-                    setName(e.target.value);
+                    setFormData((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }));
                     setErrors((prev) => ({
                       ...prev,
                       name: formValidator("name", e.target.value).message,
@@ -166,9 +177,12 @@ export default function Register() {
                   type="email"
                   id="email"
                   name="email"
-                  value={email}
+                  value={formData.email}
                   onChange={(e) => {
-                    setEmail(e.target.value);
+                    setFormData((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }));
                     setErrors((prev) => ({
                       ...prev,
                       email: formValidator("email", e.target.value).message,
@@ -202,9 +216,12 @@ export default function Register() {
                   type="number"
                   id="phone"
                   name="phone"
-                  value={phone}
+                  value={formData.phone}
                   onChange={(e) => {
-                    setPhone(e.target.value);
+                    setFormData((prev) => ({
+                      ...prev,
+                      phone: e.target.value,
+                    }));
                     setErrors((prev) => ({
                       ...prev,
                       phone: formValidator("phoneNumber", e.target.value).message,
@@ -238,9 +255,12 @@ export default function Register() {
                   type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
-                  value={password}
+                  value={formData.password}
                   onChange={(e) => {
-                    setPassword(e.target.value);
+                    setFormData((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }));
                     setErrors((prev) => ({
                       ...prev,
                       password: formValidator("password", e.target.value).message,
