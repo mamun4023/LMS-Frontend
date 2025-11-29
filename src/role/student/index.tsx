@@ -543,7 +543,7 @@ const StudentDashboard: React.FC = () => {
             </p>
           </button>
 
-          <button className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition text-left">
+          <button onClick={() => navigate("/profile")} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition text-left">
             <User className="w-10 h-10 text-purple-600 mb-3" />
             <h3 className="font-semibold text-gray-900 mb-2">My Profile</h3>
             <p className="text-sm text-gray-600">
