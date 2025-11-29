@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
-import { Search, Book, Calendar, Users, Clock, MapPin, Mail, Phone } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import {
+  Search,
+  Book,
+  Calendar,
+  Users,
+  Clock,
+  MapPin,
+  Mail,
+  Phone,
+} from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface Book {
   id: number;
@@ -10,20 +19,40 @@ interface Book {
 }
 
 const LibraryHomePage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const featuredBooks: Book[] = [
-    { id: 1, title: 'The Midnight Library', author: 'Matt Haig', cover: '#8B5CF6' },
-    { id: 2, title: 'Atomic Habits', author: 'James Clear', cover: '#EC4899' },
-    { id: 3, title: 'Project Hail Mary', author: 'Andy Weir', cover: '#3B82F6' },
-    { id: 4, title: 'The Silent Patient', author: 'Alex Michaelides', cover: '#10B981' },
+    {
+      id: 1,
+      title: "The Midnight Library",
+      author: "Matt Haig",
+      cover: "/book/the_midnight_library.jpg",
+    },
+    {
+      id: 2,
+      title: "Atomic Habits",
+      author: "James Clear",
+      cover: "/book/atomic_habits.jpg",
+    },
+    {
+      id: 3,
+      title: "Project Hail Mary",
+      author: "Andy Weir",
+      cover: "/book/project_hail_mary.jpg",
+    },
+    {
+      id: 4,
+      title: "The Silent Patient",
+      author: "Alex Michaelides",
+      cover: "/book/the_silent_patient.jpg",
+    },
   ];
 
   const quickLinks = [
-    { icon: Book, title: 'Browse Catalog', desc: 'Explore our collection' },
-    { icon: Calendar, title: 'Book a Study Room', desc: 'Reserve your space' },
-    { icon: Users, title: 'Events & Programs', desc: 'Join our community' },
-    { icon: Clock, title: 'Hours & Location', desc: 'Visit us today' },
+    { icon: Book, title: "Browse Catalog", desc: "Explore our collection" },
+    { icon: Calendar, title: "Book a Study Room", desc: "Reserve your space" },
+    { icon: Users, title: "Events & Programs", desc: "Join our community" },
+    { icon: Clock, title: "Hours & Location", desc: "Visit us today" },
   ];
 
   return (
@@ -34,15 +63,40 @@ const LibraryHomePage: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Book className="w-8 h-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">City Central Library</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                City Central Library
+              </h1>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-700 hover:text-blue-600 transition">Catalog</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 transition">Services</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 transition">Events</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 transition">About</a>
+              <a
+                href="#"
+                className="text-gray-700 hover:text-blue-600 transition"
+              >
+                Catalog
+              </a>
+              <a
+                href="#"
+                className="text-gray-700 hover:text-blue-600 transition"
+              >
+                Services
+              </a>
+              <a
+                href="#"
+                className="text-gray-700 hover:text-blue-600 transition"
+              >
+                Events
+              </a>
+              <a
+                href="#"
+                className="text-gray-700 hover:text-blue-600 transition"
+              >
+                About
+              </a>
             </nav>
-            <Link to="/signin" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            <Link
+              to="/signin"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            >
               Login
             </Link>
           </div>
@@ -85,7 +139,9 @@ const LibraryHomePage: React.FC = () => {
               className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition cursor-pointer group"
             >
               <link.icon className="w-12 h-12 text-blue-600 mb-4 group-hover:scale-110 transition" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{link.title}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {link.title}
+              </h3>
               <p className="text-gray-600">{link.desc}</p>
             </div>
           ))}
@@ -93,20 +149,22 @@ const LibraryHomePage: React.FC = () => {
 
         {/* Featured Books */}
         <div className="mb-16">
-          <h3 className="text-3xl font-bold text-gray-900 mb-8">Featured This Week</h3>
+          <h3 className="text-3xl font-bold text-gray-900 mb-8">
+            Featured This Week
+          </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {featuredBooks.map((book) => (
-              <div
-                key={book.id}
-                className="group cursor-pointer"
-              >
+              <div key={book.id} className="group cursor-pointer">
                 <div
-                  className="aspect-[2/3] rounded-lg mb-3 flex items-end justify-center p-4 shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition"
+                  className="aspect-[2/3] rounded-lg mb-3 flex items-end justify-center  shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition"
                   style={{ backgroundColor: book.cover }}
                 >
+                   <img src={book.cover} alt={book.cover} />
                   <Book className="w-16 h-16 text-white opacity-50" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-1">{book.title}</h4>
+                <h4 className="font-semibold text-gray-900 mb-1">
+                  {book.title}
+                </h4>
                 <p className="text-sm text-gray-600">{book.author}</p>
               </div>
             ))}
@@ -117,8 +175,12 @@ const LibraryHomePage: React.FC = () => {
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-white mb-16">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h3 className="text-2xl font-bold mb-2">Summer Reading Program</h3>
-              <p className="text-blue-100">Join us for exciting activities and prizes. Register now!</p>
+              <h3 className="text-2xl font-bold mb-2">
+                Summer Reading Program
+              </h3>
+              <p className="text-blue-100">
+                Join us for exciting activities and prizes. Register now!
+              </p>
             </div>
             <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition">
               Learn More
@@ -160,10 +222,26 @@ const LibraryHomePage: React.FC = () => {
             <div>
               <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white transition">My Account</a></li>
-                <li><a href="#" className="hover:text-white transition">Digital Resources</a></li>
-                <li><a href="#" className="hover:text-white transition">Library Card</a></li>
-                <li><a href="#" className="hover:text-white transition">Support Us</a></li>
+                <li>
+                  <a href="#" className="hover:text-white transition">
+                    My Account
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition">
+                    Digital Resources
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition">
+                    Library Card
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition">
+                    Support Us
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
