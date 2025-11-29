@@ -1,10 +1,9 @@
-
-import LibraryHomePage from "../../role/librarian";
+import DashboardPage from "../../role/student";
 
 export default function Dashboard() {
-    return (
-        <div>
-            <LibraryHomePage />
-        </div>
-    );
+  return (
+    <div>
+      <DashboardPage />
+    </div>
+  );
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BookOpen, Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { formValidator } from "../../validator/formValidator";
 
@@ -16,6 +16,7 @@ interface FormErrors {
 }
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -52,11 +53,12 @@ export default function LoginPage() {
       return;
     }
     setIsSubmitting(true);
+
     setErrors({});
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      alert("Login successful!");
+      navigate("/dashboard");
     } catch (error) {
       // setErrors({ general: "An error occurred. Please try again." });
     } finally {
