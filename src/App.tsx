@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Book, Calendar, Users, Clock, MapPin, Mail, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface Book {
   id: number;
@@ -41,9 +42,9 @@ const LibraryHomePage: React.FC = () => {
               <a href="#" className="text-gray-700 hover:text-blue-600 transition">Events</a>
               <a href="#" className="text-gray-700 hover:text-blue-600 transition">About</a>
             </nav>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            <Link to="/signin" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
               Login
-            </button>
+            </Link>
           </div>
         </div>
       </header>
