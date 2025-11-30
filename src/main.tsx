@@ -10,6 +10,10 @@ import SignUp from "./pages/signup";
 import ResetPassword from "./pages/resetPassword";
 import OtpVerify from "./pages/otp";
 import ForgotPassword from "./pages/forgotPassword";
+import About from "./pages/about";
+import Events from "./pages/events";
+import Service from "./pages/services";
+import Catalog from './pages/catalog'
 
 const router = createBrowserRouter([
   {
@@ -39,6 +43,22 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Dashboard />,
+  },
+  {
+    path: "/about",
+    element: <About />,
+  },
+  {
+    path: "/events",
+    element: <Events />,
+  },
+  {
+    path: "/services",
+    element: <Service />,
+  },
+  {
+    path: "/catalog",
+    element: <Catalog />,
   },
 ]);
 

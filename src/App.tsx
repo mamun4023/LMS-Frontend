@@ -68,30 +68,30 @@ const LibraryHomePage: React.FC = () => {
               </h1>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <a
-                href="#"
+              <Link
+                to="/catalog"
                 className="text-gray-700 hover:text-blue-600 transition"
               >
                 Catalog
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="/services"
                 className="text-gray-700 hover:text-blue-600 transition"
               >
                 Services
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="/events"
                 className="text-gray-700 hover:text-blue-600 transition"
               >
                 Events
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="/about"
                 className="text-gray-700 hover:text-blue-600 transition"
               >
                 About
-              </a>
+              </Link>
             </nav>
             <Link
               to="/signin"
