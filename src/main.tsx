@@ -1,7 +1,8 @@
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-import App from "./App"; 
+import "./i18n";
+import App from "./App";
 import SignIn from "./pages/signin";
 import Dashboard from "./pages/dashboard";
 import SignUp from "./pages/signup";
@@ -11,7 +12,7 @@ import ForgotPassword from "./pages/forgotPassword";
 import About from "./pages/about";
 import Events from "./pages/events";
 import Service from "./pages/services";
-import Catalog from './pages/catalog'
+import Catalog from "./pages/catalog";
 
 const router = createBrowserRouter([
   {

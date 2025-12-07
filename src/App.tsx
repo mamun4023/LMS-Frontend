@@ -9,9 +9,9 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import Header from "./components/unique/Header";
-
+import { LanguageSwitcher } from "./components/unique/LanguageSwitcher";
+import { Text } from "./components/common/Text";
 interface Book {
   id: number;
   title: string;
@@ -60,8 +60,10 @@ const LibraryHomePage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header */}
       <Header />
+      <LanguageSwitcher />
 
-      {/* Hero Section */}  
+      <Text>welcome</Text>
+      {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
           <h2 className="text-5xl font-bold text-gray-900 mb-4">
@@ -117,7 +119,7 @@ const LibraryHomePage: React.FC = () => {
                   className="aspect-[2/3] rounded-lg mb-3 flex items-end justify-center  shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition"
                   style={{ backgroundColor: book.cover }}
                 >
-                   <img src={book.cover} alt={book.cover} />
+                  <img src={book.cover} alt={book.cover} />
                   <Book className="w-16 h-16 text-white opacity-50" />
                 </div>
                 <h4 className="font-semibold text-gray-900 mb-1">
