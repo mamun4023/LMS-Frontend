@@ -61,6 +61,10 @@ const router = createBrowserRouter([
   },
 ]);
 
+if (localStorage.theme === "dark") {
+  document.documentElement.classList.add("dark");
+}
+
 createRoot(document.getElementById("root")!).render(
   <RouterProvider router={router} />
 );

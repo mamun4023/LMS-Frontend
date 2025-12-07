@@ -13,6 +13,7 @@ import Header from "./components/unique/Header";
 import { LanguageSwitcher } from "./components/unique/LanguageSwitcher";
 import { Text } from "./components/common/Text";
 import { MESSAGES } from "./constants/messages";
+import { HEADINGS } from "./constants/headings";
 interface Book {
   id: number;
   title: string;
@@ -65,10 +66,10 @@ const LibraryHomePage: React.FC = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
           <h2 className="text-5xl font-bold text-gray-900 mb-4">
-            <Text>{MESSAGES.DISCOVER_YOUR_NEXT_ADVENTURE}</Text>
+            <Text>{HEADINGS.DISCOVER_YOUR_NEXT_ADVENTURE}</Text>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Access thousands of books, digital resources, and community programs
+            <Text>{HEADINGS.ACCESS_THOUSANDS_OF_BOOKS_DIGITAL_RESOURCES_AND_COMMUNITY_PROGRAMS}</Text>
           </p>
         </div>
 

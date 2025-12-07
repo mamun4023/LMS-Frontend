@@ -1,6 +1,9 @@
 import { Book } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { MENUS } from "../../constants/menus";
+import { Text } from "../common/Text";
+import { ThemeToggle } from "./themToggler";
 
 const Header = () => {
   const location = useLocation();
@@ -34,7 +37,7 @@ const Header = () => {
                   : "text-gray-700 hover:text-blue-600"
               }`}
             >
-              Home
+              <Text>{MENUS.HOME}</Text>
             </Link>
             <Link
               to="/catalog"
@@ -44,7 +47,7 @@ const Header = () => {
                   : "text-gray-700 hover:text-blue-600"
               }`}
             >
-              Catalog
+              <Text>{MENUS.CATALOG}</Text>
             </Link>
             <Link
               to="/services"
@@ -54,7 +57,7 @@ const Header = () => {
                   : "text-gray-700 hover:text-blue-600"
               }`}
             >
-              Services
+              <Text>{MENUS.SERVICES}</Text>
             </Link>
             <Link
               to="/events"
@@ -64,7 +67,7 @@ const Header = () => {
                   : "text-gray-700 hover:text-blue-600"
               }`}
             >
-              Events
+              <Text>{MENUS.EVENTS}</Text>
             </Link>
             <Link
               to="/about"
@@ -74,15 +77,16 @@ const Header = () => {
                   : "text-gray-700 hover:text-blue-600"
               }`}
             >
-              About
+              <Text>{MENUS.ABOUT}</Text>
             </Link>
           </nav>
           <LanguageSwitcher />
+          <ThemeToggle />
           <Link
             to="/signin"
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
-            Login
+            <Text>{MENUS.LOGIN}</Text>
           </Link>
         </div>
       </div>
