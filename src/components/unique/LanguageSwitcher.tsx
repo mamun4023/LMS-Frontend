@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface Language {
@@ -45,6 +45,11 @@ export const LanguageSwitcher = () => {
       setIsOpen(false);
     }
   };
+
+  useEffect(()=>{
+    const lang = localStorage.getItem("i18nextLng") || "en";
+    setLanguage(LANGUAGES.find((item) => item.code === lang) || LANGUAGES[0]);
+  },[])
 
   return (
     <div className="relative" onBlur={handleBlur} tabIndex={-1}>

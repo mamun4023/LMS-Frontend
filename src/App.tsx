@@ -12,6 +12,7 @@ import {
 import Header from "./components/unique/Header";
 import { LanguageSwitcher } from "./components/unique/LanguageSwitcher";
 import { Text } from "./components/common/Text";
+import { MESSAGES } from "./constants/messages";
 interface Book {
   id: number;
   title: string;
@@ -60,14 +61,11 @@ const LibraryHomePage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header */}
       <Header />
-      <LanguageSwitcher />
-
-      <Text>welcome</Text>
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
           <h2 className="text-5xl font-bold text-gray-900 mb-4">
-            Discover Your Next Adventure
+            <Text>{MESSAGES.DISCOVER_YOUR_NEXT_ADVENTURE}</Text>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Access thousands of books, digital resources, and community programs

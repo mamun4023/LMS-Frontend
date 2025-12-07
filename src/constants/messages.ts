@@ -5,4 +5,5 @@ export const MESSAGES = {
   EMAIL_REQUIRED: "Email is required",
   EMAIL_INVALID: "Email is invalid",
   PASSWORD_INVALID: "Password is invalid",
+  DISCOVER_YOUR_NEXT_ADVENTURE: "Discover Your Next Adventure",
 }
