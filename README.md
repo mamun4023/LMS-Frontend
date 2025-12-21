@@ -89,6 +89,19 @@ src/
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+
+## Commit Format (example)
+  #Feature
+    - Add multi-language support using i18n
+  #Info 
+    - Update README with setup instructions
+  #Improvement
+   - Refactor user service to reduce duplication
+  #Fix
+   - Resolve issue with user authentication
+  #Test
+   - Add unit tests for login validation
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
