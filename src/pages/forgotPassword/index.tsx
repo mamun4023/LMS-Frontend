@@ -1,5 +1,6 @@
+import { AlertCircle, BookOpen, Mail } from "lucide-react";
 import { useState } from "react";
-import { BookOpen, Mail, AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { formValidator } from "../../validator/formValidator";
 
 interface FormData {
@@ -15,6 +16,7 @@ export default function LoginPage() {
   const [formData, setFormData] = useState<FormData>({
     email: "",
   });
+  const { t } = useTranslation();
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -60,9 +62,9 @@ export default function LoginPage() {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Library Management System
+            {t("auth.libraryManagementSystem")}
           </h1>
-          <p className="text-gray-600">Verify your email address</p>
+          <p className="text-gray-600">{t("auth.verifyEmail")}</p>
         </div>
 
         {/* Login Card */}
@@ -82,7 +84,7 @@ export default function LoginPage() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Email Address
+                {t("auth.emailAddress")}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -101,7 +103,7 @@ export default function LoginPage() {
                       email: formValidator("email", e.target.value).message,
                     }));
                   }}
-                  placeholder="you@example.com"
+                  placeholder={t("auth.emailPlaceholder")}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                     errors.email ? "border-red-500" : "border-gray-300"
                   }`}
@@ -144,19 +146,19 @@ export default function LoginPage() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  sending...
+                  {t("auth.sending")}
                 </span>
               ) : (
-                "Submit"
+                t("auth.submit")
               )}
             </button>
           </div>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Failed to send?{" "}
+              {t("auth.failedToSend")}{" "}
               <button className="text-blue-600 hover:text-blue-700 font-medium">
-                Send Again
+                {t("auth.sendAgain")}
               </button>
             </p>
           </div>
@@ -164,7 +166,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-8">
-          © 2024 Library Management System. All rights reserved.
+          {t("auth.authCopyright")}
         </p>
       </div>
     </div>

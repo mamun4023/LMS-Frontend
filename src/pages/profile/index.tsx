@@ -1,5 +1,6 @@
-import React, { useState } from "react";
 import { CircleUser } from "lucide-react";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ProfileForm {
   name: string;
@@ -17,6 +18,7 @@ const ProfileUpdate: React.FC = () => {
     password: "",
     confirmPassword: "",
   });
+  const { t } = useTranslation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,7 +41,9 @@ const ProfileUpdate: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-5">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-lg">
-        <h2 className="text-2xl font-bold mb-5 text-center">Update Profile</h2>
+        <h2 className="text-2xl font-bold mb-5 text-center">
+          {t("profile.updateProfile")}
+        </h2>
 
         {/* Avatar Upload */}
         <div className="flex flex-col items-center mb-6">
@@ -48,20 +52,20 @@ const ProfileUpdate: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block mb-1 font-medium">Full Name</label>
+            <label className="block mb-1 font-medium">{t("Full Name")}</label>
             <input
               type="text"
               name="name"
               value={form.name}
               onChange={handleChange}
               className="w-full border rounded-lg px-3 py-2"
-              placeholder="Enter your name"
+              placeholder={t("profile.enterYourName")}
               required
             />
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">Email</label>
+            <label className="block mb-1 font-medium">{t("Email")}</label>
             <input
               type="email"
               name="email"
@@ -74,7 +78,7 @@ const ProfileUpdate: React.FC = () => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">Phone</label>
+            <label className="block mb-1 font-medium">{t("Phone")}</label>
             <input
               type="text"
               name="phone"
@@ -87,10 +91,12 @@ const ProfileUpdate: React.FC = () => {
 
           <hr className="my-4" />
 
-          <h3 className="text-lg font-semibold">Change Password</h3>
+          <h3 className="text-lg font-semibold">{t("Change Password")}</h3>
 
           <div>
-            <label className="block mb-1 font-medium">New Password</label>
+            <label className="block mb-1 font-medium">
+              {t("profile.newPassword")}
+            </label>
             <input
               type="password"
               name="password"
@@ -102,7 +108,9 @@ const ProfileUpdate: React.FC = () => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">Confirm Password</label>
+            <label className="block mb-1 font-medium">
+              {t("profile.confirmPassword")}
+            </label>
             <input
               type="password"
               name="confirmPassword"
@@ -117,7 +125,7 @@ const ProfileUpdate: React.FC = () => {
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg mt-3 font-medium hover:bg-blue-700 transition"
           >
-            Update Profile
+            {t("profile.updateProfile")}
           </button>
         </form>
       </div>

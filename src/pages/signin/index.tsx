@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { BookOpen, Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { AlertCircle, BookOpen, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { useTranslation } from "react-i18next";
 import { formValidator } from "../../validator/formValidator";
 
 interface FormData {
@@ -16,6 +17,7 @@ interface FormErrors {
 }
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     email: "",
@@ -28,8 +30,10 @@ export default function LoginPage() {
 
   const validateForm = () => {
     const isValidEmail = formValidator("email", formData.email).isValid;
-    const isValidPassword = formValidator("password", formData.password)
-      .isValid;
+    const isValidPassword = formValidator(
+      "password",
+      formData.password
+    ).isValid;
 
     if (isValidEmail) {
       setErrors((prev) => ({
@@ -77,9 +81,9 @@ export default function LoginPage() {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Library Management System
+            {t("auth.libraryManagementSystem")}
           </h1>
-          <p className="text-gray-600">Sign in to your account</p>
+          <p className="text-gray-600">{t("auth.signInToAccount")}</p>
         </div>
 
         {/* Login Card */}
@@ -99,7 +103,7 @@ export default function LoginPage() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Email Address
+                {t("auth.emailAddress")}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -118,7 +122,7 @@ export default function LoginPage() {
                       email: formValidator("email", e.target.value).message,
                     }));
                   }}
-                  placeholder="you@example.com"
+                  placeholder={t("auth.emailPlaceholder")}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                     errors.email ? "border-red-500" : "border-gray-300"
                   }`}
@@ -138,7 +142,7 @@ export default function LoginPage() {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Password
+                {t("auth.password")}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -190,13 +194,15 @@ export default function LoginPage() {
                   type="checkbox"
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                <span className="ml-2 text-sm text-gray-600">
+                  {t("auth.rememberMe")}
+                </span>
               </label>
               <Link
                 to="/forgot-password"
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium"
               >
-                Forgot password?
+                {t("auth.forgotPassword")}
               </Link>
             </div>
 
@@ -229,22 +235,22 @@ export default function LoginPage() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Signing in...
+                  {t("auth.signingIn")}
                 </span>
               ) : (
-                "Sign In"
+                t("auth.signIn")
               )}
             </button>
           </div>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
+              {t("auth.dontHaveAccount")}{" "}
               <Link
                 to="/signup"
                 className="text-blue-600 hover:text-blue-700 font-medium"
               >
-                Sign up
+                {t("auth.signUp")}
               </Link>
             </p>
           </div>
@@ -252,7 +258,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-8">
-          © 2024 Library Management System. All rights reserved.
+          {t("auth.authCopyright")}
         </p>
       </div>
     </div>

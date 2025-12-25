@@ -1,18 +1,18 @@
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import "./index.css";
-import "./i18n";
 import App from "./App";
-import SignIn from "./pages/signin";
-import Dashboard from "./pages/dashboard";
-import SignUp from "./pages/signup";
-import ResetPassword from "./pages/resetPassword";
-import OtpVerify from "./pages/otp";
-import ForgotPassword from "./pages/forgotPassword";
+import "./i18n";
+import "./index.css";
 import About from "./pages/about";
-import Events from "./pages/events";
-import Service from "./pages/services";
 import Catalog from "./pages/catalog";
+import Dashboard from "./pages/dashboard";
+import Events from "./pages/events";
+import ForgotPassword from "./pages/forgotPassword";
+import OtpVerify from "./pages/otp";
+import ResetPassword from "./pages/resetPassword";
+import Service from "./pages/services";
+import SignIn from "./pages/signin";
+import SignUp from "./pages/signup";
 
 const router = createBrowserRouter([
   {
@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     path: "/signup",
     element: <SignUp />,
   },
-  {  
+  {
     path: "/signin",
     element: <SignIn />,
   },
@@ -59,6 +59,18 @@ const router = createBrowserRouter([
     path: "/catalog",
     element: <Catalog />,
   },
+  // {
+  //   path: "/profile",
+  //   element: <ProfileUpdate />,
+  // },
+  // {
+  //   path: "/admin",
+  //   element: <AdminDashboard />,
+  // },
+  // {
+  //   path: "/librarian",
+  //   element: <LibrarianDashboard />,
+  // },
 ]);
 
 if (localStorage.theme === "dark") {

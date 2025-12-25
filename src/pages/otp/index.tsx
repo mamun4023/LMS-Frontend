@@ -1,6 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function OtpVerifyPage() {
+  const { t } = useTranslation();
   const [otp, setOtp] = useState(["", "", "", ""]);
   const inputsRef = useRef<(HTMLInputElement | null)[]>(Array(4).fill(null));
 
@@ -16,7 +18,10 @@ export default function OtpVerifyPage() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
@@ -31,16 +36,20 @@ export default function OtpVerifyPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Verify OTP</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          {t("auth.verifyOTP")}
+        </h2>
 
-        <p className="text-center mb-4 text-gray-600">Enter the 4-digit code sent to your email/phone</p>
+        <p className="text-center mb-4 text-gray-600">
+          {t("auth.enterOTPCode")}
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex justify-between">
             {otp.map((digit, index) => (
               <input
                 key={index}
-                ref={el => {
+                ref={(el) => {
                   if (el) {
                     inputsRef.current[index] = el;
                   }
@@ -59,7 +68,7 @@ export default function OtpVerifyPage() {
             type="submit"
             className="w-full bg-blue-600 text-white p-3 rounded-xl font-semibold hover:bg-blue-700 transition"
           >
-            Verify
+            {t("auth.verify")}
           </button>
         </form>
       </div>

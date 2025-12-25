@@ -1,9 +1,8 @@
 export const MESSAGES = {
-  LOGIN_SUCCESS: "Login successful!",
-  LOGIN_FAILED: "Invalid credentials. Please try again.",
-  PASSWORD_REQUIRED: "Password is required",
-  EMAIL_REQUIRED: "Email is required",
-  EMAIL_INVALID: "Email is invalid",
-  PASSWORD_INVALID: "Password is invalid",
-
-}
+  LOGIN_SUCCESS: "messages.LOGIN_SUCCESS",
+  LOGIN_FAILED: "messages.LOGIN_FAILED",
+  PASSWORD_REQUIRED: "messages.PASSWORD_REQUIRED",
+  EMAIL_REQUIRED: "messages.EMAIL_REQUIRED",
+  EMAIL_INVALID: "messages.EMAIL_INVALID",
+  PASSWORD_INVALID: "messages.PASSWORD_INVALID",
+};

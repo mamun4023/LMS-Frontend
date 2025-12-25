@@ -1,15 +1,16 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import {
-  BookOpen,
-  Mail,
-  User,
-  Lock,
   AlertCircle,
+  BookOpen,
   Eye,
   EyeOff,
+  Lock,
+  Mail,
   Phone,
+  User,
 } from "lucide-react";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { formValidator } from "../../validator/formValidator";
 
 interface FormData {
@@ -27,6 +28,7 @@ interface FormErrors {
 }
 
 export default function Register() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -42,7 +44,10 @@ export default function Register() {
     const isValidName = formValidator("name", formData.name).isValid;
     const isValidEmail = formValidator("email", formData.email).isValid;
     const isValidPhone = formValidator("phoneNumber", formData.phone).isValid;
-    const isValidPassword = formValidator("password", formData.password).isValid;
+    const isValidPassword = formValidator(
+      "password",
+      formData.password
+    ).isValid;
 
     if (isValidName) {
       setErrors((prev) => ({
@@ -109,9 +114,9 @@ export default function Register() {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Library Management System
+            {t("auth.libraryManagementSystem")}
           </h1>
-          <p className="text-gray-600">Sign in to your account</p>
+          <p className="text-gray-600">{t("auth.signInToAccount")}</p>
         </div>
 
         {/* Login Card */}
@@ -130,7 +135,7 @@ export default function Register() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Name
+                {t("profile.name")}
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -149,7 +154,7 @@ export default function Register() {
                       name: formValidator("name", e.target.value).message,
                     }));
                   }}
-                  placeholder="Mr. John Doe"
+                  placeholder={t("profile.mrJohnDoe")}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                     errors.name ? "border-red-500" : "border-gray-300"
                   }`}
@@ -169,7 +174,7 @@ export default function Register() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Email Address
+                {t("auth.emailAddress")}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -188,7 +193,7 @@ export default function Register() {
                       email: formValidator("email", e.target.value).message,
                     }));
                   }}
-                  placeholder="you@example.com"
+                  placeholder={t("auth.emailPlaceholder")}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                     errors.email ? "border-red-500" : "border-gray-300"
                   }`}
@@ -208,7 +213,7 @@ export default function Register() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Phone Number
+                {t("profile.phoneNumber")}
               </label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -224,7 +229,8 @@ export default function Register() {
                     }));
                     setErrors((prev) => ({
                       ...prev,
-                      phone: formValidator("phoneNumber", e.target.value).message,
+                      phone: formValidator("phoneNumber", e.target.value)
+                        .message,
                     }));
                   }}
                   placeholder="01712345678"
@@ -247,7 +253,7 @@ export default function Register() {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Password
+                {t("auth.password")}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -263,7 +269,8 @@ export default function Register() {
                     }));
                     setErrors((prev) => ({
                       ...prev,
-                      password: formValidator("password", e.target.value).message,
+                      password: formValidator("password", e.target.value)
+                        .message,
                     }));
                   }}
                   placeholder="••••••••"
@@ -320,10 +327,10 @@ export default function Register() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Signing in...
+                  {t("auth.signingIn")}
                 </span>
               ) : (
-                "Sign In"
+                t("auth.signUp")
               )}
             </button>
           </div>
@@ -331,12 +338,12 @@ export default function Register() {
           {/* Sign Up Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
+              {t("auth.dontHaveAccount")}{" "}
               <Link
                 to="/signin"
                 className="text-blue-600 hover:text-blue-700 font-medium"
               >
-                Sign In
+                {t("auth.signIn")}
               </Link>
             </p>
           </div>
@@ -344,7 +351,7 @@ export default function Register() {
 
         {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-8">
-          © 2024 Library Management System. All rights reserved.
+          {t("auth.authCopyright")}
         </p>
       </div>
     </div>

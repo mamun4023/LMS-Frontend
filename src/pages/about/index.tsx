@@ -1,20 +1,17 @@
-import React, { useState } from "react";
 import {
-  BookOpen,
-  Users,
   Award,
-  Heart,
-  Target,
-  Eye,
-  TrendingUp,
   BookMarked,
-  Coffee,
-  Wifi,
+  BookOpen,
   Globe,
-  Mail,
+  Heart,
   Linkedin,
-  Twitter,
+  Mail,
+  Target,
+  TrendingUp,
+  Users,
 } from "lucide-react";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Header from "../../components/unique/Header";
 
 interface TeamMember {
@@ -35,6 +32,7 @@ interface Stat {
 }
 
 const LibraryAbout: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"mission" | "history" | "values">(
     "mission"
   );
@@ -42,26 +40,26 @@ const LibraryAbout: React.FC = () => {
   const stats: Stat[] = [
     {
       icon: <BookOpen className="w-8 h-8" />,
-      value: "50,000+",
-      label: "Books in Collection",
+      value: t("stats.booksCount"),
+      label: t("stats.booksInCollection"),
       color: "from-blue-500 to-blue-600",
     },
     {
       icon: <Users className="w-8 h-8" />,
-      value: "15,000+",
-      label: "Active Members",
+      value: t("stats.membersCount"),
+      label: t("stats.activeMembers"),
       color: "from-purple-500 to-purple-600",
     },
     {
       icon: <Award className="w-8 h-8" />,
-      value: "25+",
-      label: "Years of Service",
+      value: t("stats.yearsCount"),
+      label: t("stats.yearsOfService"),
       color: "from-green-500 to-green-600",
     },
     {
       icon: <Heart className="w-8 h-8" />,
-      value: "500+",
-      label: "Events Annually",
+      value: t("stats.eventsCount"),
+      label: t("stats.eventsAnnually"),
       color: "from-red-500 to-red-600",
     },
   ];
@@ -69,90 +67,86 @@ const LibraryAbout: React.FC = () => {
   const teamMembers: TeamMember[] = [
     {
       id: 1,
-      name: "Dr. Emily Richardson",
-      position: "Library Director",
-      bio: "With over 20 years of experience in library science, Emily leads our team with passion and innovation.",
+      name: t("team.drEmilyRichardson"),
+      position: t("team.libraryDirector"),
+      bio: t("team.emilyBio"),
       image:
         "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
-      email: "emily.richardson@library.com",
-      linkedin: "#",
+      email: t("team.emilyEmail"),
+      linkedin: t("common.hash"),
     },
     {
       id: 2,
-      name: "Marcus Chen",
-      position: "Head of Collections",
-      bio: "Marcus curates our diverse collection and ensures we have the latest and most relevant materials.",
+      name: t("team.marcusChen"),
+      position: t("team.headOfCollections"),
+      bio: t("team.marcusBio"),
       image:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
-      email: "marcus.chen@library.com",
-      linkedin: "#",
+      email: t("team.marcusEmail"),
+      linkedin: t("common.hash"),
     },
     {
       id: 3,
-      name: "Sarah Williams",
-      position: "Community Programs Manager",
-      bio: "Sarah designs engaging programs that bring our community together through literacy and learning.",
+      name: t("team.sarahWilliams"),
+      position: t("team.communityProgramsManager"),
+      bio: t("team.sarahBio"),
       image:
         "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
-      email: "sarah.williams@library.com",
-      linkedin: "#",
+      email: t("team.sarahEmail"),
+      linkedin: t("common.hash"),
     },
     {
       id: 4,
-      name: "James Foster",
-      position: "Technology Services Lead",
-      bio: "James ensures our digital infrastructure runs smoothly and helps patrons navigate technology.",
+      name: t("team.jamesFoster"),
+      position: t("team.technologyServicesLead"),
+      bio: t("team.jamesBio"),
       image:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-      email: "james.foster@library.com",
-      linkedin: "#",
+      email: t("team.jamesEmail"),
+      linkedin: t("common.hash"),
     },
     {
       id: 5,
-      name: "Dr. Priya Patel",
-      position: "Youth Services Coordinator",
-      bio: "Priya creates magical experiences for young readers and fosters a love of reading in children.",
+      name: t("team.drPriyaPatel"),
+      position: t("team.youthServicesCoordinator"),
+      bio: t("team.priyaBio"),
       image:
         "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=400&fit=crop",
-      email: "priya.patel@library.com",
-      linkedin: "#",
+      email: t("team.priyaEmail"),
+      linkedin: t("common.hash"),
     },
     {
       id: 6,
-      name: "David Martinez",
-      position: "Reference Librarian",
-      bio: "David helps patrons find exactly what they need and is an expert in research assistance.",
+      name: t("team.davidMartinez"),
+      position: t("team.referenceLibrarian"),
+      bio: t("team.davidBio"),
       image:
         "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
-      email: "david.martinez@library.com",
-      linkedin: "#",
+      email: t("team.davidEmail"),
+      linkedin: t("common.hash"),
     },
   ];
 
   const values = [
     {
       icon: <BookOpen className="w-6 h-6" />,
-      title: "Access for All",
-      description:
-        "We believe knowledge should be freely accessible to everyone in our community, regardless of background or circumstances.",
+      title: t("values.accessForAll"),
+      description: t("values.accessForAllDescription"),
     },
     {
       icon: <Users className="w-6 h-6" />,
-      title: "Community First",
-      description:
-        "We are a gathering place where people connect, learn, and grow together in a welcoming environment.",
+      title: t("values.communityFirst"),
+      description: t("values.communityFirstDescription"),
     },
     {
       icon: <TrendingUp className="w-6 h-6" />,
-      title: "Innovation",
-      description:
-        "We embrace new technologies and ideas while preserving the timeless value of books and reading.",
+      title: t("values.innovation"),
+      description: t("values.innovationDescription"),
     },
     {
       icon: <Globe className="w-6 h-6" />,
-      title: "Diversity & Inclusion",
-      description:
-        "We celebrate diverse perspectives and ensure our collections and programs reflect our entire community.",
+      title: t("values.diversityInclusion"),
+      description: t("values.diversityInclusionDescription"),
     },
   ];
 
@@ -167,11 +161,10 @@ const LibraryAbout: React.FC = () => {
           <div className="absolute inset-0 bg-black opacity-20"></div>
           <div className="relative px-8 py-16 md:py-24 text-center text-white">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Your Gateway to Knowledge & Community
+              {t("about.title")}
             </h2>
             <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
-              Serving our community with excellence since 2000, we're more than
-              just a library—we're a place where minds meet and ideas flourish.
+              {t("about.subtitle")}
             </p>
           </div>
         </div>
@@ -207,7 +200,7 @@ const LibraryAbout: React.FC = () => {
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              Our Mission
+              {t("about.ourMission")}
             </button>
             <button
               onClick={() => setActiveTab("history")}
@@ -217,7 +210,7 @@ const LibraryAbout: React.FC = () => {
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              Our History
+              {t("history.ourHistory")}
             </button>
             <button
               onClick={() => setActiveTab("values")}
@@ -227,7 +220,7 @@ const LibraryAbout: React.FC = () => {
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              Our Values
+              {t("values.OurValues")}
             </button>
           </div>
 
@@ -240,19 +233,13 @@ const LibraryAbout: React.FC = () => {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                      Our Mission
+                      {t("about.ourMission")}
                     </h3>
                     <p className="text-gray-700 text-lg leading-relaxed mb-4">
-                      To empower our community through free and open access to
-                      information, resources, and cultural experiences. We are
-                      committed to fostering literacy, supporting lifelong
-                      learning, and creating an inclusive space where everyone
-                      can explore, discover, and grow.
+                      {t("about.missionParagraph1")}
                     </p>
                     <p className="text-gray-700 text-lg leading-relaxed">
-                      We strive to be more than a repository of books—we aim to
-                      be a vibrant community hub that connects people, preserves
-                      our heritage, and prepares our community for the future.
+                      {t("about.missionParagraph2")}
                     </p>
                   </div>
                 </div>
@@ -267,34 +254,13 @@ const LibraryAbout: React.FC = () => {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                      Our History
+                      {t("history.ourHistory")}
                     </h3>
                     <div className="space-y-4 text-gray-700 text-lg leading-relaxed">
-                      <p>
-                        Founded in 2000, our library began as a small collection
-                        of 5,000 books in a modest building. The vision was
-                        simple: create a place where everyone in the community
-                        could access knowledge and opportunity.
-                      </p>
-                      <p>
-                        Over the past 25 years, we've grown exponentially. In
-                        2010, we expanded our building to include a modern
-                        computer lab and children's wing. In 2015, we launched
-                        our digital lending platform, making thousands of
-                        e-books and audiobooks available to our members.
-                      </p>
-                      <p>
-                        In 2020, we adapted to serve our community during
-                        challenging times, offering curbside pickup, virtual
-                        programming, and expanded digital services. Today, we're
-                        proud to serve over 15,000 active members with a
-                        collection of more than 50,000 items.
-                      </p>
-                      <p>
-                        Our journey continues as we look forward to serving
-                        future generations with the same dedication and passion
-                        that has defined us from the beginning.
-                      </p>
+                      <p>{t("history.paragraph1")}</p>
+                      <p>{t("history.paragraph2")}</p>
+                      <p>{t("history.paragraph3")}</p>
+                      <p>{t("history.paragraph4")}</p>
                     </div>
                   </div>
                 </div>
@@ -304,7 +270,7 @@ const LibraryAbout: React.FC = () => {
             {activeTab === "values" && (
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                  Our Core Values
+                  {t("values.ourCoreValues")}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {values.map((value, index) => (
@@ -333,10 +299,10 @@ const LibraryAbout: React.FC = () => {
         <div className="mb-16">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-gray-900 mb-3">
-              Meet Our Team
+              {t("team.meetOurTeam")}
             </h2>
             <p className="text-xl text-gray-600">
-              Dedicated professionals committed to serving you
+              {t("team.dedicatedProfessionals")}
             </p>
           </div>
 
@@ -385,17 +351,16 @@ const LibraryAbout: React.FC = () => {
 
         {/* Visit Us CTA */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-xl p-8 md:p-12 text-center text-white">
-          <h3 className="text-3xl font-bold mb-4">Visit Us Today</h3>
+          <h3 className="text-3xl font-bold mb-4">{t("about.visitUsToday")}</h3>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Experience the warmth of our community and discover all that our
-            library has to offer. We can't wait to welcome you!
+            {t("about.visitUsTodayDescription")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="px-8 py-3 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-bold text-lg">
-              Get Directions
+              {t("about.getDirections")}
             </button>
             <button className="px-8 py-3 bg-transparent border-2 border-white text-white rounded-lg hover:bg-white hover:text-blue-600 transition-colors font-bold text-lg">
-              Contact Us
+              {t("about.contactUs")}
             </button>
           </div>
         </div>

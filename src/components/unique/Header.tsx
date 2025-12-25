@@ -1,13 +1,14 @@
 import { Book } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
-import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MENUS } from "../../constants/menus";
 import { Text } from "../common/Text";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./themToggler";
 
 const Header = () => {
   const location = useLocation();
-
+  const { t } = useTranslation();
   // Helper function to determine if a link is active
   const isActive = (path: string) => {
     // For the home page, we need an exact match
@@ -25,7 +26,7 @@ const Header = () => {
           <div className="flex items-center space-x-3">
             <Book className="w-8 h-8 text-blue-600" />
             <Link to="/" className="text-2xl font-bold text-gray-900">
-              Central Library
+              {t("hero.libraryName")}
             </Link>
           </div>
           <nav className="hidden md:flex space-x-8">

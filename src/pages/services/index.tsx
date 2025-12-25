@@ -1,18 +1,19 @@
-import React, { useState } from "react";
 import {
   BookOpen,
+  Calendar,
+  Check,
+  Clock,
+  Coffee,
+  Headphones,
+  Mail,
+  MapPin,
+  Monitor,
+  Phone,
   Users,
   Wifi,
-  Coffee,
-  Monitor,
-  Headphones,
-  Calendar,
-  Clock,
-  MapPin,
-  Mail,
-  Phone,
-  Check,
 } from "lucide-react";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Header from "../../components/unique/Header";
 interface Service {
   id: number;
@@ -24,113 +25,108 @@ interface Service {
 }
 
 const LibraryServices: React.FC = () => {
+  const { t } = useTranslation();
   const [selectedService, setSelectedService] = useState<number | null>(null);
 
   const services: Service[] = [
     {
       id: 1,
-      title: "Book Lending",
-      description:
-        "Borrow from our extensive collection of books, magazines, and journals for up to 3 weeks.",
+      title: t("services.bookLending"),
+      description: t("services.bookLendingDescription"),
       icon: <BookOpen className="w-8 h-8" />,
       features: [
-        "Over 50,000 books available",
-        "Online reservation system",
-        "Automatic renewal option",
-        "Hold and request services",
+        t("services.bookLendingFeature1"),
+        t("services.bookLendingFeature2"),
+        t("services.bookLendingFeature3"),
+        t("services.bookLendingFeature4"),
       ],
-      schedule: "Mon-Sat: 9 AM - 8 PM, Sun: 10 AM - 6 PM",
+      schedule: t("services.bookLendingHours"),
     },
     {
       id: 2,
-      title: "Study Spaces",
-      description:
-        "Quiet and collaborative study areas equipped with comfortable seating and natural lighting.",
+      title: t("services.studySpaces"),
+      description: t("services.studySpacesDescription"),
       icon: <Users className="w-8 h-8" />,
       features: [
-        "Individual study carrels",
-        "Group study rooms",
-        "Silent reading zones",
-        "Bookable spaces online",
+        t("services.studySpacesFeature1"),
+        t("services.studySpacesFeature2"),
+        t("services.studySpacesFeature3"),
+        t("services.studySpacesFeature4"),
       ],
-      schedule: "24/7 access for members",
+      schedule: t("services.studySpacesFeature5"),
     },
     {
       id: 3,
-      title: "Free WiFi",
-      description:
-        "High-speed internet access throughout the library for research and work.",
+      title: t("services.freeWiFi"),
+      description: t("services.freeWiFiDescription"),
       icon: <Wifi className="w-8 h-8" />,
       features: [
-        "Unlimited bandwidth",
-        "Secure connection",
-        "Guest access available",
-        "Technical support",
+        t("services.freeWiFiFeature1"),
+        t("services.freeWiFiFeature2"),
+        t("services.freeWiFiFeature3"),
+        t("services.freeWiFiFeature4"),
       ],
-      schedule: "Available during library hours",
+      schedule: t("services.freeWiFiFeature5"),
     },
     {
       id: 4,
-      title: "Café & Refreshments",
-      description:
-        "Enjoy coffee, snacks, and light meals while you read or study.",
+      title: t("services.cafeRefreshments"),
+      description: t("services.cafeRefreshmentsDescription"),
       icon: <Coffee className="w-8 h-8" />,
       features: [
-        "Fresh coffee and tea",
-        "Healthy snacks",
-        "Comfortable seating",
-        "Outdoor terrace",
+        t("services.cafeRefreshmentsFeature1"),
+        t("services.cafeRefreshmentsFeature2"),
+        t("services.cafeRefreshmentsFeature3"),
+        t("services.cafeRefreshmentsFeature4"),
       ],
-      schedule: "Mon-Sat: 8 AM - 7 PM, Sun: 10 AM - 5 PM",
+      schedule: t("services.cafeRefreshmentsHours"),
     },
     {
       id: 5,
-      title: "Computer Lab",
-      description:
-        "Access to modern computers with software for research, productivity, and creative work.",
+      title: t("services.computerLab"),
+      description: t("services.computerLabDescription"),
       icon: <Monitor className="w-8 h-8" />,
       features: [
-        "30+ workstations",
-        "Microsoft Office Suite",
-        "Design software available",
-        "Printing & scanning services",
+        t("services.computerLabFeature1"),
+        t("services.computerLabFeature2"),
+        t("services.computerLabFeature3"),
+        t("services.computerLabFeature4"),
       ],
-      schedule: "Mon-Sat: 9 AM - 8 PM, Sun: 10 AM - 6 PM",
+      schedule: t("services.audioVisualResources"),
     },
     {
       id: 6,
-      title: "Audio/Visual Resources",
-      description:
-        "Access multimedia content including audiobooks, films, and music collections.",
+      title: t("services.audioVisualResources"),
+      description: t("services.audioVisualResourcesDescription"),
       icon: <Headphones className="w-8 h-8" />,
       features: [
-        "Audiobook collection",
-        "DVD & Blu-ray library",
-        "Music streaming access",
-        "Private listening booths",
+        t("services.audioVisualResourcesFeature1"),
+        t("services.audioVisualResourcesFeature2"),
+        t("services.audioVisualResourcesFeature3"),
+        t("services.audioVisualResourcesFeature4"),
       ],
-      schedule: "Available during library hours",
+      schedule: t("services.freeWiFiFeature5"),
     },
   ];
 
   const upcomingEvents = [
     {
       id: 1,
-      title: "Book Club Meeting",
-      date: "Dec 5, 2025",
-      time: "6:00 PM",
+      title: t("events.bookClubMeeting"),
+      date: t("events.bookClubDate"),
+      time: t("events.bookClubTime"),
     },
     {
       id: 2,
-      title: "Children's Story Time",
-      date: "Dec 7, 2025",
-      time: "10:00 AM",
+      title: t("events.childrenStoryTimeShort"),
+      date: t("events.childrenStoryDateShort"),
+      time: t("events.childrenStoryTimeShort2"),
     },
     {
       id: 3,
-      title: "Digital Literacy Workshop",
-      date: "Dec 10, 2025",
-      time: "2:00 PM",
+      title: t("events.digitalWorkshopShort"),
+      date: t("events.digitalWorkshopDateShort"),
+      time: t("events.digitalWorkshopTimeShort"),
     },
   ];
 
@@ -143,11 +139,10 @@ const LibraryServices: React.FC = () => {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Your Gateway to Knowledge & Community
+            {t("about.title")}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            We provide a wide range of services designed to support learning,
-            research, and community engagement.
+            {t("services.servicesDescription")}
           </p>
         </div>
 
@@ -185,7 +180,7 @@ const LibraryServices: React.FC = () => {
                   }`}
                 >
                   <h4 className="font-semibold text-gray-900 mb-3">
-                    Features:
+                    {t("services.features")}
                   </h4>
                   <ul className="space-y-2">
                     {service.features.map((feature, index) => (
@@ -201,7 +196,9 @@ const LibraryServices: React.FC = () => {
                 </div>
 
                 <button className="w-full mt-4 py-2 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
-                  {selectedService === service.id ? "Show Less" : "Learn More"}
+                  {selectedService === service.id
+                    ? t("services.showLess")
+                    : t("quickActions.learnMore")}
                 </button>
               </div>
             </div>
@@ -215,7 +212,7 @@ const LibraryServices: React.FC = () => {
             <div className="flex items-center gap-3 mb-6">
               <Calendar className="w-7 h-7 text-indigo-600" />
               <h3 className="text-2xl font-bold text-gray-900">
-                Upcoming Events
+                {t("events.upcomingEvents")}
               </h3>
             </div>
 
@@ -247,23 +244,23 @@ const LibraryServices: React.FC = () => {
             </div>
 
             <button className="w-full mt-6 py-3 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
-              View All Events
+              {t("events.viewAllEvents")}
             </button>
           </div>
 
           {/* Contact Information */}
           <div className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold mb-6">Contact Us</h3>
+            <h3 className="text-2xl font-bold mb-6">{t("about.contactUs")}</h3>
 
             <div className="space-y-4 mb-8">
               <div className="flex items-start gap-3">
                 <MapPin className="w-6 h-6 flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-semibold mb-1">Address</h4>
+                  <h4 className="font-semibold mb-1">{t("contact.address")}</h4>
                   <p className="text-indigo-100">
-                    123 Library Street
+                    {t("contact.addressLine1")}
                     <br />
-                    Knowledge City, KC 12345
+                    {t("contact.addressLine2")}
                   </p>
                 </div>
               </div>
@@ -271,47 +268,48 @@ const LibraryServices: React.FC = () => {
               <div className="flex items-start gap-3">
                 <Phone className="w-6 h-6 flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-semibold mb-1">Phone</h4>
-                  <p className="text-indigo-100">+1 (555) 123-4567</p>
+                  <h4 className="font-semibold mb-1">{t("profile.phone")}</h4>
+                  <p className="text-indigo-100">{t("contact.phoneAlt")}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <Mail className="w-6 h-6 flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-semibold mb-1">Email</h4>
-                  <p className="text-indigo-100">info@library.com</p>
+                  <h4 className="font-semibold mb-1">{t("profile.email")}</h4>
+                  <p className="text-indigo-100">{t("contact.contactEmail")}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <Clock className="w-6 h-6 flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-semibold mb-1">Hours</h4>
+                  <h4 className="font-semibold mb-1">{t("Hours")}</h4>
                   <p className="text-indigo-100">
-                    Monday - Saturday: 9 AM - 8 PM
+                    {t("contact.hoursWeekday")}
                     <br />
-                    Sunday: 10 AM - 6 PM
+                    {t("contact.hoursSunday")}
                   </p>
                 </div>
               </div>
             </div>
 
             <button className="w-full py-3 px-4 bg-white text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-semibold">
-              Get Directions
+              {t("about.getDirections")}
             </button>
           </div>
         </div>
 
         {/* Membership CTA */}
         <div className="mt-12 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl shadow-xl p-8 text-center text-white">
-          <h3 className="text-3xl font-bold mb-4">Become a Member Today</h3>
+          <h3 className="text-3xl font-bold mb-4">
+            {t("membership.becomeMember")}
+          </h3>
           <p className="text-xl text-indigo-100 mb-6 max-w-2xl mx-auto">
-            Join our community and get access to all library services, exclusive
-            events, and special programs.
+            {t("membership.becomeMemberDescription")}
           </p>
           <button className="py-3 px-8 bg-white text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-bold text-lg">
-            Sign Up Now
+            {t("membership.signUpNow")}
           </button>
         </div>
       </main>

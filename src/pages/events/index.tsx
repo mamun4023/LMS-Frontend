@@ -1,17 +1,17 @@
-import React, { useState } from "react";
 import {
   Calendar,
-  Clock,
-  MapPin,
-  Users,
-  Tag,
-  Filter,
   ChevronRight,
+  Clock,
+  Filter,
   Heart,
+  MapPin,
   Share2,
-  BookOpen,
+  Users,
 } from "lucide-react";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Header from "../../components/unique/Header";
+import i18n from "../../i18n";
 
 interface Event {
   id: number;
@@ -31,17 +31,17 @@ const LibraryEvents: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [favorites, setFavorites] = useState<number[]>([]);
+  const { t } = useTranslation();
 
   const events: Event[] = [
     {
       id: 1,
-      title: "Author Meet & Greet: Sarah Johnson",
-      description:
-        "Join us for an intimate conversation with bestselling author Sarah Johnson as she discusses her latest novel and the creative writing process.",
+      title: t("events.authorMeetGreet"),
+      description: t("events.authorMeetGreetDescription"),
       date: "2025-12-05",
-      time: "6:00 PM - 8:00 PM",
-      location: "Main Auditorium",
-      category: "Author Events",
+      time: t("events.authorMeetGreetTime"),
+      location: t("events.authorMeetGreetLocation"),
+      category: t("events.authorMeetGreetCategory"),
       capacity: 100,
       registered: 67,
       image:
@@ -50,13 +50,12 @@ const LibraryEvents: React.FC = () => {
     },
     {
       id: 2,
-      title: "Children's Story Time: Winter Tales",
-      description:
-        "A magical storytelling session for children ages 4-8, featuring winter-themed stories and interactive activities.",
+      title: t("events.childrenStoryTime"),
+      description: t("events.childrenStoryTimeDescription"),
       date: "2025-12-07",
-      time: "10:00 AM - 11:00 AM",
-      location: "Children's Section",
-      category: "Kids & Family",
+      time: t("events.childrenStoryTimeTime"),
+      location: t("events.childrenStoryTimeLocation"),
+      category: t("events.childrenStoryTimeCategory"),
       capacity: 30,
       registered: 22,
       image:
@@ -65,13 +64,12 @@ const LibraryEvents: React.FC = () => {
     },
     {
       id: 3,
-      title: "Digital Literacy Workshop",
-      description:
-        "Learn essential digital skills including internet safety, email management, and social media basics. Perfect for beginners!",
+      title: t("events.digitalWorkshop"),
+      description: t("events.digitalWorkshopDescription"),
       date: "2025-12-10",
-      time: "2:00 PM - 4:00 PM",
-      location: "Computer Lab",
-      category: "Workshops",
+      time: t("events.digitalWorkshopTime"),
+      location: t("services.computerLab"),
+      category: t("events.digitalWorkshopCategory"),
       capacity: 20,
       registered: 15,
       image:
@@ -80,13 +78,12 @@ const LibraryEvents: React.FC = () => {
     },
     {
       id: 4,
-      title: "Book Club: Classic Literature",
-      description:
-        "This month we're discussing 'Pride and Prejudice' by Jane Austen. All are welcome to join our lively discussion!",
+      title: t("events.bookclublit"),
+      description: t("events.bookclubdesc"),
       date: "2025-12-12",
-      time: "6:30 PM - 8:00 PM",
-      location: "Reading Room",
-      category: "Book Clubs",
+      time: t("events.bookclubnightime"),
+      location: t("events.bookclublocation"),
+      category: t("events.bookclubcategory"),
       capacity: 25,
       registered: 18,
       image:
@@ -95,13 +92,12 @@ const LibraryEvents: React.FC = () => {
     },
     {
       id: 5,
-      title: "Teen Gaming Night",
-      description:
-        "Board games, video games, and fun for teens ages 13-17. Pizza and snacks provided!",
+      title: t("events.teenGamingNight"),
+      description: t("events.teenGamingNightDescription"),
       date: "2025-12-14",
-      time: "5:00 PM - 8:00 PM",
-      location: "Teen Zone",
-      category: "Kids & Family",
+      time: t("events.teenGamingNightTime"),
+      location: t("events.teenGamingNightLocation"),
+      category: t("events.childrenStoryTimeCategory"),
       capacity: 40,
       registered: 35,
       image:
@@ -110,13 +106,12 @@ const LibraryEvents: React.FC = () => {
     },
     {
       id: 6,
-      title: "Photography Exhibition Opening",
-      description:
-        "Celebrate the opening of our new photography exhibition featuring local artists. Wine and cheese reception included.",
+      title: t("events.photographyExhibition"),
+      description: t("events.photographyExhibitionDescription"),
       date: "2025-12-16",
-      time: "7:00 PM - 9:00 PM",
-      location: "Gallery Space",
-      category: "Exhibitions",
+      time: t("vents.photographyExhibitionTime"),
+      location: t("events.photographyExhibitionLocation"),
+      category: t("events.photographyExhibitionCategory"),
       capacity: 80,
       registered: 45,
       image:
@@ -125,13 +120,12 @@ const LibraryEvents: React.FC = () => {
     },
     {
       id: 7,
-      title: "Creative Writing Circle",
-      description:
-        "Share your work, get feedback, and connect with fellow writers in a supportive environment.",
+      title: t("events.creativeWritingCircle"),
+      description: t("events.creativeWritingCircleDescription"),
       date: "2025-12-18",
-      time: "6:00 PM - 7:30 PM",
-      location: "Study Room 3",
-      category: "Workshops",
+      time: t("events.creativeWritingCircleTime"),
+      location: t("events.creativeWritingCircleLocation"),
+      category: t("events.digitalWorkshopCategory"),
       capacity: 15,
       registered: 12,
       image:
@@ -140,13 +134,12 @@ const LibraryEvents: React.FC = () => {
     },
     {
       id: 8,
-      title: "Holiday Craft Workshop",
-      description:
-        "Create beautiful holiday decorations and gifts. All materials provided. Perfect for all ages!",
+      title: t("events.holidayCraftWorkshop"),
+      description: t("events.holidayCraftWorkshopDescription"),
       date: "2025-12-20",
-      time: "3:00 PM - 5:00 PM",
-      location: "Community Room",
-      category: "Kids & Family",
+      time: t("events.holidayCraftWorkshopTim"),
+      location: t("events.holidayCraftWorkshopLocation"),
+      category: t("events.childrenStoryTimeCategory"),
       capacity: 35,
       registered: 28,
       image:
@@ -188,7 +181,8 @@ const LibraryEvents: React.FC = () => {
         {/* Featured Events Banner */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <span className="text-yellow-500">★</span> Featured Events
+            <span className="text-yellow-500">★</span>{" "}
+            {t("events.featuredEvents")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {events
@@ -204,14 +198,21 @@ const LibraryEvents: React.FC = () => {
                     <div className="flex items-center gap-2 text-sm mb-2">
                       <Calendar className="w-4 h-4" />
                       <span>
-                        {new Date(event.date).toLocaleDateString("en-US", {
+                        {/* {new Date(event.date).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
-                        })}
+                        })} */}
+                        {new Date(event.date).toLocaleDateString(
+                          i18n.language,
+                          {
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}
                       </span>
                     </div>
                     <button className="mt-3 px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
-                      Learn More
+                      {t("quickActions.learnMore")}
                     </button>
                   </div>
                 </div>
@@ -225,7 +226,9 @@ const LibraryEvents: React.FC = () => {
             <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-2">
                 <Filter className="w-5 h-5 text-gray-500" />
-                <span className="font-semibold text-gray-700">Filter by:</span>
+                <span className="font-semibold text-gray-700">
+                  {t("events.filterBy")}
+                </span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {categories.map((cat) => (
@@ -238,7 +241,9 @@ const LibraryEvents: React.FC = () => {
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
-                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                    {cat === "all"
+                      ? t("events.all")
+                      : cat.charAt(0).toUpperCase() + cat.slice(1)}
                   </button>
                 ))}
               </div>
@@ -253,7 +258,7 @@ const LibraryEvents: React.FC = () => {
                     : "bg-gray-100 text-gray-700"
                 }`}
               >
-                Grid
+                {t("events.grid")}
               </button>
               <button
                 onClick={() => setViewMode("list")}
@@ -263,7 +268,7 @@ const LibraryEvents: React.FC = () => {
                     : "bg-gray-100 text-gray-700"
                 }`}
               >
-                List
+                {t("events.list")}
               </button>
             </div>
           </div>
@@ -272,9 +277,9 @@ const LibraryEvents: React.FC = () => {
         {/* Events Count */}
         <div className="mb-6">
           <p className="text-gray-600">
-            Showing{" "}
+            {t("catalog.showing")}{" "}
             <span className="font-semibold">{filteredEvents.length}</span>{" "}
-            events
+            {t("events.events")}
           </p>
         </div>
 
@@ -334,7 +339,13 @@ const LibraryEvents: React.FC = () => {
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Calendar className="w-4 h-4 text-blue-600" />
                     <span className="font-medium">
-                      {new Date(event.date).toLocaleDateString("en-US", {
+                      {/* {new Date(event.date).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })} */}
+                      {new Date(event.date).toLocaleDateString(i18n.language, {
                         weekday: "short",
                         month: "long",
                         day: "numeric",
@@ -361,14 +372,22 @@ const LibraryEvents: React.FC = () => {
                         event.capacity
                       )}`}
                     >
-                      {event.registered}/{event.capacity} registered
+                      {new Intl.NumberFormat(i18n.language).format(
+                        event.registered
+                      )}
+                      /
+                      {new Intl.NumberFormat(i18n.language).format(
+                        event.capacity
+                      )}{" "}
+                      {/* {event.registered}/{event.capacity}{" "} */}
+                      {t("events.registered")}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex gap-2">
                   <button className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center gap-2">
-                    Register Now
+                    {t("events.registerNow")}
                     <ChevronRight className="w-4 h-4" />
                   </button>
                   <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
@@ -385,27 +404,28 @@ const LibraryEvents: React.FC = () => {
           <div className="text-center py-12">
             <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
-              No events found
+              {t("events.noEventsFound")}
             </h3>
-            <p className="text-gray-500">Try selecting a different category</p>
+            <p className="text-gray-500">{t("events.tryDifferentCategory")}</p>
           </div>
         )}
 
         {/* Newsletter Signup */}
         <div className="mt-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl shadow-xl p-8 text-center text-white">
-          <h3 className="text-3xl font-bold mb-4">Never Miss an Event</h3>
+          <h3 className="text-3xl font-bold mb-4">
+            {t("events.neverMissEvent")}
+          </h3>
           <p className="text-xl text-blue-100 mb-6 max-w-2xl mx-auto">
-            Subscribe to our newsletter and get notified about upcoming events
-            and programs.
+            {t("events.subscribeNewsletter")}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder={t("events.enterYourEmail")}
               className="flex-1 px-4 py-3 rounded-lg text-gray-900 outline-none"
             />
             <button className="px-6 py-3 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-bold">
-              Subscribe
+              {t("events.subscribe")}
             </button>
           </div>
         </div>

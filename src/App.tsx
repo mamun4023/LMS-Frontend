@@ -1,18 +1,17 @@
-import React, { useState } from "react";
 import {
-  Search,
   Book,
   Calendar,
-  Users,
   Clock,
-  MapPin,
   Mail,
+  MapPin,
   Phone,
+  Search,
+  Users,
 } from "lucide-react";
-import Header from "./components/unique/Header";
-import { LanguageSwitcher } from "./components/unique/LanguageSwitcher";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Text } from "./components/common/Text";
-import { MESSAGES } from "./constants/messages";
+import Header from "./components/unique/Header";
 import { HEADINGS } from "./constants/headings";
 interface Book {
   id: number;
@@ -23,39 +22,55 @@ interface Book {
 
 const LibraryHomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
-
+  const { t } = useTranslation();
   const featuredBooks: Book[] = [
     {
       id: 1,
-      title: "The Midnight Library",
-      author: "Matt Haig",
+      title: t("featuredBooks.theMidnightLibrary"),
+      author: t("featuredBooks.mattHaig"),
       cover: "/book/the_midnight_library.jpg",
     },
     {
       id: 2,
-      title: "Atomic Habits",
-      author: "James Clear",
+      title: t("featuredBooks.atomicHabits"),
+      author: t("featuredBooks.jamesClear"),
       cover: "/book/atomic_habits.jpg",
     },
     {
       id: 3,
-      title: "Project Hail Mary",
-      author: "Andy Weir",
+      title: t("featuredBooks.projectHailMary"),
+      author: t("featuredBooks.andyWeir"),
       cover: "/book/project_hail_mary.jpg",
     },
     {
       id: 4,
-      title: "The Silent Patient",
-      author: "Alex Michaelides",
+      title: t("featuredBooks.theSilentPatient"),
+      author: t("featuredBooks.alexMichaelides"),
       cover: "/book/the_silent_patient.jpg",
     },
   ];
 
   const quickLinks = [
-    { icon: Book, title: "Browse Catalog", desc: "Explore our collection" },
-    { icon: Calendar, title: "Book a Study Room", desc: "Reserve your space" },
-    { icon: Users, title: "Events & Programs", desc: "Join our community" },
-    { icon: Clock, title: "Hours & Location", desc: "Visit us today" },
+    {
+      icon: Book,
+      title: t("quickActions.browseCatalog"),
+      desc: t("quickActions.exploreCollection"),
+    },
+    {
+      icon: Calendar,
+      title: t("quickActions.bookStudyRoom"),
+      desc: t("quickActions.reserveSpace"),
+    },
+    {
+      icon: Users,
+      title: t("quickActions.eventsPrograms"),
+      desc: t("quickActions.joinCommunity"),
+    },
+    {
+      icon: Clock,
+      title: t("quickActions.hoursLocation"),
+      desc: t("quickActions.visitToday"),
+    },
   ];
 
   return (
@@ -69,7 +84,11 @@ const LibraryHomePage: React.FC = () => {
             <Text>{HEADINGS.DISCOVER_YOUR_NEXT_ADVENTURE}</Text>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            <Text>{HEADINGS.ACCESS_THOUSANDS_OF_BOOKS_DIGITAL_RESOURCES_AND_COMMUNITY_PROGRAMS}</Text>
+            <Text>
+              {
+                HEADINGS.ACCESS_THOUSANDS_OF_BOOKS_DIGITAL_RESOURCES_AND_COMMUNITY_PROGRAMS
+              }
+            </Text>
           </p>
         </div>
 
@@ -79,13 +98,13 @@ const LibraryHomePage: React.FC = () => {
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search books, authors, or topics..."
+              placeholder={t("search.placeholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none text-lg shadow-lg"
             />
             <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
-              Search
+              {t("search.searchButton")}
             </button>
           </div>
         </div>
@@ -109,7 +128,7 @@ const LibraryHomePage: React.FC = () => {
         {/* Featured Books */}
         <div className="mb-16">
           <h3 className="text-3xl font-bold text-gray-900 mb-8">
-            Featured This Week
+            {t("student.featuredThisWeek")}
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {featuredBooks.map((book) => (
@@ -135,14 +154,14 @@ const LibraryHomePage: React.FC = () => {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h3 className="text-2xl font-bold mb-2">
-                Summer Reading Program
+                {t("student.summerReadingProgram")}
               </h3>
               <p className="text-blue-100">
-                Join us for exciting activities and prizes. Register now!
+                {t("student.summerReadingProgramDescription")}
               </p>
             </div>
             <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition">
-              Learn More
+              {t("quickActions.learnMore")}
             </button>
           </div>
         </div>
@@ -153,59 +172,66 @@ const LibraryHomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h4 className="text-lg font-semibold mb-4">Visit Us</h4>
+              <h4 className="text-lg font-semibold mb-4">
+                {t("footer.visitUs")}
+              </h4>
               <div className="space-y-3 text-gray-300">
                 <div className="flex items-center space-x-2">
                   <MapPin className="w-5 h-5" />
-                  <span>123 Library Street, City, ST 12345</span>
+                  <span>{t("footer.address")}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Clock className="w-5 h-5" />
-                  <span>Mon-Sat: 9AM - 8PM, Sun: 12PM - 6PM</span>
+                  <span>{t("footer.hours")}</span>
                 </div>
               </div>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-4">Contact</h4>
+              <h4 className="text-lg font-semibold mb-4">
+                {t("footer.contact")}
+              </h4>
               <div className="space-y-3 text-gray-300">
                 <div className="flex items-center space-x-2">
                   <Phone className="w-5 h-5" />
-                  <span>(555) 123-4567</span>
+                  <span>{t("footer.phone")}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Mail className="w-5 h-5" />
-                  <span>info@citylibrary.org</span>
+                  <span>{t("footer.email")}</span>
                 </div>
               </div>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+              <h4 className="text-lg font-semibold mb-4">
+                {" "}
+                {t("footer.quickLinks")}
+              </h4>
               <ul className="space-y-2 text-gray-300">
                 <li>
                   <a href="#" className="hover:text-white transition">
-                    My Account
+                    {t("navigation.myAccount")}
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition">
-                    Digital Resources
+                    {t("navigation.digitalResources")}
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition">
-                    Library Card
+                    {t("navigation.libraryCard")}
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition">
-                    Support Us
+                    {t("navigation.supportUs")}
                   </a>
                 </li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 City Central Library. All rights reserved.</p>
+            <p>&copy; {t("footer.copyright")}</p>
           </div>
         </div>
       </footer>

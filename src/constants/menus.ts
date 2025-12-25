@@ -1,8 +1,8 @@
 export const MENUS = {
-    HOME: "Home",
-    CATALOG: "Catalog",
-    SERVICES: "Services",
-    EVENTS: "Events",
-    ABOUT: "About",
-    LOGIN: "Login",
-}
+  HOME: "navigation.home",
+  CATALOG: "navigation.catalog",
+  SERVICES: "navigation.services",
+  EVENTS: "navigation.events",
+  ABOUT: "navigation.about",
+  LOGIN: "navigation.login",
+};
