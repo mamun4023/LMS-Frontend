@@ -60,10 +60,83 @@ A modern, responsive Learning Management System built with React, TypeScript, an
 
 ## 📦 Available Scripts
 
+### 🔧 Development
+
 - `npm run dev` - Start the development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview the production build locally
 - `npm run lint` - Run ESLint
+
+### 🧪 Testing
+
+- `npm run test` - Run tests in watch mode
+- `npm run test:ui` - Run tests with visual UI
+- `npm run test:run` - Run tests once (CI/CD)
+- `npm run test:watch` - Run tests in watch mode (explicit)
+- `npm run test:coverage` - Generate coverage report
+- `npm run test:coverage:ui` - Coverage report with UI- `npm run test` - Run tests
+
+### 🧪 Testing Setup
+
+This project uses **Vitest** and **React Testing Library** for comprehensive testing.
+
+## Configure Vitest
+
+- Create `vitest.config.ts` in project root
+- Set test environment to `jsdom`
+- Add setup files, globals, coverage options, and aliases
+
+## Testing Stack
+
+- Vitest – Fast unit & component testing.
+- React Testing Library – UI testing focused on user behavior.
+- jsdom – Browser-like test environment.
+- @vitest/ui – Interactive test UI.
+- @vitest/coverage-v8 – Code coverage reporting.
+- jest-dom – Extended DOM matchers.
+
+#### Install Testing Dependencies
+
+```bash
+npm install --save-dev vitest @testing-library/react @testing-library/user-event @testing-library/jest-dom jsdom @vitest/coverage-v8 @vitest/ui
+```
+
+### Writing Tests
+
+#### Test File Naming
+
+- Component tests: `ComponentName.test.tsx`
+- Place test files next to source files
+
+### Running Tests
+
+```bash
+# Watch mode (recommended during development)
+npm run test
+
+# Run all tests once
+npm run test:run
+
+# Open visual test UI in browser
+npm run test:ui
+
+# Generate coverage report
+npm run test:coverage
+```
+
+### Troubleshooting Tests
+
+#### Tests Not Running
+
+- Check `vitest.config.ts` exists in root
+- Verify `setupFiles` path is correct
+- Ensure test files end with `.test.tsx` or `.spec.tsx`
+
+#### Coverage Not Generating
+
+- Ensure `@vitest/coverage-v8` is installed
+- Check `include` pattern matches your files
+- Verify you have actual tests running
 
 ## 🎨 Styling
 
