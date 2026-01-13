@@ -11,9 +11,18 @@ A modern, responsive Learning Management System built with React, TypeScript, an
   - Role-based access control (Student, Librarian, Admin)
 
 - **Role-Specific Dashboards**
+
   - Student portal for course enrollment and progress tracking
   - Librarian interface for resource management
   - Admin panel for user and system
+
+- **Theme Support (Light/Dark)**
+
+  - User-selectable Light and Dark mode
+  - Centralized theme variables (colors,backgrounds, text)
+  - Consistent theming across all components
+  - Persistet user preference using `localStorage`
+
 - **Multi-Language Support (i18n)**
   - Support for multiple languages
   - Easy language switching
