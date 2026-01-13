@@ -13,6 +13,7 @@ import ResetPassword from "./pages/resetPassword";
 import Service from "./pages/services";
 import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
+import { applyTheme, getInitialTheme } from "./theme";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,11 @@ const router = createBrowserRouter([
   // },
 ]);
 
+document.documentElement.classList.add("disable-transitions");
+applyTheme(getInitialTheme());
+window.setTimeout(() => {
+  document.documentElement.classList.remove("disable-transitions");
+}, 0);
 if (localStorage.theme === "dark") {
   document.documentElement.classList.add("dark");
 }

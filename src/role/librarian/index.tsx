@@ -219,12 +219,12 @@ const LibrarianDashboard: React.FC = () => {
     color,
   }) => (
     <div
-      className="bg-white rounded-lg shadow p-6 border-l-4"
+      className="bg-surface rounded-lg shadow p-6 border-l-4"
       style={{ borderLeftColor: color }}
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-gray-500 text-sm font-medium">{title}</p>
+          <p className="text-text-secondary text-sm font-medium">{title}</p>
           <p className="text-3xl font-bold mt-2">{value}</p>
         </div>
         <Icon className="w-12 h-12 opacity-20" style={{ color }} />
@@ -233,21 +233,21 @@ const LibrarianDashboard: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-indigo-600 text-white shadow-lg">
+      <header className="bg-surface border-b border-border">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <h1 className="text-3xl font-bold">
             {t("auth.libraryManagementSystem")}
           </h1>
-          <p className="text-indigo-100 mt-1">
+          <p className="text-text-secondary mt-1">
             {t("dashboard.librarianDashboard")}
           </p>
         </div>
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-white shadow">
+      <div className="bg-surface shadow">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex space-x-8">
             {(["overview", "books", "members", "checkouts"] as TabType[]).map(
@@ -257,8 +257,8 @@ const LibrarianDashboard: React.FC = () => {
                   onClick={() => setActiveTab(tab)}
                   className={`py-4 px-2 border-b-2 font-medium text-sm ${
                     activeTab === tab
-                      ? "border-indigo-600 text-indigo-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      ? "border-primary text-primary"
+                      : "border-transparent text-text-secondary hover:text-text-primary hover:border-border"
                   }`}
                 >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -301,20 +301,20 @@ const LibrarianDashboard: React.FC = () => {
               />
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-surface rounded-lg shadow p-6">
               <h3 className="text-xl font-semibold mb-4 flex items-center">
-                <TrendingUp className="w-5 h-5 mr-2 text-indigo-600" />
+                <TrendingUp className="w-5 h-5 mr-2 text-primary" />
                 {t("dashboard.recentActivity")}
               </h3>
               <div className="space-y-3">
                 {checkouts.slice(0, 5).map((checkout) => (
                   <div
                     key={checkout.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded"
+                    className="flex items-center justify-between p-3 bg-surface rounded"
                   >
                     <div>
                       <p className="font-medium">{checkout.bookTitle}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-text-secondary">
                         {t("dashboard.checkedOutBy")} {checkout.memberName}
                       </p>
                     </div>
@@ -339,49 +339,49 @@ const LibrarianDashboard: React.FC = () => {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
                 <input
                   type="text"
                   placeholder={t("search.searchbooks")}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
               <button
                 onClick={() => openModal("addBook")}
-                className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                className="flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
               >
                 <Plus className="w-5 h-5 mr-2" />
                 {t("dashboard.addBook")}
               </button>
             </div>
 
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className="bg-surface rounded-lg shadow overflow-hidden">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-surface">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("catalog.title")}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("catalog.author")}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("catalog.isbn2")}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("common.category")}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("catalog.status")}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("catalog.actions")}
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-surface divide-y divide-border">
                   {books
                     .filter(
                       (book) =>
@@ -397,21 +397,21 @@ const LibrarianDashboard: React.FC = () => {
                         <td className="px-6 py-4 whitespace-nowrap font-medium">
                           {book.title}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
                           {book.author}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
                           {book.isbn}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
                           {book.category}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
                               book.status === "available"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
+                                ? "bg-green-500/10 text-green-500"
+                                : "bg-yellow-500/10 text-yellow-500"
                             }`}
                           >
                             {book.status === "available"
@@ -420,7 +420,7 @@ const LibrarianDashboard: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          <button className="text-indigo-600 hover:text-indigo-900 mr-3">
+                          <button className="text-primary hover:text-primary/80 mr-3">
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
@@ -443,66 +443,66 @@ const LibrarianDashboard: React.FC = () => {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
                 <input
                   type="text"
                   placeholder={t("search.searchMembers")}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
               <button
                 onClick={() => openModal("addMember")}
-                className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                className="flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
               >
                 <Plus className="w-5 h-5 mr-2" />
                 {t("dashboard.addMember")}
               </button>
             </div>
 
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className="bg-surface rounded-lg shadow overflow-hidden">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-surface">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("profile.name")}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("profile.email")}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("profile.phone")}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("dashboard.booksOut")}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("dashboard.joinDate")}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("catalog.actions")}
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-surface divide-y divide-border">
                   {members.map((member) => (
                     <tr key={member.id}>
                       <td className="px-6 py-4 whitespace-nowrap font-medium">
                         {member.name}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
                         {member.email}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
                         {member.phone}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
                         {formatNumber(member.booksCheckedOut)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
                         {member.joinDate}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <button className="text-indigo-600 hover:text-indigo-900 mr-3">
+                        <button className="text-primary hover:text-primary/80 mr-3">
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
@@ -522,63 +522,63 @@ const LibrarianDashboard: React.FC = () => {
 
         {/* Checkouts Tab */}
         {activeTab === "checkouts" && (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
+          <div className="bg-surface rounded-lg shadow overflow-hidden">
+            <div className="px-6 py-4 border-b border-border">
               <h3 className="text-lg font-semibold">
                 {t("dashboard.activeCheckouts")}
               </h3>
             </div>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-border">
+              <thead className="bg-surface">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     {t("dashboard.book")}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     {t("dashboard.member")}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     {t("dashboard.checkoutDate")}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     {t("dashboard.dueDate")}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     {t("catalog.status")}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     {t("catalog.actions")}
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-surface divide-y divide-border">
                 {checkouts.map((checkout) => (
                   <tr key={checkout.id}>
                     <td className="px-6 py-4 whitespace-nowrap font-medium">
                       {checkout.bookTitle}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
                       {checkout.memberName}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
                       {checkout.checkoutDate}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
                       {checkout.dueDate}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
                           checkout.status === "overdue"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-green-100 text-green-800"
+                            ? "bg-red-500/10 text-red-500"
+                            : "bg-green-500/10 text-green-500"
                         }`}
                       >
                         {formatCheckoutStatus(checkout.status)}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button className="text-indigo-600 hover:text-indigo-900 font-medium text-sm">
+                      <button className="text-primary hover:text-primary/80 font-medium text-sm">
                         {t("dashboard.returnBook")}
                       </button>
                     </td>
@@ -593,14 +593,14 @@ const LibrarianDashboard: React.FC = () => {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-surface rounded-lg p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">
                 {modalType === "addBook" ? "Add New Book" : "Add New Member"}
               </h3>
               <button
                 onClick={closeModal}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-text-secondary hover:text-text-primary"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -611,7 +611,7 @@ const LibrarianDashboard: React.FC = () => {
                   <input
                     type="text"
                     placeholder={t("student.bookTitle")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
                     onChange={(e) =>
                       setFormData({ ...formData, title: e.target.value })
                     }
@@ -620,7 +620,7 @@ const LibrarianDashboard: React.FC = () => {
                   <input
                     type="text"
                     placeholder="Author"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
                     onChange={(e) =>
                       setFormData({ ...formData, author: e.target.value })
                     }
@@ -629,7 +629,7 @@ const LibrarianDashboard: React.FC = () => {
                   <input
                     type="text"
                     placeholder={t("catalog.isbn2")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
                     onChange={(e) =>
                       setFormData({ ...formData, isbn: e.target.value })
                     }
@@ -638,7 +638,7 @@ const LibrarianDashboard: React.FC = () => {
                   <input
                     type="text"
                     placeholder={t("common.category")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
                     onChange={(e) =>
                       setFormData({ ...formData, category: e.target.value })
                     }
@@ -650,7 +650,7 @@ const LibrarianDashboard: React.FC = () => {
                   <input
                     type="text"
                     placeholder={t("profile.memberName")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
@@ -659,7 +659,7 @@ const LibrarianDashboard: React.FC = () => {
                   <input
                     type="email"
                     placeholder={t("profile.email")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
@@ -668,7 +668,7 @@ const LibrarianDashboard: React.FC = () => {
                   <input
                     type="tel"
                     placeholder={t("profile.phone")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
                     onChange={(e) =>
                       setFormData({ ...formData, phone: e.target.value })
                     }
@@ -680,14 +680,14 @@ const LibrarianDashboard: React.FC = () => {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-surface/70"
                 >
                   {t("student.cancel")}
                 </button>
                 <button
                   type="button"
                   onClick={(e: any) => handleSubmit(e)}
-                  className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                  className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
                 >
                   {t("student.add")}
                 </button>

@@ -114,33 +114,33 @@ const LibraryCatalog: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-background bg-linear-to-br from-background to-surface">
       {/* Header */}
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search and Filters */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div className="bg-surface rounded-lg shadow-md p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
               <input
                 type="text"
                 placeholder={t("search.searchByTitleOrAuthor")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                className="input-field pl-10"
               />
             </div>
 
             {/* Category Filter */}
             <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-gray-500" />
+              <Filter className="w-5 h-5 text-text-secondary" />
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                className="input-field"
               >
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>
@@ -158,9 +158,9 @@ const LibraryCatalog: React.FC = () => {
                 type="checkbox"
                 checked={availableOnly}
                 onChange={(e) => setAvailableOnly(e.target.checked)}
-                className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                className="w-4 h-4 text-primary rounded  focus:ring-primary"
               />
-              <span className="text-gray-700 whitespace-nowrap">
+              <span className="text-text-secondary">
                 {t("catalog.availableOnly")}
               </span>
             </label>
@@ -169,7 +169,7 @@ const LibraryCatalog: React.FC = () => {
 
         {/* Results Count */}
         <div className="mb-6">
-          <p className="text-gray-600">
+          <p className="text-text-secondary">
             {t("catalog.showing")}{" "}
             <span className="font-semibold">{filteredBooks.length}</span>{" "}
             {t("catalog.of")}{" "}
@@ -183,9 +183,9 @@ const LibraryCatalog: React.FC = () => {
           {filteredBooks.map((book) => (
             <div
               key={book.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              className="bg-surface rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
-              <div className="relative h-64 bg-gray-200">
+              <div className="relative h-64 bg-background">
                 <img
                   src={book.cover}
                   alt={book.title}
@@ -205,10 +205,10 @@ const LibraryCatalog: React.FC = () => {
               </div>
 
               <div className="p-5">
-                <h3 className="text-xl font-bold text-gray-900 mb-1 line-clamp-1">
+                <h3 className="text-xl font-bold text-text-primary mb-1 line-clamp-1">
                   {book.title}
                 </h3>
-                <p className="text-gray-600 mb-2">{book.author}</p>
+                <p className="text-text-secondary mb-2">{book.author}</p>
 
                 <div className="flex items-center gap-1 mb-3">
                   {[...Array(5)].map((_, i) => (
@@ -217,16 +217,16 @@ const LibraryCatalog: React.FC = () => {
                       className={`w-4 h-4 ${
                         i < Math.floor(book.rating)
                           ? "fill-yellow-400 text-yellow-400"
-                          : "text-gray-300"
+                          : "text-border"
                       }`}
                     />
                   ))}
-                  <span className="text-sm text-gray-600 ml-1">
+                  <span className="text-sm text-text-secondary ml-1">
                     {new Intl.NumberFormat(i18n.language).format(book.rating)}
                   </span>
                 </div>
 
-                <div className="space-y-1 text-sm text-gray-600 mb-4">
+                <div className="space-y-1 text-sm text-text-secondary mb-4">
                   <p>
                     <span className="font-medium">{t("common.category")}:</span>{" "}
                     {book.category}
@@ -245,8 +245,8 @@ const LibraryCatalog: React.FC = () => {
                   disabled={!book.available}
                   className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
                     book.available
-                      ? "bg-blue-600 text-white hover:bg-blue-700"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      ? "btn-primary"
+                      : "bg-border text-text-secondary cursor-not-allowed"
                   }`}
                 >
                   {book.available
@@ -261,11 +261,13 @@ const LibraryCatalog: React.FC = () => {
         {/* No Results */}
         {filteredBooks.length === 0 && (
           <div className="text-center py-12">
-            <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            <BookOpen className="w-16 h-16 text-text-secondary mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-text-primary mb-2">
               {t("catalog.noBooksFound")}
             </h3>
-            <p className="text-gray-500">{t("catalog.tryAdjustingSearch")}</p>
+            <p className="text-text-secondary">
+              {t("catalog.tryAdjustingSearch")}
+            </p>
           </div>
         )}
       </main>

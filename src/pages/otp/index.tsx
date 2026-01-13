@@ -34,13 +34,13 @@ export default function OtpVerifyPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
+    <div className="min-h-screen bg-background flex items-center justify-center  p-4">
+      <div className="bg-surface shadow-xl rounded-2xl p-8 w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">
           {t("auth.verifyOTP")}
         </h2>
 
-        <p className="text-center mb-4 text-gray-600">
+        <p className="text-center mb-4 text-text-secondary">
           {t("auth.enterOTPCode")}
         </p>
 
@@ -59,14 +59,17 @@ export default function OtpVerifyPage() {
                 value={digit}
                 onChange={(e) => handleChange(e.target.value, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
-                className="w-14 h-14 text-center text-xl border rounded-xl focus:ring"
+                className="w-14 h-14 text-center text-xl rounded-xl border bg-background
+                  text-text-primary border-border
+                  focus:outline-none focus:ring-2 focus:ring-primary
+                  transition"
               />
             ))}
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white p-3 rounded-xl font-semibold hover:bg-blue-700 transition"
+            className="w-full btn-primary py-3 rounded-xl  hover:opacity-90"
           >
             {t("auth.verify")}
           </button>

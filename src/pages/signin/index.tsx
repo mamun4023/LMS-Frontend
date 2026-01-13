@@ -71,29 +71,31 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo and Title */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-blue-600 p-4 rounded-full">
+            <div className="bg-primary p-4 rounded-full">
               <BookOpen className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-text-primary mb-2">
             {t("auth.libraryManagementSystem")}
           </h1>
-          <p className="text-gray-600">{t("auth.signInToAccount")}</p>
+          <p className="text-text-secondary">{t("auth.signInToAccount")}</p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-surface rounded-2xl shadow-xl p-8">
           <div className="space-y-6">
             {/* General Error Message */}
             {errors.general && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
-                <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-red-700">{errors.general}</p>
+              <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-start space-x-3">
+                <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 shrink-0" />
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {errors.general}
+                </p>
               </div>
             )}
 
@@ -101,12 +103,12 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-text-primary mb-2"
               >
                 {t("auth.emailAddress")}
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
                 <input
                   type="email"
                   id="email"
@@ -123,8 +125,8 @@ export default function LoginPage() {
                     }));
                   }}
                   placeholder={t("auth.emailPlaceholder")}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                    errors.email ? "border-red-500" : "border-gray-300"
+                  className={`input-field pl-10  ${
+                    errors.email ? "border-red-500" : "border-border"
                   }`}
                 />
               </div>
@@ -140,12 +142,12 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-text-primary mb-2"
               >
                 {t("auth.password")}
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
@@ -163,14 +165,14 @@ export default function LoginPage() {
                     }));
                   }}
                   placeholder="••••••••"
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                    errors.password ? "border-red-500" : "border-gray-300"
+                  className={`input-field pl-10 pr-12  ${
+                    errors.password ? "border-red-500" : "border-border"
                   }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:opacity-80"
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -192,15 +194,15 @@ export default function LoginPage() {
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="w-4 h-4 text-primary border-border rounded "
                 />
-                <span className="ml-2 text-sm text-gray-600">
+                <span className="ml-2 text-sm text-text-secondary">
                   {t("auth.rememberMe")}
                 </span>
               </label>
               <Link
                 to="/forgot-password"
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                className="text-sm text-primary hover:opacity-80 font-medium"
               >
                 {t("auth.forgotPassword")}
               </Link>
@@ -211,7 +213,7 @@ export default function LoginPage() {
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
+              className="w-full btn-primary py-3 "
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center">
@@ -244,11 +246,11 @@ export default function LoginPage() {
           </div>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-text-secondary">
               {t("auth.dontHaveAccount")}{" "}
               <Link
                 to="/signup"
-                className="text-blue-600 hover:text-blue-700 font-medium"
+                className="text-primary hover:opacity-80 font-medium"
               >
                 {t("auth.signUp")}
               </Link>
@@ -257,7 +259,7 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-sm text-gray-500 mt-8">
+        <p className="text-center text-sm text-text-secondary mt-8">
           {t("auth.authCopyright")}
         </p>
       </div>

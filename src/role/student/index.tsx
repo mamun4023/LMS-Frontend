@@ -143,13 +143,13 @@ const StudentDashboard: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "on-time":
-        return "bg-green-100 text-green-800";
+        return "bg-green-500/10 text-green-500";
       case "due-soon":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-500/10 text-yellow-500";
       case "overdue":
-        return "bg-red-100 text-red-800";
+        return "bg-red-500/10 text-red-500";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-text-secondary";
     }
   };
 
@@ -167,18 +167,18 @@ const StudentDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background ">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10">
+      <header className="bg-surface shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-3">
               <Book className="w-8 h-8 text-blue-600" />
               <div>
-                <h1 className="text-xl font-bold text-gray-900">
+                <h1 className="text-xl font-bold text-text-primary">
                   {t("dashboard.libraryPortal")}
                 </h1>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-text-secondary">
                   {t("dashboard.studentDashboard")}
                 </p>
               </div>
@@ -188,7 +188,7 @@ const StudentDashboard: React.FC = () => {
               <div className="relative">
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
+                  className="relative p-2 text-text-secondary hover:bg-surface/70 rounded-lg transition"
                 >
                   <Bell className="w-6 h-6" />
                   {notifications.length > 0 && (
@@ -197,9 +197,9 @@ const StudentDashboard: React.FC = () => {
                 </button>
 
                 {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 py-2">
-                    <div className="px-4 py-2 border-b border-gray-200">
-                      <h3 className="font-semibold text-gray-900">
+                  <div className="absolute right-0 mt-2 w-80 bg-surface rounded-lg shadow-xl border border-border py-2">
+                    <div className="px-4 py-2 border-b border-border">
+                      <h3 className="font-semibold text-text-primary">
                         {t("dashboard.notifications")}
                       </h3>
                     </div>
@@ -207,9 +207,9 @@ const StudentDashboard: React.FC = () => {
                       {notifications.map((notif) => (
                         <div
                           key={notif.id}
-                          className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
+                          className="px-4 py-3 hover:bg-surface/70 cursor-pointer border-b border-border"
                         >
-                          <p className="text-sm text-gray-900">
+                          <p className="text-sm text-text-primary">
                             {/* {notif.message} */}
                             {t(`student.notifications.${notif.type}`, {
                               title: notif.title,
@@ -219,7 +219,7 @@ const StudentDashboard: React.FC = () => {
                                   : undefined,
                             })}
                           </p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-text-secondary mt-1">
                             {/* {notif.time} */}
                             {t(`student.time.${notif.time}`)}
                           </p>
@@ -230,16 +230,18 @@ const StudentDashboard: React.FC = () => {
                 )}
               </div>
 
-              <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
+              <div className="flex items-center space-x-3 pl-4 border-l border-border">
                 <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-text-primary">
                     {studentInfo.name}
                   </p>
-                  <p className="text-xs text-gray-500">{studentInfo.id}</p>
+                  <p className="text-xs text-text-secondary">
+                    {studentInfo.id}
+                  </p>
                 </div>
                 <button
                   onClick={() => navigate("/signin")}
-                  className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
+                  className="p-2 text-text-secondary hover:bg-surface/70 rounded-lg transition"
                 >
                   <LogOut className="w-5 h-5" />
                 </button>
@@ -252,21 +254,23 @@ const StudentDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold text-text-primary mb-2">
             {t("student.welcomeBack")} {studentInfo.name.split(" ")[0]}!
           </h2>
-          <p className="text-gray-600">{t("student.dashboardSubtitle")}</p>
+          <p className="text-text-secondary">
+            {t("student.dashboardSubtitle")}
+          </p>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div className="bg-surface p-6 rounded-xl shadow-sm border border-border">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">
+                <p className="text-sm text-text-secondary mb-1">
                   {t("student.borrowed")}
                 </p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-text-primary">
                   {new Intl.NumberFormat(i18n.language).format(
                     borrowedBooks.length
                   )}
@@ -276,13 +280,13 @@ const StudentDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div className="bg-surface p-6 rounded-xl shadow-sm border border-border">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">
+                <p className="text-sm text-text-secondary mb-1">
                   {t("student.reserved")}
                 </p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-text-primary">
                   {new Intl.NumberFormat(i18n.language).format(
                     reservedBooks.length
                   )}
@@ -292,10 +296,10 @@ const StudentDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div className="bg-surface p-6 rounded-xl shadow-sm border border-border">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">
+                <p className="text-sm text-text-secondary mb-1">
                   {t("dashboard.overdue")}
                 </p>
                 <p className="text-3xl font-bold text-red-600">
@@ -306,13 +310,13 @@ const StudentDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div className="bg-surface p-6 rounded-xl shadow-sm border border-border">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">
+                <p className="text-sm text-text-secondary mb-1">
                   {t("student.favorites")}
                 </p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-text-primary">
                   {t("student.twelve")}
                 </p>
               </div>
@@ -322,15 +326,15 @@ const StudentDashboard: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-8">
-          <div className="border-b border-gray-200">
+        <div className="bg-surface rounded-xl shadow-sm border border-border mb-8">
+          <div className="border-b border-border">
             <div className="flex space-x-8 px-6">
               <button
                 onClick={() => setActiveTab("overview")}
                 className={`py-4 px-2 border-b-2 font-medium text-sm transition ${
                   activeTab === "overview"
                     ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-gray-600 hover:text-gray-900"
+                    : "border-transparent text-text-secondary hover:text-text-primary"
                 }`}
               >
                 {t("dashboard.overview")}
@@ -340,7 +344,7 @@ const StudentDashboard: React.FC = () => {
                 className={`py-4 px-2 border-b-2 font-medium text-sm transition ${
                   activeTab === "borrowed"
                     ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-gray-600 hover:text-gray-900"
+                    : "border-transparent text-text-secondary hover:text-text-primary"
                 }`}
               >
                 {t("student.borrowedBooks")}
@@ -350,7 +354,7 @@ const StudentDashboard: React.FC = () => {
                 className={`py-4 px-2 border-b-2 font-medium text-sm transition ${
                   activeTab === "history"
                     ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-gray-600 hover:text-gray-900"
+                    : "border-transparent text-text-secondary hover:text-text-primary"
                 }`}
               >
                 {t("student.history")}
@@ -360,7 +364,7 @@ const StudentDashboard: React.FC = () => {
                 className={`py-4 px-2 border-b-2 font-medium text-sm transition ${
                   activeTab === "favorites"
                     ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-gray-600 hover:text-gray-900"
+                    : "border-transparent text-text-secondary hover:text-text-primary"
                 }`}
               >
                 {t("student.favorites")}
@@ -373,14 +377,14 @@ const StudentDashboard: React.FC = () => {
               <div className="space-y-6">
                 {/* Currently Borrowed */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  <h3 className="text-lg font-semibold text-text-primary mb-4">
                     {t("student.currentlyBorrowed")}
                   </h3>
                   <div className="space-y-3">
                     {borrowedBooks.map((book) => (
                       <div
                         key={book.id}
-                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+                        className="flex items-center justify-between p-4 bg-surface rounded-lg hover:bg-surface/70 transition"
                       >
                         <div className="flex items-center space-x-4">
                           <div
@@ -390,13 +394,13 @@ const StudentDashboard: React.FC = () => {
                             <Book className="w-6 h-6 text-white opacity-50" />
                           </div>
                           <div>
-                            <h4 className="font-semibold text-gray-900">
+                            <h4 className="font-semibold text-text-primary">
                               {book.title}
                             </h4>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-text-secondary">
                               {book.author}
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-text-secondary mt-1">
                               {t("student.due")} {formatDate(book.dueDate)}
                             </p>
                           </div>
@@ -409,7 +413,7 @@ const StudentDashboard: React.FC = () => {
                           >
                             {getStatusText(book.status)}
                           </span>
-                          <button className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                          <button className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-primary/10 rounded-lg transition">
                             {t("student.renew")}
                           </button>
                         </div>
@@ -420,27 +424,29 @@ const StudentDashboard: React.FC = () => {
 
                 {/* Reserved Books */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  <h3 className="text-lg font-semibold text-text-primary mb-4">
                     {t("student.reservedBooks")}
                   </h3>
                   <div className="space-y-3">
                     {reservedBooks.map((book) => (
                       <div
                         key={book.id}
-                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                        className="flex items-center justify-between p-4 bg-surface rounded-lg"
                       >
                         <div>
-                          <h4 className="font-semibold text-gray-900">
+                          <h4 className="font-semibold text-text-primary">
                             {book.title}
                           </h4>
-                          <p className="text-sm text-gray-600">{book.author}</p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-sm text-text-secondary">
+                            {book.author}
+                          </p>
+                          <p className="text-xs text-text-secondary mt-1">
                             {t("student.availableOn")}{" "}
                             {formatDate(book.availableDate)}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-sm font-medium text-text-primary">
                             {t("student.position")}
                             {formatNumber(book.position)}
                           </p>
@@ -458,15 +464,15 @@ const StudentDashboard: React.FC = () => {
             {activeTab === "borrowed" && (
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-text-primary">
                     {t("student.allBorrowedBooks")}
                   </h3>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-4 h-4" />
                     <input
                       type="text"
                       placeholder={t("search.searchbooks")}
-                      className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500"
+                      className="input-field pl-10"
                     />
                   </div>
                 </div>
@@ -474,7 +480,7 @@ const StudentDashboard: React.FC = () => {
                   {borrowedBooks.map((book) => (
                     <div
                       key={book.id}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                      className="flex items-center justify-between p-4 bg-surface rounded-lg"
                     >
                       <div className="flex items-center space-x-4">
                         <div
@@ -484,11 +490,13 @@ const StudentDashboard: React.FC = () => {
                           <Book className="w-6 h-6 text-white opacity-50" />
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900">
+                          <h4 className="font-semibold text-text-primary">
                             {book.title}
                           </h4>
-                          <p className="text-sm text-gray-600">{book.author}</p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-sm text-text-secondary">
+                            {book.author}
+                          </p>
+                          <p className="text-xs text-text-secondary mt-1">
                             {t("student.due")} {book.dueDate}
                           </p>
                         </div>
@@ -501,7 +509,7 @@ const StudentDashboard: React.FC = () => {
                         >
                           {getStatusText(book.status)}
                         </span>
-                        <button className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                        <button className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-primary/10 rounded-lg transition">
                           {t("student.renew")}
                         </button>
                       </div>
@@ -513,33 +521,33 @@ const StudentDashboard: React.FC = () => {
 
             {activeTab === "history" && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-text-primary mb-4">
                   {t("student.borrowingHistory")}
                 </h3>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between p-4 bg-surface rounded-lg">
                     <div>
-                      <h4 className="font-semibold text-gray-900">
+                      <h4 className="font-semibold text-text-primary">
                         {t("bookTitles.theArtOfComputerProgramming")}
                       </h4>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-text-secondary">
                         {t("bookTitles.donaldKnuth")}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-text-secondary mt-1">
                         {t("student.borrowedReturned")}
                       </p>
                     </div>
                     <CheckCircle className="w-6 h-6 text-green-600" />
                   </div>
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between p-4 bg-surface rounded-lg">
                     <div>
-                      <h4 className="font-semibold text-gray-900">
+                      <h4 className="font-semibold text-text-primary">
                         {t("bookTitles.databaseSystemConcepts")}
                       </h4>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-text-secondary">
                         {t("bookTitles.silberschatzEtAl")}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-text-secondary mt-1">
                         {t("student.borrowedReturned2")}
                       </p>
                     </div>
@@ -551,19 +559,19 @@ const StudentDashboard: React.FC = () => {
 
             {activeTab === "favorites" && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-text-primary mb-4">
                   {t("student.myFavoriteBooks")}
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="group cursor-pointer">
-                      <div className="aspect-[2/3] bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg mb-3 flex items-end justify-center p-4 shadow-md group-hover:shadow-xl transition">
+                      <div className="aspect-2/3 bg-linear-to-br from-purple-500 to-pink-500 rounded-lg mb-3 flex items-end justify-center p-4 shadow-md group-hover:shadow-xl transition">
                         <Book className="w-12 h-12 text-white opacity-50" />
                       </div>
-                      <h4 className="font-semibold text-gray-900 text-sm">
+                      <h4 className="font-semibold text-text-primary text-sm">
                         {t("student.bookTitle")} {i}
                       </h4>
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-text-secondary">
                         {t("student.authorName")}
                       </p>
                     </div>
@@ -576,35 +584,35 @@ const StudentDashboard: React.FC = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <button className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition text-left">
+          <button className="bg-surface p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition text-left">
             <Search className="w-10 h-10 text-blue-600 mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">
+            <h3 className="font-semibold text-text-primary mb-2">
               {t("quickActions.browseCatalog")}
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-text-secondary">
               {t("catalog.searchAndDiscover")}
             </p>
           </button>
 
-          <button className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition text-left">
+          <button className="bg-surface p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition text-left">
             <Calendar className="w-10 h-10 text-green-600 mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">
+            <h3 className="font-semibold text-text-primary mb-2">
               {t("student.bookStudyRoom")}
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-text-secondary">
               {t("student.reserveSpaceForStudying")}
             </p>
           </button>
 
           <button
             onClick={() => navigate("/profile")}
-            className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition text-left"
+            className="bg-surface p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition text-left"
           >
             <User className="w-10 h-10 text-purple-600 mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">
+            <h3 className="font-semibold text-text-primary mb-2">
               {t("profile.myProfile")}
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-text-secondary">
               {t("profile.updateAccountSettings")}
             </p>
           </button>

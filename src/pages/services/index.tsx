@@ -131,17 +131,17 @@ const LibraryServices: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen bg-background ">
       {/* Header */}
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl font-bold text-text-primary mb-4">
             {t("about.title")}
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-text-secondary max-w-3xl mx-auto">
             {t("services.servicesDescription")}
           </p>
         </div>
@@ -151,23 +151,23 @@ const LibraryServices: React.FC = () => {
           {services.map((service) => (
             <div
               key={service.id}
-              className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer transform hover:-translate-y-1"
+              className="bg-surface rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer transform hover:-translate-y-1"
               onClick={() =>
                 setSelectedService(
                   selectedService === service.id ? null : service.id
                 )
               }
             >
-              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6">
+              <div className="bg-primary text-white p-6">
                 <div className="flex items-center gap-4 mb-3">
                   {service.icon}
                   <h3 className="text-2xl font-bold">{service.title}</h3>
                 </div>
-                <p className="text-indigo-100">{service.description}</p>
+                <p className="text-white/90">{service.description}</p>
               </div>
 
               <div className="p-6">
-                <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+                <div className="flex items-center gap-2 text-sm text-text-secondary mb-4">
                   <Clock className="w-4 h-4" />
                   <span>{service.schedule}</span>
                 </div>
@@ -179,23 +179,23 @@ const LibraryServices: React.FC = () => {
                       : "max-h-0 opacity-0 overflow-hidden"
                   }`}
                 >
-                  <h4 className="font-semibold text-gray-900 mb-3">
+                  <h4 className="font-semibold text-text-primary mb-3">
                     {t("services.features")}
                   </h4>
                   <ul className="space-y-2">
                     {service.features.map((feature, index) => (
                       <li
                         key={index}
-                        className="flex items-start gap-2 text-gray-700"
+                        className="flex items-start gap-2 text-text-secondary"
                       >
-                        <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                        <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <button className="w-full mt-4 py-2 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
+                <button className="btn-primary">
                   {selectedService === service.id
                     ? t("services.showLess")
                     : t("quickActions.learnMore")}
@@ -208,10 +208,10 @@ const LibraryServices: React.FC = () => {
         {/* Bottom Section - Events & Contact */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Upcoming Events */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="bg-surface rounded-xl shadow-lg p-8">
             <div className="flex items-center gap-3 mb-6">
-              <Calendar className="w-7 h-7 text-indigo-600" />
-              <h3 className="text-2xl font-bold text-gray-900">
+              <Calendar className="w-7 h-7 text-primary" />
+              <h3 className="text-2xl font-bold text-text-primary">
                 {t("events.upcomingEvents")}
               </h3>
             </div>
@@ -220,9 +220,9 @@ const LibraryServices: React.FC = () => {
               {upcomingEvents.map((event) => (
                 <div
                   key={event.id}
-                  className="flex items-start gap-4 p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+                  className="flex items-start gap-4 p-4 bg-background rounded-lg hover:bg-surface transition-colors"
                 >
-                  <div className="bg-indigo-600 text-white rounded-lg p-3 text-center min-w-16">
+                  <div className="bg-primary text-surface rounded-lg p-3 text-center min-w-16">
                     <div className="text-xs font-semibold">
                       {event.date.split(",")[0]}
                     </div>
@@ -231,10 +231,10 @@ const LibraryServices: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 mb-1">
+                    <h4 className="font-semibold text-text-primary mb-1">
                       {event.title}
                     </h4>
-                    <p className="text-sm text-gray-600 flex items-center gap-1">
+                    <p className="text-sm text-text-primary flex items-center gap-1">
                       <Clock className="w-4 h-4" />
                       {event.time}
                     </p>
@@ -243,18 +243,18 @@ const LibraryServices: React.FC = () => {
               ))}
             </div>
 
-            <button className="w-full mt-6 py-3 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
+            <button className="w-full mt-6 py-3 px-4  rounded-lg btn-primary transition-colors font-semibold">
               {t("events.viewAllEvents")}
             </button>
           </div>
 
           {/* Contact Information */}
-          <div className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-xl shadow-lg p-8">
+          <div className="bg-primary text-white rounded-xl shadow-lg p-8">
             <h3 className="text-2xl font-bold mb-6">{t("about.contactUs")}</h3>
 
             <div className="space-y-4 mb-8">
               <div className="flex items-start gap-3">
-                <MapPin className="w-6 h-6 flex-shrink-0 mt-1" />
+                <MapPin className="w-6 h-6 shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold mb-1">{t("contact.address")}</h4>
                   <p className="text-indigo-100">
@@ -266,7 +266,7 @@ const LibraryServices: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                <Phone className="w-6 h-6 flex-shrink-0 mt-1" />
+                <Phone className="w-6 h-6 shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold mb-1">{t("profile.phone")}</h4>
                   <p className="text-indigo-100">{t("contact.phoneAlt")}</p>
@@ -274,7 +274,7 @@ const LibraryServices: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                <Mail className="w-6 h-6 flex-shrink-0 mt-1" />
+                <Mail className="w-6 h-6 shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold mb-1">{t("profile.email")}</h4>
                   <p className="text-indigo-100">{t("contact.contactEmail")}</p>
@@ -282,7 +282,7 @@ const LibraryServices: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                <Clock className="w-6 h-6 flex-shrink-0 mt-1" />
+                <Clock className="w-6 h-6 shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold mb-1">{t("Hours")}</h4>
                   <p className="text-indigo-100">
@@ -294,21 +294,21 @@ const LibraryServices: React.FC = () => {
               </div>
             </div>
 
-            <button className="w-full py-3 px-4 bg-white text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-semibold">
+            <button className="w-full py-3 px-4 bg-surface text-primary rounded-lg hover:bg-white/90 transition-colors font-semibold">
               {t("about.getDirections")}
             </button>
           </div>
         </div>
 
         {/* Membership CTA */}
-        <div className="mt-12 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl shadow-xl p-8 text-center text-white">
+        <div className="mt-12 bg-primary  rounded-xl shadow-xl p-8 text-center text-white">
           <h3 className="text-3xl font-bold mb-4">
             {t("membership.becomeMember")}
           </h3>
-          <p className="text-xl text-indigo-100 mb-6 max-w-2xl mx-auto">
+          <p className="text-xl text-white/90 mb-6 max-w-2xl mx-auto">
             {t("membership.becomeMemberDescription")}
           </p>
-          <button className="py-3 px-8 bg-white text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-bold text-lg">
+          <button className="py-3 px-8 bg-surface text-primary rounded-lg hover:bg-white/90 transition-colors font-bold text-lg">
             {t("membership.signUpNow")}
           </button>
         </div>

@@ -191,7 +191,7 @@ export default function AdminDashboard() {
       case "warning":
         return <AlertCircle className="w-5 h-5 text-yellow-500" />;
       case "info":
-        return <Clock className="w-5 h-5 text-blue-500" />;
+        return <Clock className="w-5 h-5 text-primary" />;
       default:
         return <AlertCircle className="w-5 h-5 text-red-500" />;
     }
@@ -201,27 +201,27 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-surface rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-text-secondary text-sm">
                 {t("dashboard.totalBooks")}
               </p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-3xl font-bold text-text-primary">
                 {new Intl.NumberFormat(i18n.language).format(stats.totalBooks)}
               </p>
             </div>
-            <BookOpen className="w-12 h-12 text-blue-500" />
+            <BookOpen className="w-12 h-12 text-primary" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-surface rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-text-secondary text-sm">
                 {t("dashboard.totalUsers")}
               </p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-3xl font-bold text-text-primary">
                 {new Intl.NumberFormat(i18n.language).format(stats.totalUsers)}
                 {/* {stats.totalUsers} */}
               </p>
@@ -230,13 +230,13 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-surface rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-text-secondary text-sm">
                 {t("dashboard.activeLoans")}
               </p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-3xl font-bold text-text-primary">
                 {/* {stats.activeLoans} */}
                 {new Intl.NumberFormat(i18n.language).format(stats.activeLoans)}
               </p>
@@ -245,10 +245,10 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-surface rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-text-secondary text-sm">
                 {t("dashboard.overdueBooks")}
               </p>
               <p className="text-3xl font-bold text-red-600">
@@ -262,26 +262,28 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-surface rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-text-secondary text-sm">
                 {t("dashboard.librarians")}
               </p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-3xl font-bold text-text-primary">
                 {/* {stats.librarians} */}
                 {new Intl.NumberFormat(i18n.language).format(stats.librarians)}
               </p>
             </div>
-            <UserCog className="w-12 h-12 text-indigo-500" />
+            <UserCog className="w-12 h-12 text-primary" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-surface rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">{t("dashboard.students")}</p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-text-secondary text-sm">
+                {t("dashboard.students")}
+              </p>
+              <p className="text-3xl font-bold text-text-primary">
                 {/* {stats.students} */}
                 {new Intl.NumberFormat(i18n.language).format(stats.students)}
               </p>
@@ -292,9 +294,9 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
+      <div className="bg-surface rounded-lg shadow">
+        <div className="p-6 border-b border-border">
+          <h2 className="text-xl font-semibold text-text-primary">
             {t("dashboard.recentActivity")}
           </h2>
         </div>
@@ -303,18 +305,22 @@ export default function AdminDashboard() {
             {recentActivity.map((activity) => (
               <div
                 key={activity.id}
-                className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
+                className="flex items-center justify-between py-3 border-b border-border last:border-0"
               >
                 <div className="flex items-center space-x-3">
                   {getActivityIcon(activity.type)}
                   <div>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-text-primary">
                       {activity.action}
                     </p>
-                    <p className="text-xs text-gray-500">{activity.user}</p>
+                    <p className="text-xs text-text-secondary">
+                      {activity.user}
+                    </p>
                   </div>
                 </div>
-                <span className="text-xs text-gray-400">{activity.time}</span>
+                <span className="text-xs text-text-secondary">
+                  {activity.time}
+                </span>
               </div>
             ))}
           </div>
@@ -327,67 +333,67 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
           <input
             type="text"
             placeholder={t("search.searchbooks")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
-        <button className="ml-4 flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+        <button className="ml-4 flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90">
           <Plus className="w-5 h-5 mr-2" />
           {t("catalog.addBook")}
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="bg-surface rounded-lg shadow overflow-hidden">
+        <table className="min-w-full divide-y divide-border">
+          <thead className="bg-surface">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("catalog.title")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("catalog.author")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("catalog.isbn2")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("catalog.copies")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("catalog.available")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("catalog.actions")}
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-surface divide-y divide-border">
             {books.map((book) => (
-              <tr key={book.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <tr key={book.id} className="hover:bg-surface">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
                   {book.title}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   {book.author}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   {book.isbn}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   {/* {book.copies} */}
                   {new Intl.NumberFormat(i18n.language).format(book.copies)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${
                       book.available > 0
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                        ? "bg-green-500/10 text-green-500"
+                        : "bg-red-500/10 text-red-500"
                     }`}
                   >
                     {/* {book.available} */}
@@ -396,15 +402,15 @@ export default function AdminDashboard() {
                     )}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   <div className="flex space-x-2">
-                    <button className="text-blue-600 hover:text-blue-900">
+                    <button className="text-primary hover:opacity-80">
                       <Eye className="w-5 h-5" />
                     </button>
-                    <button className="text-green-600 hover:text-green-900">
+                    <button className="text-green-600 hover:opacity-80">
                       <Edit className="w-5 h-5" />
                     </button>
-                    <button className="text-red-600 hover:text-red-900">
+                    <button className="text-red-600 hover:opacity-80">
                       <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
@@ -421,71 +427,71 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
           <input
             type="text"
             placeholder={t("dashboard.searchLibrarian")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
-        <button className="ml-4 flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+        <button className="ml-4 flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90">
           <Plus className="w-5 h-5 mr-2" />
           {t("dashboard.addLibrarian")}
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="bg-surface rounded-lg shadow overflow-hidden">
+        <table className="min-w-full divide-y divide-border">
+          <thead className="bg-surface">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("profile.name")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("profile.email")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("dashboard.booksManaged")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("catalog.status")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("catalog.actions")}
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-surface divide-y divide-border">
             {librarians.map((librarian) => (
-              <tr key={librarian.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <tr key={librarian.id} className="hover:bg-surface">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
                   {librarian.name}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   {librarian.email}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   {/* {librarian.booksManaged} */}
                   {new Intl.NumberFormat(i18n.language).format(
                     librarian.booksManaged
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-500">
                     {librarian.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   <div className="flex space-x-2">
-                    <button className="text-blue-600 hover:text-blue-900">
+                    <button className="text-primary hover:opacity-80">
                       <Eye className="w-5 h-5" />
                     </button>
-                    <button className="text-green-600 hover:text-green-900">
+                    <button className="text-green-600 hover:opacity-80">
                       <Edit className="w-5 h-5" />
                     </button>
-                    <button className="text-red-600 hover:text-red-900">
+                    <button className="text-red-600 hover:opacity-80">
                       <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
@@ -502,55 +508,55 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
           <input
             type="text"
             placeholder={t("dashboard.searchStudent")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
-        <button className="ml-4 flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+        <button className="ml-4 flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90">
           <Plus className="w-5 h-5 mr-2" />
           {t("dashboard.addStudent")}
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="bg-surface rounded-lg shadow overflow-hidden">
+        <table className="min-w-full divide-y divide-border">
+          <thead className="bg-surface">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("profile.name")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("profile.email")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("dashboard.booksLoaned")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("dashboard.overdue")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("catalog.status")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t("catalog.actions")}
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-surface divide-y divide-border">
             {students.map((student) => (
-              <tr key={student.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <tr key={student.id} className="hover:bg-surface">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
                   {student.name}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   {student.email}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   {/* {student.booksLoaned} */}
                   {new Intl.NumberFormat(i18n.language).format(
                     student.booksLoaned
@@ -560,8 +566,8 @@ export default function AdminDashboard() {
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${
                       student.overdue > 0
-                        ? "bg-red-100 text-red-800"
-                        : "bg-green-100 text-green-800"
+                        ? "bg-red-500/10 text-red-500"
+                        : "bg-green-500/10 text-green-500"
                     }`}
                   >
                     {/* {student.overdue} */}
@@ -571,19 +577,19 @@ export default function AdminDashboard() {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-500">
                     {student.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   <div className="flex space-x-2">
-                    <button className="text-blue-600 hover:text-blue-900">
+                    <button className="text-primary hover:opacity-80">
                       <Eye className="w-5 h-5" />
                     </button>
-                    <button className="text-green-600 hover:text-green-900">
+                    <button className="text-green-600 hover:opacity-80">
                       <Edit className="w-5 h-5" />
                     </button>
-                    <button className="text-red-600 hover:text-red-900">
+                    <button className="text-red-600 hover:opacity-80">
                       <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
@@ -598,52 +604,52 @@ export default function AdminDashboard() {
 
   const renderSettings = () => (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+      <div className="bg-surface rounded-lg shadow p-6">
+        <h2 className="text-xl font-semibold text-text-primary mb-4">
           {t("settings.systemSettings")}
         </h2>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-text-primary mb-2">
               {t("settings.libraryName")}
             </label>
             <input
               type="text"
               defaultValue="Central Library"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-text-primary mb-2">
               {t("settings.maxBooksPerStudent")}
             </label>
             <input
               type="number"
               defaultValue="5"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-text-primary mb-2">
               {t("settings.loanDuration")}
             </label>
             <input
               type="number"
               defaultValue="14"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-text-primary mb-2">
               {t("settings.finePerDay")}
             </label>
             <input
               type="number"
               defaultValue="1"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
-          <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <button className="px-6 py-2 bg-primary text-white rounded-lg hover:opacity-90">
             {t("settings.saveSettings")}
           </button>
         </div>
@@ -652,22 +658,22 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-surface shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <BookOpen className="w-8 h-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">
+              <BookOpen className="w-8 h-8 text-primary" />
+              <h1 className="text-2xl font-bold text-text-primary">
                 {t("dashboard.adminDashboard")}
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-text-secondary">
                 {t("dashboard.adminUser")}
               </span>
-              <button className="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+              <button className="px-4 py-2 text-sm bg-surface text-text-primary rounded-lg hover:bg-surface/70">
                 {t("dashboard.logout")}
               </button>
             </div>
@@ -677,14 +683,14 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Navigation Tabs */}
-        <div className="bg-white rounded-lg shadow mb-6">
+        <div className="bg-surface rounded-lg shadow mb-6">
           <nav className="flex space-x-1 p-2">
             <button
               onClick={() => setActiveTab("overview")}
               className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === "overview"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "bg-primary text-white"
+                  : "text-text-secondary hover:bg-surface/70"
               }`}
             >
               <BarChart3 className="w-5 h-5 mr-2" />
@@ -694,8 +700,8 @@ export default function AdminDashboard() {
               onClick={() => setActiveTab("books")}
               className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === "books"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "bg-primary text-white"
+                  : "text-text-secondary hover:bg-surface/70"
               }`}
             >
               <BookOpen className="w-5 h-5 mr-2" />
@@ -705,8 +711,8 @@ export default function AdminDashboard() {
               onClick={() => setActiveTab("librarians")}
               className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === "librarians"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "bg-primary text-white"
+                  : "text-text-secondary hover:bg-surface/70"
               }`}
             >
               <UserCog className="w-5 h-5 mr-2" />
@@ -716,8 +722,8 @@ export default function AdminDashboard() {
               onClick={() => setActiveTab("students")}
               className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === "students"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "bg-primary text-white"
+                  : "text-text-secondary hover:bg-surface/70"
               }`}
             >
               <Users className="w-5 h-5 mr-2" />
@@ -727,8 +733,8 @@ export default function AdminDashboard() {
               onClick={() => setActiveTab("settings")}
               className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === "settings"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "bg-primary text-white"
+                  : "text-text-secondary hover:bg-surface/70"
               }`}
             >
               <Settings className="w-5 h-5 mr-2" />

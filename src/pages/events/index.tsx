@@ -173,14 +173,14 @@ const LibraryEvents: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Featured Events Banner */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
             <span className="text-yellow-500">★</span>{" "}
             {t("events.featuredEvents")}
           </h2>
@@ -190,9 +190,9 @@ const LibraryEvents: React.FC = () => {
               .map((event) => (
                 <div
                   key={event.id}
-                  className="relative bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg overflow-hidden shadow-lg"
+                  className="relative bg-primary rounded-lg overflow-hidden shadow-lg"
                 >
-                  <div className="absolute inset-0 bg-black opacity-30"></div>
+                  <div className="absolute inset-0 bg-black/30"></div>
                   <div className="relative p-6 text-white">
                     <h3 className="text-xl font-bold mb-2">{event.title}</h3>
                     <div className="flex items-center gap-2 text-sm mb-2">
@@ -211,7 +211,7 @@ const LibraryEvents: React.FC = () => {
                         )}
                       </span>
                     </div>
-                    <button className="mt-3 px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                    <button className="mt-3 px-4 py-2  bg-white text-primary rounded-lg font-semibold hover:bg-white/90 transition-colors">
                       {t("quickActions.learnMore")}
                     </button>
                   </div>
@@ -221,12 +221,12 @@ const LibraryEvents: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div className="bg-surface rounded-lg shadow-md p-6 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-2">
-                <Filter className="w-5 h-5 text-gray-500" />
-                <span className="font-semibold text-gray-700">
+                <Filter className="w-5 h-5 text-text-secondary" />
+                <span className="font-semibold text-text-primary">
                   {t("events.filterBy")}
                 </span>
               </div>
@@ -237,8 +237,8 @@ const LibraryEvents: React.FC = () => {
                     onClick={() => setSelectedCategory(cat)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                       selectedCategory === cat
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        ? "bg-primary text-white"
+                        : "bg-background text-text-secondary hover:bg-surface"
                     }`}
                   >
                     {cat === "all"
@@ -254,8 +254,8 @@ const LibraryEvents: React.FC = () => {
                 onClick={() => setViewMode("grid")}
                 className={`px-4 py-2 rounded-lg ${
                   viewMode === "grid"
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-gray-700"
+                    ? "bg-primary text-white"
+                    : "bg-background text-text-secondary hover:bg-surface"
                 }`}
               >
                 {t("events.grid")}
@@ -264,8 +264,8 @@ const LibraryEvents: React.FC = () => {
                 onClick={() => setViewMode("list")}
                 className={`px-4 py-2 rounded-lg ${
                   viewMode === "list"
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-gray-700"
+                    ? "bg-primary text-white"
+                    : "bg-background  text-text-secondary hover:bg-surface"
                 }`}
               >
                 {t("events.list")}
@@ -276,7 +276,7 @@ const LibraryEvents: React.FC = () => {
 
         {/* Events Count */}
         <div className="mb-6">
-          <p className="text-gray-600">
+          <p className="text-text-secondary">
             {t("catalog.showing")}{" "}
             <span className="font-semibold">{filteredEvents.length}</span>{" "}
             {t("events.events")}
@@ -294,13 +294,13 @@ const LibraryEvents: React.FC = () => {
           {filteredEvents.map((event) => (
             <div
               key={event.id}
-              className={`bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden ${
+              className={`bg-surface rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden ${
                 viewMode === "list" ? "flex" : ""
               }`}
             >
               <div
                 className={`relative ${
-                  viewMode === "list" ? "w-64 flex-shrink-0" : "h-48"
+                  viewMode === "list" ? "w-64 shrink-0" : "h-48"
                 }`}
               >
                 <img
@@ -316,28 +316,28 @@ const LibraryEvents: React.FC = () => {
                     className={`w-5 h-5 ${
                       favorites.includes(event.id)
                         ? "fill-red-500 text-red-500"
-                        : "text-gray-400"
+                        : "text-text-secondary"
                     }`}
                   />
                 </button>
                 <div className="absolute top-3 left-3">
-                  <span className="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+                  <span className="px-3 py-1 bg-primary text-white text-xs font-semibold rounded-full">
                     {event.category}
                   </span>
                 </div>
               </div>
 
               <div className="p-6 flex-1">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-xl font-bold text-text-primary mb-2">
                   {event.title}
                 </h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                <p className="text-text-secondary text-sm mb-4 line-clamp-2">
                   {event.description}
                 </p>
 
                 <div className="space-y-2 mb-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Calendar className="w-4 h-4 text-blue-600" />
+                  <div className="flex items-center gap-2 text-sm text-text-secondary">
+                    <Calendar className="w-4 h-4 text-primary" />
                     <span className="font-medium">
                       {/* {new Date(event.date).toLocaleDateString("en-US", {
                         weekday: "short",
@@ -354,18 +354,18 @@ const LibraryEvents: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Clock className="w-4 h-4 text-blue-600" />
+                  <div className="flex items-center gap-2 text-sm text-text-secondary">
+                    <Clock className="w-4 h-4 text-primary" />
                     <span>{event.time}</span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 text-blue-600" />
+                  <div className="flex items-center gap-2 text-sm text-text-secondary">
+                    <MapPin className="w-4 h-4 text-primary" />
                     <span>{event.location}</span>
                   </div>
 
                   <div className="flex items-center gap-2 text-sm">
-                    <Users className="w-4 h-4 text-blue-600" />
+                    <Users className="w-4 h-4 text-primary" />
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-semibold ${getAvailabilityColor(
                         event.registered,
@@ -386,12 +386,12 @@ const LibraryEvents: React.FC = () => {
                 </div>
 
                 <div className="flex gap-2">
-                  <button className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center gap-2">
+                  <button className="flex-1 py-2 px-4 btn-primary flex items-center justify-center gap-2">
                     {t("events.registerNow")}
                     <ChevronRight className="w-4 h-4" />
                   </button>
-                  <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                    <Share2 className="w-5 h-5 text-gray-600" />
+                  <button className="p-2 border border-border rounded-lg hover:bg-surface transition-colors">
+                    <Share2 className="w-5 h-5 text-text-secondary" />
                   </button>
                 </div>
               </div>
@@ -402,29 +402,31 @@ const LibraryEvents: React.FC = () => {
         {/* No Results */}
         {filteredEvents.length === 0 && (
           <div className="text-center py-12">
-            <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            <Calendar className="w-16 h-16 text-text-secondary mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-text-primary mb-2">
               {t("events.noEventsFound")}
             </h3>
-            <p className="text-gray-500">{t("events.tryDifferentCategory")}</p>
+            <p className="text-text-secondary">
+              {t("events.tryDifferentCategory")}
+            </p>
           </div>
         )}
 
         {/* Newsletter Signup */}
-        <div className="mt-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl shadow-xl p-8 text-center text-white">
+        <div className="mt-12 bg-primary rounded-xl shadow-xl p-8 text-center text-white">
           <h3 className="text-3xl font-bold mb-4">
             {t("events.neverMissEvent")}
           </h3>
-          <p className="text-xl text-blue-100 mb-6 max-w-2xl mx-auto">
+          <p className="text-xl text-surface/90 mb-6 max-w-2xl mx-auto">
             {t("events.subscribeNewsletter")}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
               type="email"
               placeholder={t("events.enterYourEmail")}
-              className="flex-1 px-4 py-3 rounded-lg text-gray-900 outline-none"
+              className="input-field"
             />
-            <button className="px-6 py-3 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-bold">
+            <button className="px-6 py-3 bg-surface text-primary rounded-lg hover:bg-surface/90 transition-colors font-bold">
               {t("events.subscribe")}
             </button>
           </div>

@@ -39,9 +39,9 @@ const ProfileUpdate: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-5">
-      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-lg">
-        <h2 className="text-2xl font-bold mb-5 text-center">
+    <div className="min-h-screen bg-background flex items-center justify-center p-5">
+      <div className="bg-surface rounded-xl shadow-lg p-8 w-full max-w-lg">
+        <h2 className="text-2xl font-bold text-text-primary mb-5 text-center">
           {t("profile.updateProfile")}
         </h2>
 
@@ -52,13 +52,17 @@ const ProfileUpdate: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block mb-1 font-medium">{t("Full Name")}</label>
+            <label className="block mb-1 text-sm font-medium text-text-primary">
+              {t("Full Name")}
+            </label>
             <input
               type="text"
               name="name"
               value={form.name}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2"
+              className="w-full rounded-lg px-3 py-2 bg-background text-text-primary
+                border border-border placeholder:text-text-secondary
+                focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder={t("profile.enterYourName")}
               required
             />
@@ -71,7 +75,9 @@ const ProfileUpdate: React.FC = () => {
               name="email"
               value={form.email}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2"
+              className="w-full rounded-lg px-3 py-2 bg-background text-text-primary
+                border border-border placeholder:text-text-secondary
+                focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="example@gmail.com"
               required
             />
@@ -84,17 +90,21 @@ const ProfileUpdate: React.FC = () => {
               name="phone"
               value={form.phone}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2"
+              className="w-full rounded-lg px-3 py-2 bg-background text-text-primary
+                border border-border placeholder:text-text-secondary
+                focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="+8801XXXXXXXXX"
             />
           </div>
 
-          <hr className="my-4" />
+          <hr className="my-4 border-border" />
 
-          <h3 className="text-lg font-semibold">{t("Change Password")}</h3>
+          <h3 className="text-lg font-semibold text-text-primary">
+            {t("Change Password")}
+          </h3>
 
           <div>
-            <label className="block mb-1 font-medium">
+            <label className="block mb-1 text-sm font-medium text-text-primary">
               {t("profile.newPassword")}
             </label>
             <input
@@ -102,13 +112,15 @@ const ProfileUpdate: React.FC = () => {
               name="password"
               value={form.password}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2"
+              className="w-full rounded-lg px-3 py-2 bg-background text-text-primary
+                border border-border placeholder:text-text-secondary
+                focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="******"
             />
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">
+            <label className="block mb-1 text-sm font-medium text-text-primary">
               {t("profile.confirmPassword")}
             </label>
             <input
@@ -116,14 +128,16 @@ const ProfileUpdate: React.FC = () => {
               name="confirmPassword"
               value={form.confirmPassword}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2"
+              className="w-full rounded-lg px-3 py-2 bg-background text-text-primary
+                border border-border placeholder:text-text-secondary
+                focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="******"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg mt-3 font-medium hover:bg-blue-700 transition"
+            className="w-full btn-primary py-3 rounded-lg mt-3 hover:opacity-90"
           >
             {t("profile.updateProfile")}
           </button>
