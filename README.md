@@ -27,7 +27,14 @@ A modern, responsive Learning Management System built with React, TypeScript, an
   - Support for multiple languages
   - Easy language switching
   - Persistent language preferences
-  - Simple framework for adding new languages
+  - Simple framework for adding new 
+  
+- **Firebase Integration**
+  - Firebase Authentication for secure user management
+  - Cloud Firestore for real-time database
+  - Full CRUD operations for user data
+  - 📚 **[Complete Firebase Documentation](./firebase_docs.md)**
+
 - **Modern Tech Stack**
   - ⚡ Vite for fast development and building
   - ⚛️ React 19 with TypeScript for type safety
@@ -57,7 +64,25 @@ A modern, responsive Learning Management System built with React, TypeScript, an
    yarn
    ```
 
-3. **Start the development server**
+
+3. **Configure Firebase**
+
+   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
+   - Enable Authentication (Email/Password)
+   - Create a Firestore database
+   - Copy your Firebase configuration
+   - Create a `.env` file in the root directory:
+
+   ```env
+   VITE_FIREBASE_API_KEY=your_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   ```
+
+4. **Start the development server**
 
    ```bash
    npm run dev
@@ -231,3 +256,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - React and TypeScript teams for their amazing work
 - All contributors who helped shape this project
 - react-i18next for making internationalization simple
+- Firebase for providing excellent backend services
