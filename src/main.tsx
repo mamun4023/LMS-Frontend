@@ -9,10 +9,14 @@ import Dashboard from "./pages/dashboard";
 import Events from "./pages/events";
 import ForgotPassword from "./pages/forgotPassword";
 import OtpVerify from "./pages/otp";
+import ProfileUpdate from "./pages/profile";
 import ResetPassword from "./pages/resetPassword";
 import Service from "./pages/services";
 import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
+import AdminDashboard from "./role/admin";
+import LibrarianDashboard from "./role/librarian";
+import StudentDashboard from "./role/student";
 import { applyTheme, getInitialTheme } from "./theme";
 
 const router = createBrowserRouter([
@@ -60,18 +64,22 @@ const router = createBrowserRouter([
     path: "/catalog",
     element: <Catalog />,
   },
-  // {
-  //   path: "/profile",
-  //   element: <ProfileUpdate />,
-  // },
-  // {
-  //   path: "/admin",
-  //   element: <AdminDashboard />,
-  // },
-  // {
-  //   path: "/librarian",
-  //   element: <LibrarianDashboard />,
-  // },
+  {
+    path: "/profile",
+    element: <ProfileUpdate />,
+  },
+  {
+    path:"/student",
+    element:<StudentDashboard/>
+  },
+  {
+    path: "/admin",
+    element: <AdminDashboard />,
+  },
+  {
+    path: "/librarian",
+    element: <LibrarianDashboard />,
+  },
 ]);
 
 document.documentElement.classList.add("disable-transitions");

@@ -11,6 +11,9 @@ import {
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { ADMIN_EMAILS, LIBRARIAN_EMAILS } from "../../constants/roles";
+import { registerUser } from "../../services/auth.service";
+import { createUserProfile } from "../../services/user.service";
 import { formValidator } from "../../validator/formValidator";
 
 interface FormData {
@@ -81,20 +84,50 @@ export default function Register() {
   };
 
   const handleSubmit = async () => {
+    
     if (!registerDataValidation()) {
       return;
     }
     setIsSubmitting(true);
     setErrors({});
 
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      alert("Registration successful!");
-    } catch (error) {
-      // setErrors({ general: "An error occurred. Please try again." });
-    } finally {
-      setIsSubmitting(false);
+    // try {
+    //   await new Promise((resolve) => setTimeout(resolve, 1500));
+    //   alert("Registration successful!");
+    // } catch (error) {
+    //   // setErrors({ general: "An error occurred. Please try again." });
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
+    try{
+      // ✅  role based on email
+    let role: "admin" | "librarian" | "student" = "student";
+
+    if(ADMIN_EMAILS.includes(formData.email)){
+      role="admin";
     }
+    else if(LIBRARIAN_EMAILS.includes(formData.email)){
+      role="librarian";
+    }
+
+    // Firebase Auth Signup
+      const userCredential=await registerUser(
+        formData.email,
+        formData.password
+      );
+
+      //  Create Firestore profile with computed role
+      await createUserProfile(userCredential.user.uid,{
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      role
+      });
+    }catch(error: any){
+      alert(error.message || "Registration failed");
+  } finally {
+    setIsSubmitting(false);
+  }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

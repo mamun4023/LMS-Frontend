@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
+import { loginUser } from "../../services/auth.service";
+import { getUserProfile } from "../../services/user.service";
 import { formValidator } from "../../validator/formValidator";
 
 interface FormData {
@@ -60,12 +62,45 @@ export default function LoginPage() {
 
     setErrors({});
 
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      navigate("/dashboard");
-    } catch (error) {
-      // setErrors({ general: "An error occurred. Please try again." });
-    } finally {
+    // try {
+    //   await new Promise((resolve) => setTimeout(resolve, 1500));
+    //   navigate("/dashboard");
+    // } catch (error) {
+    //   // setErrors({ general: "An error occurred. Please try again." });
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
+
+    try{
+      const userCredential=await loginUser(
+        formData.email,
+        formData.password
+      );
+
+      const uid=userCredential.user.uid;
+      const profile=await getUserProfile(uid);
+
+      if(!profile){
+        throw new Error("User profile not found");
+      }
+
+      // Role-based Redirection
+      if(profile.role === "admin"){
+        navigate("/admin");
+      }
+      else if(profile.role === "librarian"){
+        navigate("/librarian");
+      }
+      else{
+        navigate("/student");
+      }
+    }
+    catch(error:any){
+          setErrors({
+      general: error.message || "Login failed",
+    });
+    }
+    finally{
       setIsSubmitting(false);
     }
   };
