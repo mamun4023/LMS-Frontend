@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import { loginUser } from "../../services/auth.service";
-import { getUserProfile } from "../../services/user.service";
+import { loginUser, signInWithGithub, signInWithGoogle } from "../../services/auth.service";
+import { createUserProfile, getUserProfile } from "../../services/user.service";
 import { formValidator } from "../../validator/formValidator";
 
 interface FormData {
@@ -104,6 +104,82 @@ export default function LoginPage() {
       setIsSubmitting(false);
     }
   };
+
+  const handleGoogleLogin=async()=>{
+    setErrors({}); // error cleaning
+    try{
+      const result=await signInWithGoogle();
+      const user=result.user;
+
+      let profile=await getUserProfile(user.uid);
+
+
+      if(!profile){
+        await createUserProfile(user.uid,{
+          name: user.displayName || "Google User",
+          email: user.email || "",
+          role: "student",
+        });
+        profile=await getUserProfile(user.uid);
+      }
+
+      // Role-based navigation
+      if(profile?.role === "admin"){
+        navigate("/admin");
+      }
+       else if (profile?.role === "librarian") {
+        navigate("/librarian");
+      } else {
+        navigate("/student");
+      }
+    }
+    catch(error:any){
+       console.error("Google login error:", error);
+      setErrors({ 
+        general: error.code === "auth/popup-closed-by-user" 
+          ? "Sign-in popup was closed. Please try again."
+          : error.message || "Google sign-in failed"
+      });
+    }
+
+  };
+  const handleGithubLogin=async()=>{
+      setErrors({}); // error cleaning
+    try{
+       const result = await signInWithGithub();
+    const user = result.user;
+
+    let profile = await getUserProfile(user.uid);
+    if(!profile){
+        await createUserProfile(user.uid,{
+          name: user.displayName || "Github User",
+          email: user.email || "",
+          role: "student",
+        });
+        profile=await getUserProfile(user.uid);
+      }
+
+
+      // Role-based navigation
+      if(profile?.role === "admin"){
+        navigate("/admin");
+      }
+       else if (profile?.role === "librarian") {
+        navigate("/librarian");
+      } else {
+        navigate("/student");
+      }
+    }
+    catch(error:any){
+      console.error("Github login error:", error);
+      setErrors({ 
+        general: error.code === "auth/popup-closed-by-user"
+          ? "Sign-in popup was closed. Please try again."
+          : error.message || "Github sign-in failed"
+      });
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -279,6 +355,25 @@ export default function LoginPage() {
               )}
             </button>
           </div>
+
+          
+<div className="space-y-3 m-5">
+  <button
+    onClick={handleGoogleLogin}
+    className="w-full border border-border rounded-lg py-2 flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+  >
+    <img src="/Social-icons/google.png"  alt="Google" className="w-5 h-5" />
+    Continue with Google
+  </button>
+
+  <button
+    onClick={handleGithubLogin}
+    className="w-full border border-border rounded-lg py-2 flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+  >
+    <img src="/Social-icons/github.png" alt="Github" className="w-5 h-5" />
+     Continue with Github
+  </button>
+</div>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-text-secondary">

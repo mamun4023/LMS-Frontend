@@ -19,6 +19,7 @@ const Header = () => {
     return location.pathname.startsWith(path);
   };
 
+
   const navClass = (path: string) =>
     `transition ${
       isActive(path)
