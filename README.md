@@ -9,12 +9,16 @@ A modern, responsive Learning Management System built with React, TypeScript, an
   - Sign up, Sign in, and Password recovery
   - OTP verification
   - Role-based access control (Student, Librarian, Admin)
+  - **Social Login**
+    - Google Sign-In ✅
+    - GitHub Sign-In ✅
 
 - **Role-Specific Dashboards**
 
   - Student portal for course enrollment and progress tracking
   - Librarian interface for resource management
   - Admin panel for user and system
+  - Route protection using Firebase session state
 
 - **Theme Support (Light/Dark)**
 
@@ -41,6 +45,7 @@ A modern, responsive Learning Management System built with React, TypeScript, an
   - 🎨 TailwindCSS for utility-first styling
   - 🔄 Redux Toolkit for state management
   - 🛣️ React Router for navigation
+  - 🔥 Firebase Auth & Firestore
 
 ## 🛠️ Prerequisites
 
@@ -184,6 +189,7 @@ This project uses:
 
 ```
 src/
+├── auth/           # AuthContext & ProtectedRoute
 ├── components/     # Reusable UI components
 ├── pages/          # Page components
 │   ├── dashboard/  # Dashboard page
@@ -193,6 +199,8 @@ src/
 │   ├── admin/      # Admin components
 │   ├── student/    # Student components
 │   └── librarian/  # Librarian components
+├── services/       # Firebase services
+├── firebase/       # Firebase config
 ├── store/          # Redux store and API slices
 └── utils/          # Utility functions
 ```
@@ -257,3 +265,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - All contributors who helped shape this project
 - react-i18next for making internationalization simple
 - Firebase for providing excellent backend services
+
+
