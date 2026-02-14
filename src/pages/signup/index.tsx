@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   AlertCircle,
   BookOpen,
@@ -8,7 +9,7 @@ import {
   Phone,
   User,
 } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ADMIN_EMAILS, LIBRARIAN_EMAILS } from "../../constants/roles";
@@ -28,6 +29,7 @@ interface FormErrors {
   email?: string;
   phone?: string;
   password?: string;
+  general?: string;
 }
 
 export default function Register() {
@@ -91,14 +93,6 @@ export default function Register() {
     setIsSubmitting(true);
     setErrors({});
 
-    // try {
-    //   await new Promise((resolve) => setTimeout(resolve, 1500));
-    //   alert("Registration successful!");
-    // } catch (error) {
-    //   // setErrors({ general: "An error occurred. Please try again." });
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
     try{
       // ✅  role based on email
     let role: "admin" | "librarian" | "student" = "student";
@@ -123,18 +117,18 @@ export default function Register() {
       phone: formData.phone,
       role
       });
+
+      // Show success message
+      setErrors({ general: "Registration successful! You can now sign in." });
+      setFormData({ name: "", email: "", phone: "", password: "" });
     }catch(error: any){
-      alert(error.message || "Registration failed");
+      setErrors({ general: error.message || "Registration failed. Please try again." });
   } finally {
     setIsSubmitting(false);
   }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSubmit();
-    }
-  };
+
 
   return (
     <div className="min-h-screen bg-background  flex items-center justify-center p-4">
@@ -155,13 +149,25 @@ export default function Register() {
         {/* Login Card */}
         <div className="bg-surface rounded-2xl shadow-xl p-8">
           <div className="space-y-6">
-            {/* General Error Message */}
-            {/* {errors.general && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
-                <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-red-700">{errors.general}</p>
+            {/* General Error/Success Message */}
+            {errors.general && (
+              <div className={`rounded-lg p-4 flex items-start space-x-3 ${
+                errors.general.includes("successful")
+                  ? "bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800"
+                  : "bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800"
+              }`}>
+                <AlertCircle className={`w-5 h-5 mt-0.5 shrink-0 ${
+                  errors.general.includes("successful")
+                    ? "text-green-500"
+                    : "text-red-500"
+                }`} />
+                <p className={`text-sm ${
+                  errors.general.includes("successful")
+                    ? "text-green-600 dark:text-green-400"
+                    : "text-red-600 dark:text-red-400"
+                }`}>{errors.general}</p>
               </div>
-            )} */}
+            )}
 
             <div>
               <label

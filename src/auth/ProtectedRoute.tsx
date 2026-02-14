@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
+import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import type { RootState } from "../store";
+import { LoaderCircle } from 'lucide-react';
+
 
 export default function ProtectedRoute({
   children,
@@ -9,13 +12,22 @@ export default function ProtectedRoute({
   children: ReactNode;
   allowedRoles?: Array<"admin" | "librarian" | "student">;
 }) {
-  const { user, role, loading } = useAuth();
+  const { user,authChecked } = useSelector((state: RootState) => state.auth);
+  const { profile, loading } = useSelector((state: RootState) => state.user);
 
-  if (loading) return <div>Checking authentication...</div>;
-
+    // 🔥 WAIT until Firebase finishes checking auth
+  if (!authChecked) return <LoaderCircle />
+  // Not authenticated
   if (!user) return <Navigate to="/signin" replace />;
 
-  if (allowedRoles && !allowedRoles.includes(role!)) {
+  // Still fetching profile
+  if (loading) return <div>Loading...</div>;
+
+  // Profile missing AFTER loading
+  if (!profile) return <Navigate to="/signin" replace />;
+
+  // Role mismatch
+  if (allowedRoles && !allowedRoles.includes(profile.role)) {
     return <Navigate to="/unauthorized" replace />;
   }
 

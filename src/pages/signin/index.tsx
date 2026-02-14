@@ -1,11 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AlertCircle, BookOpen, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import { loginUser, signInWithGithub, signInWithGoogle } from "../../services/auth.service";
+import { useDispatch } from "react-redux";
+// import { signInWithGithub, signInWithGoogle } from "../../services/auth.service";
 import { createUserProfile, getUserProfile } from "../../services/user.service";
+import type { AppDispatch } from "../../store";
+import { loginUser, loginWithGithub, loginWithGoogle } from "../../store/slices/authSlice";
 import { formValidator } from "../../validator/formValidator";
+
 
 interface FormData {
   email: string;
@@ -29,6 +34,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSocialLoading, setIsSocialLoading] = useState<boolean>(false);
 
   const validateForm = () => {
     const isValidEmail = formValidator("email", formData.email).isValid;
@@ -54,131 +60,230 @@ export default function LoginPage() {
     return true;
   };
 
-  const handleSubmit = async () => {
-    if (!validateForm()) {
-      return;
-    }
-    setIsSubmitting(true);
+  // const handleSubmit = async () => {
+  //   if (!validateForm()) {
+  //     return;
+  //   }
+  //   setIsSubmitting(true);
 
-    setErrors({});
+  //   setErrors({});
 
-    // try {
-    //   await new Promise((resolve) => setTimeout(resolve, 1500));
-    //   navigate("/dashboard");
-    // } catch (error) {
-    //   // setErrors({ general: "An error occurred. Please try again." });
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
+  //   // try {
+  //   //   await new Promise((resolve) => setTimeout(resolve, 1500));
+  //   //   navigate("/dashboard");
+  //   // } catch (error) {
+  //   //   // setErrors({ general: "An error occurred. Please try again." });
+  //   // } finally {
+  //   //   setIsSubmitting(false);
+  //   // }
 
-    try{
-      const userCredential=await loginUser(
-        formData.email,
-        formData.password
-      );
+  //   try{
+  //     const userCredential=await loginUser(
+  //       formData.email,
+  //       formData.password
+  //     );
 
-      const uid=userCredential.user.uid;
-      const profile=await getUserProfile(uid);
+  //     const uid=userCredential.user.uid;
+  //     const profile=await getUserProfile(uid);
 
-      if(!profile){
-        throw new Error("User profile not found");
-      }
+  //     if(!profile){
+  //       throw new Error("User profile not found");
+  //     }
 
-      // Role-based Redirection
-      if(profile.role === "admin"){
-        navigate("/admin");
-      }
-      else if(profile.role === "librarian"){
-        navigate("/librarian");
-      }
-      else{
-        navigate("/student");
-      }
-    }
-    catch(error:any){
-          setErrors({
-      general: error.message || "Login failed",
-    });
-    }
-    finally{
-      setIsSubmitting(false);
-    }
-  };
+  //     // Role-based Redirection
+  //     if(profile.role === "admin"){
+  //       navigate("/admin");
+  //     }
+  //     else if(profile.role === "librarian"){
+  //       navigate("/librarian");
+  //     }
+  //     else{
+  //       navigate("/student");
+  //     }
+  //   }
+  //   catch(error:any){
+  //         setErrors({
+  //     general: error.message || "Login failed",
+  //   });
+  //   }
+  //   finally{
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
-  const handleGoogleLogin=async()=>{
-    setErrors({}); // error cleaning
-    try{
-      const result=await signInWithGoogle();
-      const user=result.user;
+  const dispatch = useDispatch<AppDispatch>();
+const handleSubmit = async () => {
+  if (!validateForm()) return;
 
-      let profile=await getUserProfile(user.uid);
+  setIsSubmitting(true);
+  setErrors({});
+
+  try {
+    const result = await dispatch(
+      loginUser({
+        email: formData.email,
+        password: formData.password,
+      })
+    ).unwrap();
+
+    // result is Firebase User
+    const profile = await getUserProfile(result.uid);
+
+    if (!profile) throw new Error("User profile not found");
+
+    if (profile.role === "admin") navigate("/admin", { replace: true });
+    else if (profile.role === "librarian") navigate("/librarian", { replace: true });
+    else navigate("/student", { replace: true });
+
+  } catch (error: any) {
+    setErrors({ general: error || "Login failed" });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+  // const handleGoogleLogin=async()=>{
+  //   setErrors({}); // error cleaning
+  //   try{
+  //     const result=await signInWithGoogle();
+  //     const user=result.user;
+
+  //     let profile=await getUserProfile(user.uid);
 
 
-      if(!profile){
-        await createUserProfile(user.uid,{
-          name: user.displayName || "Google User",
-          email: user.email || "",
-          role: "student",
-        });
-        profile=await getUserProfile(user.uid);
-      }
+  //     if(!profile){
+  //       await createUserProfile(user.uid,{
+  //         name: user.displayName || "Google User",
+  //         email: user.email || "",
+  //         role: "student",
+  //       });
+  //       profile=await getUserProfile(user.uid);
+  //     }
 
-      // Role-based navigation
-      if(profile?.role === "admin"){
-        navigate("/admin");
-      }
-       else if (profile?.role === "librarian") {
-        navigate("/librarian");
-      } else {
-        navigate("/student");
-      }
-    }
-    catch(error:any){
-       console.error("Google login error:", error);
-      setErrors({ 
-        general: error.code === "auth/popup-closed-by-user" 
-          ? "Sign-in popup was closed. Please try again."
-          : error.message || "Google sign-in failed"
+  //     // Role-based navigation
+  //     if(profile?.role === "admin"){
+  //       navigate("/admin");
+  //     }
+  //      else if (profile?.role === "librarian") {
+  //       navigate("/librarian");
+  //     } else {
+  //       navigate("/student");
+  //     }
+  //   }
+  //   catch(error:any){
+  //      console.error("Google login error:", error);
+  //     setErrors({ 
+  //       general: error.code === "auth/popup-closed-by-user" 
+  //         ? "Sign-in popup was closed. Please try again."
+  //         : error.message || "Google sign-in failed"
+  //     });
+  //   }
+
+  // };
+ const handleGoogleLogin = async () => {
+  setIsSocialLoading(true);
+  setErrors({});
+  try {
+    const result = await dispatch(loginWithGoogle()).unwrap();
+    
+    // Fetch or create user profile
+    let profile = await getUserProfile(result.uid);
+    
+    if (!profile) {
+      // Create default student profile for new social login users
+      await createUserProfile(result.uid, {
+        name: result.displayName || "Google User",
+        email: result.email || "",
+        role: "student",
       });
+      profile = await getUserProfile(result.uid);
     }
 
-  };
-  const handleGithubLogin=async()=>{
-      setErrors({}); // error cleaning
-    try{
-       const result = await signInWithGithub();
-    const user = result.user;
-
-    let profile = await getUserProfile(user.uid);
-    if(!profile){
-        await createUserProfile(user.uid,{
-          name: user.displayName || "Github User",
-          email: user.email || "",
-          role: "student",
-        });
-        profile=await getUserProfile(user.uid);
-      }
-
-
-      // Role-based navigation
-      if(profile?.role === "admin"){
-        navigate("/admin");
-      }
-       else if (profile?.role === "librarian") {
-        navigate("/librarian");
-      } else {
-        navigate("/student");
-      }
+    // Role-based navigation
+    if (profile?.role === "admin") {
+      navigate("/admin", { replace: true });
+    } else if (profile?.role === "librarian") {
+      navigate("/librarian", { replace: true });
+    } else {
+      navigate("/student", { replace: true });
     }
-    catch(error:any){
-      console.error("Github login error:", error);
-      setErrors({ 
-        general: error.code === "auth/popup-closed-by-user"
-          ? "Sign-in popup was closed. Please try again."
-          : error.message || "Github sign-in failed"
+  } catch (error: any) {
+    setErrors({ general: error?.message || "Google sign-in failed" });
+  } finally {
+    setIsSocialLoading(false);
+  }
+};
+
+
+  // const handleGithubLogin=async()=>{
+  //     setErrors({}); // error cleaning
+  //   try{
+  //      const result = await signInWithGithub();
+  //   const user = result.user;
+
+  //   let profile = await getUserProfile(user.uid);
+  //   if(!profile){
+  //       await createUserProfile(user.uid,{
+  //         name: user.displayName || "Github User",
+  //         email: user.email || "",
+  //         role: "student",
+  //       });
+  //       profile=await getUserProfile(user.uid);
+  //     }
+
+
+  //     // Role-based navigation
+  //     if(profile?.role === "admin"){
+  //       navigate("/admin");
+  //     }
+  //      else if (profile?.role === "librarian") {
+  //       navigate("/librarian");
+  //     } else {
+  //       navigate("/student");
+  //     }
+  //   }
+  //   catch(error:any){
+  //     console.error("Github login error:", error);
+  //     setErrors({ 
+  //       general: error.code === "auth/popup-closed-by-user"
+  //         ? "Sign-in popup was closed. Please try again."
+  //         : error.message || "Github sign-in failed"
+  //     });
+  //   }
+  // };
+const handleGithubLogin = async () => {
+  setIsSocialLoading(true);
+  setErrors({});
+  try {
+    const result = await dispatch(loginWithGithub()).unwrap();
+    
+    // Fetch or create user profile
+    let profile = await getUserProfile(result.uid);
+    
+    if (!profile) {
+      // Create default student profile for new social login users
+      await createUserProfile(result.uid, {
+        name: result.displayName || "GitHub User",
+        email: result.email || "",
+        role: "student",
       });
+      profile = await getUserProfile(result.uid);
     }
-  };
+
+    // Role-based navigation
+    if (profile?.role === "admin") {
+      navigate("/admin", { replace: true });
+    } else if (profile?.role === "librarian") {
+      navigate("/librarian", { replace: true });
+    } else {
+      navigate("/student", { replace: true });
+    }
+  } catch (error: any) {
+    setErrors({ general: error?.message || "GitHub sign-in failed" });
+  } finally {
+    setIsSocialLoading(false);
+  }
+};
+
 
 
   return (
@@ -360,18 +465,66 @@ export default function LoginPage() {
 <div className="space-y-3 m-5">
   <button
     onClick={handleGoogleLogin}
-    className="w-full border border-border rounded-lg py-2 flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+    disabled={isSocialLoading}
+    className="w-full border border-border rounded-lg py-2 flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
   >
-    <img src="/Social-icons/google.png"  alt="Google" className="w-5 h-5" />
-    Continue with Google
+    {isSocialLoading ? (
+      <svg
+        className="animate-spin w-5 h-5"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+    ) : (
+      <img src="/Social-icons/google.png" alt="Google" className="w-5 h-5" />
+    )}
+    {isSocialLoading ? "Signing in..." : "Continue with Google"}
   </button>
 
   <button
     onClick={handleGithubLogin}
-    className="w-full border border-border rounded-lg py-2 flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+    disabled={isSocialLoading}
+    className="w-full border border-border rounded-lg py-2 flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
   >
-    <img src="/Social-icons/github.png" alt="Github" className="w-5 h-5" />
-     Continue with Github
+    {isSocialLoading ? (
+      <svg
+        className="animate-spin w-5 h-5"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+    ) : (
+      <img src="/Social-icons/github.png" alt="Github" className="w-5 h-5" />
+    )}
+    {isSocialLoading ? "Signing in..." : "Continue with Github"}
   </button>
 </div>
 

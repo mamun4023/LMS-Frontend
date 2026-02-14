@@ -3,15 +3,20 @@ import {
   Book,
   CheckCircle,
   Edit,
+  LogOut,
   Plus,
   Search,
   Trash2,
   TrendingUp,
   Users,
-  X,
+  X
 } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import type { AppDispatch } from "../../store";
+import { logoutUser } from "../../store/slices/authSlice";
 
 // Types
 interface BookItem {
@@ -161,6 +166,15 @@ const LibrarianDashboard: React.FC = () => {
 
   const [formData, setFormData] = useState<Partial<BookItem | Member>>({});
 
+  const dispatch = useDispatch<AppDispatch>();
+const navigate = useNavigate();
+
+const handleLogout = async () => {
+  await dispatch(logoutUser());
+  navigate("/signin");
+};
+
+
   const stats: Stats = {
     totalBooks: books.length,
     availableBooks: books.filter((b) => b.status === "available").length,
@@ -234,17 +248,26 @@ const LibrarianDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-surface border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold">
-            {t("auth.libraryManagementSystem")}
-          </h1>
-          <p className="text-text-secondary mt-1">
-            {t("dashboard.librarianDashboard")}
-          </p>
-        </div>
-      </header>
+       {/* Header */}
+  <header className="bg-surface border-b border-border">
+    <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
+      <div>
+        <h1 className="text-3xl font-bold">
+          {t("auth.libraryManagementSystem")}
+        </h1>
+        <p className="text-text-secondary mt-1">
+          {t("dashboard.librarianDashboard")}
+        </p>
+      </div>
+      <button
+        onClick={handleLogout}
+        className="p-2 text-text-secondary hover:bg-surface/70 rounded-lg transition flex items-center gap-2"
+      >
+        <LogOut className="w-5 h-5" />
+        <span>{t("dashboard.logout")}</span>
+      </button>
+    </div>
+  </header>
 
       {/* Navigation Tabs */}
       <div className="bg-surface shadow">

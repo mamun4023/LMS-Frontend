@@ -12,7 +12,11 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import type { AppDispatch } from "../../store";
+import { logoutUser } from "../../store/slices/authSlice";
+
 
 interface BorrowedBook {
   id: number;
@@ -42,7 +46,7 @@ interface Notification {
 }
 
 const StudentDashboard: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState<
     "overview" | "borrowed" | "history" | "favorites"
@@ -67,6 +71,14 @@ const StudentDashboard: React.FC = () => {
     email: t("student.demoStudent.email"),
     memberSince: t("student.demoStudent.memberSince"),
   };
+
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+const handleLogout = async () => {
+  await dispatch(logoutUser());
+  navigate("/signin");
+};
 
   const borrowedBooks: BorrowedBook[] = [
     {
@@ -240,7 +252,7 @@ const StudentDashboard: React.FC = () => {
                   </p>
                 </div>
                 <button
-                  onClick={() => navigate("/signin")}
+                  onClick={handleLogout}
                   className="p-2 text-text-secondary hover:bg-surface/70 rounded-lg transition"
                 >
                   <LogOut className="w-5 h-5" />

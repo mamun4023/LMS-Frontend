@@ -6,6 +6,7 @@ import {
   Clock,
   Edit,
   Eye,
+  LogOut,
   Plus,
   Search,
   Settings,
@@ -15,7 +16,11 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import i18n from "../../i18n";
+import type { AppDispatch } from "../../store";
+import { logoutUser } from "../../store/slices/authSlice";
 
 interface Stats {
   totalBooks: number;
@@ -196,6 +201,13 @@ export default function AdminDashboard() {
         return <AlertCircle className="w-5 h-5 text-red-500" />;
     }
   };
+  const dispatch = useDispatch<AppDispatch>();
+const navigate = useNavigate();
+
+const handleLogout = async () => {
+  await dispatch(logoutUser());
+  navigate("/signin");
+};
 
   const renderOverview = () => (
     <div className="space-y-6">
@@ -673,9 +685,13 @@ export default function AdminDashboard() {
               <span className="text-sm text-text-secondary">
                 {t("dashboard.adminUser")}
               </span>
-              <button className="px-4 py-2 text-sm bg-surface text-text-primary rounded-lg hover:bg-surface/70">
-                {t("dashboard.logout")}
-              </button>
+           <button
+  onClick={handleLogout}
+  className="p-2 text-text-secondary hover:bg-surface/70 rounded-lg transition"
+>
+  <LogOut className="w-5 h-5" />
+</button>
+
             </div>
           </div>
         </div>

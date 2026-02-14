@@ -1,8 +1,10 @@
+import { onAuthStateChanged } from "firebase/auth";
 import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
-import { AuthProvider } from "./auth/AuthContext";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import { auth } from "./firebase/firebase";
 import "./i18n";
 import "./index.css";
 import About from "./pages/about";
@@ -19,6 +21,9 @@ import SignUp from "./pages/signup";
 import AdminDashboard from "./role/admin";
 import LibrarianDashboard from "./role/librarian";
 import StudentDashboard from "./role/student";
+import { store } from "./store";
+import { setUser, toSerializableUser } from "./store/slices/authSlice";
+import { fetchProfile } from "./store/slices/userSlice";
 import { applyTheme, getInitialTheme } from "./theme";
 
 /* ---------------- ROUTER ---------------- */
@@ -120,9 +125,22 @@ if (localStorage.theme === "dark") {
 
 /* -------- APP BOOTSTRAP -------- */
 
+onAuthStateChanged(auth,(user)=>{
+  // 🔥 Convert Firebase User to serializable format before storing in Redux
+  if (user) {
+    store.dispatch(setUser(toSerializableUser(user)));
+    store.dispatch(fetchProfile(user.uid));
+  } else {
+    store.dispatch(setUser(null));
+    store.dispatch({type: "user/clearProfile"});
+  }
+})
 createRoot(document.getElementById("root")!).render(
-  <AuthProvider>
+  // <AuthProvider>
+  <Provider store={store}>
+
     <RouterProvider router={router} />
-    {/* <AppRouter/> */}
-  </AuthProvider>
+  </Provider>
+    // {/* <AppRouter/> */}
+  // </AuthProvider>
 );
