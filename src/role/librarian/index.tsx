@@ -1,3 +1,4 @@
+ 
 import {
   AlertCircle,
   Book,
@@ -11,25 +12,26 @@ import {
   Users,
   X
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import type { AppDispatch } from "../../store";
+import type { AppDispatch, RootState } from "../../store";
 import { logoutUser } from "../../store/slices/authSlice";
+import { addBook, editBook, fetchBooks, removeBook } from "../../store/slices/bookSlice";
+import { fetchUsers } from "../../store/slices/userListSlice";
 
 // Types
 interface BookItem {
-  id: number;
+  id?: string;
   title: string;
   author: string;
   isbn: string;
-  status: "available" | "checked-out";
-  category: string;
+  copies: number;
 }
 
 interface Member {
-  id: number;
+  id: string;
   name: string;
   email: string;
   phone: string;
@@ -57,7 +59,7 @@ interface StatCardProps {
 }
 
 type TabType = "overview" | "books" | "members" | "checkouts";
-type ModalType = "addBook" | "addMember" | "";
+type ModalType = "addBook" | "";
 
 interface Stats {
   totalBooks: number;
@@ -66,165 +68,6 @@ interface Stats {
   totalMembers: number;
   overdueBooks: number;
 }
-
-const LibrarianDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>("overview");
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [modalType, setModalType] = useState<ModalType>("");
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const { t, i18n } = useTranslation();
-
-  const formatNumber = (value: number) =>
-    new Intl.NumberFormat(i18n.language).format(value);
-
-  const isBangla = i18n.language?.toLowerCase().startsWith("bn");
-
-  const formatCheckoutStatus = (status: Checkout["status"]) => {
-    if (!isBangla) return status;
-    return status === "active" ? "সক্রিয়" : "বিলম্বিত";
-  };
-  const [books, setBooks] = useState<BookItem[]>([
-    {
-      id: 1,
-      title: t("bookTitles.toKillAMockingbird"),
-      author: t("bookTitles.harperLee"),
-      isbn: t("bookTitles.isbnMockingbird"),
-      status: "available",
-      category: t("bookTitles.fiction"),
-    },
-    {
-      id: 2,
-      title: t("bookTitles.nineteenEightyFour"),
-      author: t("bookTitles.georgeOrwell"),
-      isbn: t("bookTitles.isbn1984"),
-      status: "checked-out",
-      category: t("bookTitles.fiction"),
-    },
-    {
-      id: 3,
-      title: t("bookTitles.theGreatGatsby"),
-      author: t("bookTitles.theGreatGatsby"),
-      isbn: t("bookTitles.isbnGreatGatsby"),
-      status: "available",
-      category: t("bookTitles.fiction"),
-    },
-    {
-      id: 4,
-      title: t("bookTitles.sapiens"),
-      author: t("bookTitles.yuvalNoahHarari"),
-      isbn: t("bookTitles.sapiensisbn"),
-      status: "checked-out",
-      category: t("bookTitles.nonFiction"),
-    },
-  ]);
-
-  const [members, setMembers] = useState<Member[]>([
-    {
-      id: 1,
-      name: t("dashboard.userList.librarians.john"),
-      email: t("dashboard.userList.librarians.johnEmail"),
-      phone: t("dashboard.userList.librarians.johnPhone"),
-      booksCheckedOut: 2,
-      joinDate: t("dashboard.userList.librarians.johnJoinDate"),
-    },
-    {
-      id: 2,
-      name: t("dashboard.userList.librarians.jane"),
-      email: t("dashboard.userList.librarians.janeEmail"),
-      phone: t("dashboard.userList.librarians.janePhone"),
-      booksCheckedOut: 1,
-      joinDate: t("dashboard.userList.librarians.janeJoinDate"),
-    },
-    {
-      id: 3,
-      name: t("dashboard.userList.librarians.bob"),
-      email: t("dashboard.userList.librarians.bobEmail"),
-      phone: t("dashboard.userList.librarians.bobPhone"),
-      booksCheckedOut: 0,
-      joinDate: t("dashboard.userList.librarians.bobJoinDate"),
-    },
-  ]);
-
-  const [checkouts, setCheckouts] = useState<Checkout[]>([
-    {
-      id: 1,
-      bookTitle: t("dashboard.loanRecords.record1.bookTitle"),
-      memberName: t("dashboard.loanRecords.record1.memberName"),
-      checkoutDate: t("dashboard.loanRecords.record1.checkoutDate"),
-      dueDate: t("dashboard.loanRecords.record1.dueDate"),
-      status: "active",
-    },
-    {
-      id: 2,
-      bookTitle: t("dashboard.loanRecords.record2.bookTitle"),
-      memberName: t("dashboard.loanRecords.record2.memberName"),
-      checkoutDate: t("dashboard.loanRecords.record2.checkoutDate"),
-      dueDate: t("dashboard.loanRecords.record2.dueDate"),
-      status: "overdue",
-    },
-  ]);
-
-  const [formData, setFormData] = useState<Partial<BookItem | Member>>({});
-
-  const dispatch = useDispatch<AppDispatch>();
-const navigate = useNavigate();
-
-const handleLogout = async () => {
-  await dispatch(logoutUser());
-  navigate("/signin");
-};
-
-
-  const stats: Stats = {
-    totalBooks: books.length,
-    availableBooks: books.filter((b) => b.status === "available").length,
-    checkedOutBooks: books.filter((b) => b.status === "checked-out").length,
-    totalMembers: members.length,
-    overdueBooks: checkouts.filter((c) => c.status === "overdue").length,
-  };
-
-  const openModal = (
-    type: ModalType,
-    data: Partial<BookItem | Member> = {}
-  ): void => {
-    setModalType(type);
-    setFormData(data);
-    setShowModal(true);
-  };
-
-  const closeModal = (): void => {
-    setShowModal(false);
-    setFormData({});
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    if (modalType === "addBook") {
-      const newBook: BookItem = {
-        ...(formData as Omit<BookItem, "id" | "status">),
-        id: Date.now(),
-        status: "available",
-      } as BookItem;
-      setBooks([...books, newBook]);
-    } else if (modalType === "addMember") {
-      const newMember: Member = {
-        ...(formData as Omit<Member, "id" | "booksCheckedOut" | "joinDate">),
-        id: Date.now(),
-        booksCheckedOut: 0,
-        joinDate: new Date().toISOString().split("T")[0],
-      } as Member;
-      setMembers([...members, newMember]);
-    }
-    closeModal();
-  };
-
-  const deleteBook = (id: number): void => {
-    setBooks(books.filter((b) => b.id !== id));
-  };
-
-  const deleteMember = (id: number): void => {
-    setMembers(members.filter((m) => m.id !== id));
-  };
 
   const StatCard: React.FC<StatCardProps> = ({
     icon: Icon,
@@ -245,6 +88,128 @@ const handleLogout = async () => {
       </div>
     </div>
   );
+const LibrarianDashboard: React.FC = () => {
+    const dispatch = useDispatch<AppDispatch>();
+const navigate = useNavigate();
+
+  const [activeTab, setActiveTab] = useState<TabType>("overview");
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<ModalType>("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const { t, i18n } = useTranslation();
+
+  const formatNumber = (value: number) =>
+    new Intl.NumberFormat(i18n.language).format(value);
+
+  const isBangla = i18n.language?.toLowerCase().startsWith("bn");
+
+  const formatCheckoutStatus = (status: Checkout["status"]) => {
+    if (!isBangla) return status;
+    return status === "active" ? "সক্রিয়" : "বিলম্বিত";
+  };
+  
+  // Books
+  const { books } = useSelector((state: RootState) => state.books);
+
+  useEffect(() => {
+  dispatch(fetchBooks());
+}, [dispatch]);
+
+
+const { users } = useSelector((state: RootState) => state.usersList);
+
+const members = users.filter((u) => u.role === "student");
+
+useEffect(() => {
+  dispatch(fetchUsers());
+}, [dispatch]);
+
+  const [checkouts, setCheckouts] = useState<Checkout[]>([
+    {
+      id: 1,
+      bookTitle: t("dashboard.loanRecords.record1.bookTitle"),
+      memberName: t("dashboard.loanRecords.record1.memberName"),
+      checkoutDate: t("dashboard.loanRecords.record1.checkoutDate"),
+      dueDate: t("dashboard.loanRecords.record1.dueDate"),
+      status: "active",
+    },
+    {
+      id: 2,
+      bookTitle: t("dashboard.loanRecords.record2.bookTitle"),
+      memberName: t("dashboard.loanRecords.record2.memberName"),
+      checkoutDate: t("dashboard.loanRecords.record2.checkoutDate"),
+      dueDate: t("dashboard.loanRecords.record2.dueDate"),
+      status: "overdue",
+    },
+  ]);
+
+ const [formData, setFormData] = useState<Partial<BookItem>>({});
+
+
+const handleLogout = async () => {
+  await dispatch(logoutUser());
+  navigate("/signin");
+};
+
+
+  const stats: Stats = {
+    totalBooks: books.length,
+    availableBooks: books.filter((b) => b.copies > 0).length,
+    checkedOutBooks: books.filter((b) => b.copies === 0).length,
+    totalMembers: members.length,
+    overdueBooks: checkouts.filter((c) => c.status === "overdue").length,
+  };
+
+  const openModal = (
+  type: ModalType,
+  data: Partial<BookItem> = {}
+): void => {
+    setModalType(type);
+    setFormData(data);
+    setShowModal(true);
+  };
+
+  const closeModal = (): void => {
+  setShowModal(false);
+  setFormData({});
+  setModalType("");
+};
+
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  e.preventDefault();
+
+  if (modalType === "addBook") {
+    if (formData.id) {
+      // ✅ UPDATE
+      dispatch(
+        editBook({
+          id: formData.id,
+          data: {
+            title: formData.title || "",
+            author: formData.author || "",
+            isbn: formData.isbn || "",
+            copies: formData.copies || 0,
+},
+        })
+      );
+    } else {
+      // ✅ CREATE
+     dispatch(
+  addBook({
+    title: formData.title || "",
+    author: formData.author || "",
+    isbn: formData.isbn || "",
+    copies: formData.copies || 0,
+  })
+);
+    }
+  }
+
+  closeModal();
+};
+
+
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -380,7 +345,7 @@ const handleLogout = async () => {
               </button>
             </div>
 
-            <div className="bg-surface rounded-lg shadow overflow-hidden">
+            <div className="bg-surface rounded-lg shadow overflow-x-auto">
               <table className="min-w-full divide-y divide-border">
                 <thead className="bg-surface">
                   <tr>
@@ -392,9 +357,6 @@ const handleLogout = async () => {
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("catalog.isbn2")}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                      {t("common.category")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                       {t("catalog.status")}
@@ -417,7 +379,7 @@ const handleLogout = async () => {
                     )
                     .map((book) => (
                       <tr key={book.id}>
-                        <td className="px-6 py-4 whitespace-nowrap font-medium">
+                       <td className="px-6 py-4 font-medium max-w-xs truncate">
                           {book.title}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
@@ -426,33 +388,43 @@ const handleLogout = async () => {
                         <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
                           {book.isbn}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
-                          {book.category}
-                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              book.status === "available"
-                                ? "bg-green-500/10 text-green-500"
-                                : "bg-yellow-500/10 text-yellow-500"
-                            }`}
-                          >
-                            {book.status === "available"
-                              ? t("catalog.available")
-                              : t("catalog.checkedout")}
-                          </span>
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          book.copies > 0
+                            ? "bg-green-500/10 text-green-500"
+                            : "bg-red-500/10 text-red-500"
+                        }`}
+                      >
+                        {book.copies > 0 ? t("catalog.available") : t("catalog.checkedout")}
+                                    </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          <button className="text-primary hover:text-primary/80 mr-3">
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => deleteBook(book.id)}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </td>
+                      <div className="flex items-center gap-3">
+
+                        <button
+                          onClick={() => openModal("addBook", book)}
+                          className="p-2 rounded-lg bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition"
+                        >
+                          <Edit className="w-5 h-5" />
+                        </button>
+
+                        <button
+                          onClick={() => {
+                          if (!book.id) return;
+
+                          const confirmDelete = confirm("Delete this book?");
+                          if (!confirmDelete) return;
+
+                          dispatch(removeBook(book.id));
+                        }}
+                          className="p-2 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/20 transition"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+
+                      </div>
+                    </td>
                       </tr>
                     ))}
                 </tbody>
@@ -468,13 +440,15 @@ const handleLogout = async () => {
               <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
                 <input
-                  type="text"
-                  placeholder={t("search.searchMembers")}
+                 type="text"
+                placeholder={t("search.searchMembers")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
               <button
-                onClick={() => openModal("addMember")}
+               onClick={() => alert("Only admin can add users")}
                 className="flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
               >
                 <Plus className="w-5 h-5 mr-2" />
@@ -507,7 +481,11 @@ const handleLogout = async () => {
                   </tr>
                 </thead>
                 <tbody className="bg-surface divide-y divide-border">
-                  {members.map((member) => (
+                  {members
+                    .filter((m) =>
+                      m.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      m.email?.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).map((member) => (
                     <tr key={member.id}>
                       <td className="px-6 py-4 whitespace-nowrap font-medium">
                         {member.name}
@@ -516,24 +494,18 @@ const handleLogout = async () => {
                         {member.email}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
-                        {member.phone}
+                        { "-"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
-                        {formatNumber(member.booksCheckedOut)}
+                        0
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
-                        {member.joinDate}
+                        {"-"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <button className="text-primary hover:text-primary/80 mr-3">
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => deleteMember(member.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <span className="text-gray-400 text-sm">
+                          {t("dashboard.viewOnly")}
+                        </span>
                       </td>
                     </tr>
                   ))}
@@ -619,7 +591,11 @@ const handleLogout = async () => {
           <div className="bg-surface rounded-lg p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">
-                {modalType === "addBook" ? "Add New Book" : "Add New Member"}
+               {modalType === "addBook"
+                ? formData.id
+                  ? "Edit Book"
+                  : "Add New Book"
+                : ""}
               </h3>
               <button
                 onClick={closeModal}
@@ -628,21 +604,23 @@ const handleLogout = async () => {
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {modalType === "addBook" ? (
                 <>
                   <input
-                    type="text"
-                    placeholder={t("student.bookTitle")}
-                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
-                    onChange={(e) =>
-                      setFormData({ ...formData, title: e.target.value })
-                    }
-                    required
-                  />
+                  type="text"
+                  placeholder={t("student.bookTitle")}
+                 value={formData.title || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
+                  required
+/>
                   <input
                     type="text"
                     placeholder="Author"
+                    value={formData.author || ""}
                     className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
                     onChange={(e) =>
                       setFormData({ ...formData, author: e.target.value })
@@ -652,53 +630,27 @@ const handleLogout = async () => {
                   <input
                     type="text"
                     placeholder={t("catalog.isbn2")}
+                    value={formData.isbn || ""}
                     className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
                     onChange={(e) =>
                       setFormData({ ...formData, isbn: e.target.value })
                     }
                     required
                   />
+
                   <input
-                    type="text"
-                    placeholder={t("common.category")}
-                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
-                    onChange={(e) =>
-                      setFormData({ ...formData, category: e.target.value })
-                    }
-                    required
-                  />
+                  type="number"
+                  placeholder="Copies"
+                  value={formData.copies || 0}
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
+                  onChange={(e) =>
+                    setFormData({ ...formData, copies: Number(e.target.value) })
+                  }
+                  required
+                />
+                 
                 </>
-              ) : (
-                <>
-                  <input
-                    type="text"
-                    placeholder={t("profile.memberName")}
-                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    required
-                  />
-                  <input
-                    type="email"
-                    placeholder={t("profile.email")}
-                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    required
-                  />
-                  <input
-                    type="tel"
-                    placeholder={t("profile.phone")}
-                    className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                    required
-                  />
-                </>
-              )}
+              ) : null}
               <div className="flex space-x-3 pt-4">
                 <button
                   type="button"
@@ -708,14 +660,13 @@ const handleLogout = async () => {
                   {t("student.cancel")}
                 </button>
                 <button
-                  type="button"
-                  onClick={(e: any) => handleSubmit(e)}
+                  type="submit"
                   className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
                 >
-                  {t("student.add")}
+                  {formData.id ? "Update" : t("student.add")}
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       )}
