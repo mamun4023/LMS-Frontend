@@ -12,9 +12,7 @@ import Catalog from "./pages/catalog";
 import Dashboard from "./pages/dashboard";
 import Events from "./pages/events";
 import ForgotPassword from "./pages/forgotPassword";
-import OtpVerify from "./pages/otp";
 import ProfileUpdate from "./pages/profile";
-import ResetPassword from "./pages/resetPassword";
 import Service from "./pages/services";
 import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
@@ -39,14 +37,6 @@ const router = createBrowserRouter([
   {
     path: "/signin",
     element: <SignIn />,
-  },
-  {
-    path: "/reset-password",
-    element: <ResetPassword />,
-  },
-  {
-    path: "/otp-verify",
-    element: <OtpVerify />,
   },
   {
     path: "/forgot-password",
@@ -74,7 +64,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <ProfileUpdate />,
+    element: (
+      <ProtectedRoute>
+        <ProfileUpdate />
+      </ProtectedRoute>
+    ),
   },
   {
     path:"/student",
@@ -126,7 +120,7 @@ if (localStorage.theme === "dark") {
 /* -------- APP BOOTSTRAP -------- */
 
 onAuthStateChanged(auth,(user)=>{
-  // 🔥 Convert Firebase User to serializable format before storing in Redux
+  // Convert Firebase User to serializable format before storing in Redux
   if (user) {
     store.dispatch(setUser(toSerializableUser(user)));
     store.dispatch(fetchProfile(user.uid));

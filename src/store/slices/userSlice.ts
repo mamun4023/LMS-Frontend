@@ -1,27 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import type { UserProfile } from "../../services/user.service";
 import {
-    createUserProfile,
-    deleteUserProfile,
-    getUserProfile,
-    updateUserProfile
+  createUserProfile,
+  deleteUserProfile,
+  getUserProfile,
+  updateUserProfile,
 } from "../../services/user.service";
 import { logoutUser } from "./authSlice";
 
+
 interface UserState {
-  profile: any;
+  // profile: any;
+  // loading: boolean;
+  // error: string | null;
+  profile: UserProfile | null;
   loading: boolean;
   error: string | null;
+  success: string|null;
 }
 
 const initialState: UserState = {
   profile: null,
   loading: false,
   error: null,
+  success:null,
 };
 
 /* FETCH */
-export const fetchProfile = createAsyncThunk(
+export const fetchProfile = createAsyncThunk<UserProfile | null, string>(
   "user/fetchProfile",
   async (uid: string, { rejectWithValue }) => {
     try {

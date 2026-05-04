@@ -1,5 +1,13 @@
-import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
+import { ADMIN_EMAILS, LIBRARIAN_EMAILS } from "../constants/roles";
 import { db } from "../firebase/firebase";
+export interface UserProfile {
+  name: string;
+  email: string;
+  phone?: string;
+  role: "admin" | "student" | "librarian";
+  avatar?: string;
+}
 
 // Create userprofile in firestore
 export const createUserProfile=async(
@@ -15,10 +23,20 @@ export const createUserProfile=async(
 };
 
 // get userprofile from firestore
-export const getUserProfile=async(uid:string)=>{
-    const snap=await getDoc(doc(db,"users",uid));
-    return snap.exists()? snap.data():null;
+export const getUserProfile=async(uid:string): Promise<UserProfile | null> => {
+    const snap = await getDoc(doc(db, "users", uid));
+    return snap.exists() ? (snap.data() as UserProfile) : null;
 }
+
+export const resolveRoleForEmail=(
+  email:string
+): "admin" | "librarian" | "student" => {
+  if (!email) return "student";
+
+  if (ADMIN_EMAILS.includes(email)) return "admin";
+  if (LIBRARIAN_EMAILS.includes(email)) return "librarian";
+  return "student";
+};
 
 // update user profile fields
 export const updateUserProfile=async(
@@ -38,3 +56,22 @@ export const updateUserProfile=async(
 export const deleteUserProfile=async(uid:string)=>{
     await deleteDoc(doc(db,"users",uid));
 }
+
+// new 
+export const getUsers = async (): Promise<(UserProfile & { id: string })[]> => {
+  const snapshot = await getDocs(collection(db, "users"));
+
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as UserProfile),
+  }));
+};
+
+export const updateUserRole=async (uid:string,role:string)=>{
+    const ref=doc(db,"users",uid);
+    return await updateDoc(ref,{role});
+}
+
+export const deleteUserRoleProfile = async (uid: string) => {
+  await deleteDoc(doc(db, "users", uid));
+};

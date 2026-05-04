@@ -12,9 +12,9 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import type { AppDispatch } from "../../store";
+import type { AppDispatch, RootState } from "../../store";
 import { logoutUser } from "../../store/slices/authSlice";
 
 
@@ -47,6 +47,7 @@ interface Notification {
 
 const StudentDashboard: React.FC = () => {
   // const navigate = useNavigate();
+  const {profile}=useSelector((state:RootState)=>state.user);
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState<
     "overview" | "borrowed" | "history" | "favorites"
@@ -66,9 +67,9 @@ const StudentDashboard: React.FC = () => {
     }).format(date);
   };
   const studentInfo = {
-    name: t("student.demoStudent.name"),
+    name: profile?.name ?? t("student.defaultName", "Student"),
     id: t("student.demoStudent.id"),
-    email: t("student.demoStudent.email"),
+    email: profile?.email ?? "",
     memberSince: t("student.demoStudent.memberSince"),
   };
 

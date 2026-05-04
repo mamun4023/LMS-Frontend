@@ -1,6 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
+import { sendPasswordResetEmail } from "firebase/auth";
 import { AlertCircle, BookOpen, Mail } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../../firebase/firebase";
 import { formValidator } from "../../validator/formValidator";
 
 interface FormData {
@@ -34,22 +39,29 @@ export default function LoginPage() {
     return true;
   };
 
-  const handleSubmit = async () => {
-    if (!validateForm()) {
-      return;
-    }
-    setIsSubmitting(true);
-    setErrors({});
+  const navigate = useNavigate();
+const handleSubmit = async () => {
+  if (!validateForm()) return;
 
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      alert("Login successful!");
-    } catch (error) {
-      // setErrors({ general: "An error occurred. Please try again." });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  setIsSubmitting(true);
+  setErrors({});
+
+  try {
+    await sendPasswordResetEmail(auth, formData.email, {
+       url: "http://localhost:5173/signin",
+    });
+
+    alert("Password reset link sent to your email!");
+
+    // ✅ DO NOT GO TO OTP PAGE
+    navigate("/signin");
+
+  } catch (error: any) {
+    setErrors({ general: error.message });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">

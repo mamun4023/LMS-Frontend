@@ -1,17 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AlertCircle, BookOpen, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 // import { signInWithGithub, signInWithGoogle } from "../../services/auth.service";
-import { createUserProfile, getUserProfile } from "../../services/user.service";
-import type { AppDispatch } from "../../store";
+import { useEffect } from "react";
+import { createUserProfile, resolveRoleForEmail } from "../../services/user.service";
+import type { AppDispatch, RootState } from "../../store";
 import { loginUser, loginWithGithub, loginWithGoogle } from "../../store/slices/authSlice";
+import { fetchProfile } from "../../store/slices/userSlice";
 import { formValidator } from "../../validator/formValidator";
-
-
 interface FormData {
   email: string;
   password: string;
@@ -26,6 +25,9 @@ interface FormErrors {
 export default function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const {user} = useSelector((state:RootState)=>state.auth);
+  const { profile } = useSelector((state: RootState) => state.user);
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -35,6 +37,34 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSocialLoading, setIsSocialLoading] = useState<boolean>(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+
+  useEffect(() => {
+  if (user && !profile) {
+    dispatch(fetchProfile(user.uid));
+  }
+}, [user,dispatch,profile]);
+
+
+useEffect(() => {
+  if (profile) {
+    if (profile.role === "admin") navigate("/admin", { replace: true });
+    else if (profile.role === "librarian") navigate("/librarian", { replace: true });
+    else navigate("/student", { replace: true });
+  }
+}, [profile,navigate]);
+useEffect(() => {
+  const savedEmail = localStorage.getItem("rememberEmail");
+
+  if (savedEmail) {
+    setFormData({
+      email: savedEmail,
+      password: "", // don't store password
+    });
+    setRememberMe(true);
+  }
+}, []);
 
   const validateForm = () => {
     const isValidEmail = formValidator("email", formData.email).isValid;
@@ -60,58 +90,9 @@ export default function LoginPage() {
     return true;
   };
 
-  // const handleSubmit = async () => {
-  //   if (!validateForm()) {
-  //     return;
-  //   }
-  //   setIsSubmitting(true);
 
-  //   setErrors({});
 
-  //   // try {
-  //   //   await new Promise((resolve) => setTimeout(resolve, 1500));
-  //   //   navigate("/dashboard");
-  //   // } catch (error) {
-  //   //   // setErrors({ general: "An error occurred. Please try again." });
-  //   // } finally {
-  //   //   setIsSubmitting(false);
-  //   // }
-
-  //   try{
-  //     const userCredential=await loginUser(
-  //       formData.email,
-  //       formData.password
-  //     );
-
-  //     const uid=userCredential.user.uid;
-  //     const profile=await getUserProfile(uid);
-
-  //     if(!profile){
-  //       throw new Error("User profile not found");
-  //     }
-
-  //     // Role-based Redirection
-  //     if(profile.role === "admin"){
-  //       navigate("/admin");
-  //     }
-  //     else if(profile.role === "librarian"){
-  //       navigate("/librarian");
-  //     }
-  //     else{
-  //       navigate("/student");
-  //     }
-  //   }
-  //   catch(error:any){
-  //         setErrors({
-  //     general: error.message || "Login failed",
-  //   });
-  //   }
-  //   finally{
-  //     setIsSubmitting(false);
-  //   }
-  // };
-
-  const dispatch = useDispatch<AppDispatch>();
+  
 const handleSubmit = async () => {
   if (!validateForm()) return;
 
@@ -119,21 +100,40 @@ const handleSubmit = async () => {
   setErrors({});
 
   try {
-    const result = await dispatch(
+    await dispatch(
       loginUser({
         email: formData.email,
         password: formData.password,
       })
     ).unwrap();
 
+
+    // Remember Me logic
+if (rememberMe) {
+  localStorage.setItem("rememberEmail", formData.email);
+  // localStorage.setItem("rememberPassword", formData.password); 
+} else {
+  localStorage.removeItem("rememberEmail");
+  // localStorage.removeItem("rememberPassword");
+}
     // result is Firebase User
-    const profile = await getUserProfile(result.uid);
+    // let profile = await getUserProfile(result.uid);
 
-    if (!profile) throw new Error("User profile not found");
+    // if (!profile) {
+    //   // no profile exists yet for this authenticated user
+    //   await createUserProfile(result.uid, {
+    //     name: result.email || "User",
+    //     email: result.email || "",
+    //     role: "student",
+    //   });
+    //   profile = await getUserProfile(result.uid);
+    // }
 
-    if (profile.role === "admin") navigate("/admin", { replace: true });
-    else if (profile.role === "librarian") navigate("/librarian", { replace: true });
-    else navigate("/student", { replace: true });
+    // if (!profile) throw new Error("User profile not found");
+
+    // if (profile.role === "admin") navigate("/admin", { replace: true });
+    // else if (profile.role === "librarian") navigate("/librarian", { replace: true });
+    // else navigate("/student", { replace: true });
 
   } catch (error: any) {
     setErrors({ general: error || "Login failed" });
@@ -141,64 +141,25 @@ const handleSubmit = async () => {
     setIsSubmitting(false);
   }
 };
-  // const handleGoogleLogin=async()=>{
-  //   setErrors({}); // error cleaning
-  //   try{
-  //     const result=await signInWithGoogle();
-  //     const user=result.user;
 
-  //     let profile=await getUserProfile(user.uid);
-
-
-  //     if(!profile){
-  //       await createUserProfile(user.uid,{
-  //         name: user.displayName || "Google User",
-  //         email: user.email || "",
-  //         role: "student",
-  //       });
-  //       profile=await getUserProfile(user.uid);
-  //     }
-
-  //     // Role-based navigation
-  //     if(profile?.role === "admin"){
-  //       navigate("/admin");
-  //     }
-  //      else if (profile?.role === "librarian") {
-  //       navigate("/librarian");
-  //     } else {
-  //       navigate("/student");
-  //     }
-  //   }
-  //   catch(error:any){
-  //      console.error("Google login error:", error);
-  //     setErrors({ 
-  //       general: error.code === "auth/popup-closed-by-user" 
-  //         ? "Sign-in popup was closed. Please try again."
-  //         : error.message || "Google sign-in failed"
-  //     });
-  //   }
-
-  // };
  const handleGoogleLogin = async () => {
   setIsSocialLoading(true);
   setErrors({});
   try {
     const result = await dispatch(loginWithGoogle()).unwrap();
-    
-    // Fetch or create user profile
-    let profile = await getUserProfile(result.uid);
-    
+
+    let profile = await dispatch(fetchProfile(result.uid)).unwrap();
+
     if (!profile) {
-      // Create default student profile for new social login users
+      const role = resolveRoleForEmail(result.email || "");
       await createUserProfile(result.uid, {
-        name: result.displayName || "Google User",
+        name: result.displayName || result.email || "User",
         email: result.email || "",
-        role: "student",
+        role,
       });
-      profile = await getUserProfile(result.uid);
+      profile = await dispatch(fetchProfile(result.uid)).unwrap();
     }
 
-    // Role-based navigation
     if (profile?.role === "admin") {
       navigate("/admin", { replace: true });
     } else if (profile?.role === "librarian") {
@@ -212,71 +173,45 @@ const handleSubmit = async () => {
     setIsSocialLoading(false);
   }
 };
+// old
+// const handleGithubLogin = async () => {
+//   setIsSocialLoading(true);
+//   setErrors({});
+//   try {
+//     const result = await dispatch(loginWithGithub()).unwrap();
+    
+//     // Fetch or create user profile
+//     let profile = await getUserProfile(result.uid);
 
+//     if (!profile) {
+//       // Create default student profile for new social login users
+//       await createUserProfile(result.uid, {
+//         name: result.displayName || "GitHub User",
+//         email: result.email || "",
+//         role: "student",
+//       });
+//       profile = await getUserProfile(result.uid);
+//     }
 
-  // const handleGithubLogin=async()=>{
-  //     setErrors({}); // error cleaning
-  //   try{
-  //      const result = await signInWithGithub();
-  //   const user = result.user;
-
-  //   let profile = await getUserProfile(user.uid);
-  //   if(!profile){
-  //       await createUserProfile(user.uid,{
-  //         name: user.displayName || "Github User",
-  //         email: user.email || "",
-  //         role: "student",
-  //       });
-  //       profile=await getUserProfile(user.uid);
-  //     }
-
-
-  //     // Role-based navigation
-  //     if(profile?.role === "admin"){
-  //       navigate("/admin");
-  //     }
-  //      else if (profile?.role === "librarian") {
-  //       navigate("/librarian");
-  //     } else {
-  //       navigate("/student");
-  //     }
-  //   }
-  //   catch(error:any){
-  //     console.error("Github login error:", error);
-  //     setErrors({ 
-  //       general: error.code === "auth/popup-closed-by-user"
-  //         ? "Sign-in popup was closed. Please try again."
-  //         : error.message || "Github sign-in failed"
-  //     });
-  //   }
-  // };
+//     // Role-based navigation
+//     if (profile?.role === "admin") {
+//       navigate("/admin", { replace: true });
+//     } else if (profile?.role === "librarian") {
+//       navigate("/librarian", { replace: true });
+//     } else {
+//       navigate("/student", { replace: true });
+//     }
+//   } catch (error: any) {
+//     setErrors({ general: error?.message || "GitHub sign-in failed" });
+//   } finally {
+//     setIsSocialLoading(false);
+//   }
+// };
 const handleGithubLogin = async () => {
   setIsSocialLoading(true);
   setErrors({});
   try {
-    const result = await dispatch(loginWithGithub()).unwrap();
-    
-    // Fetch or create user profile
-    let profile = await getUserProfile(result.uid);
-    
-    if (!profile) {
-      // Create default student profile for new social login users
-      await createUserProfile(result.uid, {
-        name: result.displayName || "GitHub User",
-        email: result.email || "",
-        role: "student",
-      });
-      profile = await getUserProfile(result.uid);
-    }
-
-    // Role-based navigation
-    if (profile?.role === "admin") {
-      navigate("/admin", { replace: true });
-    } else if (profile?.role === "librarian") {
-      navigate("/librarian", { replace: true });
-    } else {
-      navigate("/student", { replace: true });
-    }
+    await dispatch(loginWithGithub()).unwrap();
   } catch (error: any) {
     setErrors({ general: error?.message || "GitHub sign-in failed" });
   } finally {
@@ -410,6 +345,8 @@ const handleGithubLogin = async () => {
               <label className="flex items-center">
                 <input
                   type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e)=>setRememberMe(e.target.checked)}
                   className="w-4 h-4 text-primary border-border rounded "
                 />
                 <span className="ml-2 text-sm text-text-secondary">
@@ -428,7 +365,7 @@ const handleGithubLogin = async () => {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isSocialLoading}
               className="w-full btn-primary py-3 "
             >
               {isSubmitting ? (

@@ -12,9 +12,8 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { ADMIN_EMAILS, LIBRARIAN_EMAILS } from "../../constants/roles";
 import { registerUser } from "../../services/auth.service";
-import { createUserProfile } from "../../services/user.service";
+import { createUserProfile, resolveRoleForEmail } from "../../services/user.service";
 import { formValidator } from "../../validator/formValidator";
 
 interface FormData {
@@ -94,28 +93,19 @@ export default function Register() {
     setErrors({});
 
     try{
-      // ✅  role based on email
-    let role: "admin" | "librarian" | "student" = "student";
+      const role = resolveRoleForEmail(formData.email);
 
-    if(ADMIN_EMAILS.includes(formData.email)){
-      role="admin";
-    }
-    else if(LIBRARIAN_EMAILS.includes(formData.email)){
-      role="librarian";
-    }
-
-    // Firebase Auth Signup
-      const userCredential=await registerUser(
+      // Firebase Auth Signup
+      const userCredential = await registerUser(
         formData.email,
         formData.password
       );
 
-      //  Create Firestore profile with computed role
-      await createUserProfile(userCredential.user.uid,{
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      role
+      await createUserProfile(userCredential.user.uid, {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        role,
       });
 
       // Show success message
