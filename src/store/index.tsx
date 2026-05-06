@@ -1,14 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from "./slices/authSlice";
 import bookReducer from "./slices/bookSlice";
+import favouriteReducer from "./slices/favouriteSlice";
 import usersListReducer from "./slices/userListSlice";
 import userReducer from "./slices/userSlice";
+
 export const store = configureStore({
   reducer: {
     auth:authReducer,
     user:userReducer,
     books: bookReducer,
-    usersList: usersListReducer
+    usersList: usersListReducer,
+    favourites: favouriteReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

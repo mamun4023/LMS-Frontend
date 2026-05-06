@@ -1,4 +1,4 @@
- 
+
 import {
   AlertCircle,
   Book,
@@ -28,6 +28,7 @@ interface BookItem {
   author: string;
   isbn: string;
   copies: number;
+  cover?:string;
 }
 
 interface Member {
@@ -189,6 +190,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
             author: formData.author || "",
             isbn: formData.isbn || "",
             copies: formData.copies || 0,
+            cover: formData.cover || "",
 },
         })
       );
@@ -200,6 +202,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     author: formData.author || "",
     isbn: formData.isbn || "",
     copies: formData.copies || 0,
+    cover: formData.cover || "",
   })
 );
     }
@@ -648,6 +651,15 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
                   }
                   required
                 />
+                <input
+                type="text"
+                placeholder="Cover Image URL"
+                value={formData.cover || ""}
+                className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary"
+                onChange={(e) =>
+                  setFormData({ ...formData, cover: e.target.value })
+                }
+              />
                  
                 </>
               ) : null}

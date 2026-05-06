@@ -1,11 +1,11 @@
 
 import {
-    addDoc,
-    collection,
-    deleteDoc,
-    doc,
-    getDocs,
-    updateDoc,
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
@@ -15,6 +15,7 @@ export interface Book {
   author: string;
   isbn: string;
   copies: number;
+  cover?:string;
 }
 
 const booksRef = collection(db, "books");

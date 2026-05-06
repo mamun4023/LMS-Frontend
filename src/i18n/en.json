@@ -177,7 +177,7 @@
     "books": "books",
     "category": "Category:",
     "year": "Year:",
-    "isbn": "ISBN:",
+    "isbn": "ISBN",
     "isbn2": "ISBN",
     "noBooksFound": "No books found",
     "tryAdjustingSearch": "Try adjusting your search or filters",

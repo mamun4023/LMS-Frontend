@@ -1,114 +1,57 @@
-import { BookOpen, Filter, Search, Star } from "lucide-react";
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { AlertCircle, BookOpen, Heart, Search } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 import Header from "../../components/unique/Header";
 import i18n from "../../i18n";
-
-interface Book {
-  id: number;
+import type { AppDispatch, RootState } from "../../store";
+import { borrowBookThunk, fetchBooks, fetchBorrowedBooks } from "../../store/slices/bookSlice";
+import {
+  addFavouriteThunk,
+  fetchFavourites,
+  removeFavouriteThunk,
+} from "../../store/slices/favouriteSlice";
+type Book = {
+  id: string;
   title: string;
   author: string;
-  category: string;
-  year: number;
-  isbn: string;
-  available: boolean;
-  rating: number;
-  cover: string;
-}
+  isbn: string;      
+  copies: number;
+  cover?: string;    
+};
 
 const LibraryCatalog: React.FC = () => {
+  const { borrowedBooks } = useSelector((state: RootState) => state.books);
+  const activeBorrowCount = borrowedBooks.filter((b) => !b.returned).length;
+  const [recentlyFaved, setRecentlyFaved] = useState<string | null>(null);
+const hasReachedLimit = activeBorrowCount >= 5;
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [availableOnly, setAvailableOnly] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+const { user } = useSelector((state: RootState) => state.auth);
+const { books } = useSelector((state: RootState) => state.books);
 
-  const books: Book[] = [
-    {
-      id: 1,
-      title: t("bookTitles.theGreatGatsby"),
-      author: t("bookTitles.fScottFitzgerald"),
-      category: t("bookTitles.fiction"),
-      year: 1925,
-      isbn: t("bookTitles.isbnGreatGatsby"),
-      available: true,
-      rating: 4.5,
-      cover:
-        "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop",
-    },
-    {
-      id: 2,
-      title: t("bookTitles.toKillAMockingbird"),
-      author: t("bookTitles.harperLee"),
-      category: t("bookTitles.fiction"),
-      year: 1960,
-      isbn: t("bookTitles.isbnMockingbird"),
-      available: false,
-      rating: 4.8,
-      cover:
-        "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=400&fit=crop",
-    },
-    {
-      id: 3,
-      title: t("bookTitles.nineteenEightyFour"),
-      author: t("bookTitles.georgeOrwell"),
-      category: t("bookTitles.scienceFiction"),
-      year: 1949,
-      isbn: t("bookTitles.isbn1984"),
-      available: true,
-      rating: 4.7,
-      cover:
-        "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&h=400&fit=crop",
-    },
-    {
-      id: 4,
-      title: t("bookTitles.prideAndPrejudice"),
-      author: t("bookTitles.janeAusten"),
-      category: t("bookTitles.romance"),
-      year: 1813,
-      isbn: t("bookTitles.isbnPride"),
-      available: true,
-      rating: 4.6,
-      cover:
-        "https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=300&h=400&fit=crop",
-    },
-    {
-      id: 5,
-      title: t("bookTitles.theCatcherInTheRye"),
-      author: t("bookTitles.jdSalinger"),
-      category: t("bookTitles.fiction"),
-      year: 1951,
-      isbn: t("bookTitles.isbnCatcher"),
-      available: false,
-      rating: 4.2,
-      cover:
-        "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&h=400&fit=crop",
-    },
-    {
-      id: 6,
-      title: t("bookTitles.theHobbit"),
-      author: t("bookTitles.jrrTolkien"),
-      category: t("bookTitles.fantasy"),
-      year: 1937,
-      isbn: t("bookTitles.isbnHobbit"),
-      available: true,
-      rating: 4.9,
-      cover:
-        "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=300&h=400&fit=crop",
-    },
-  ];
+useEffect(() => {
+  dispatch(fetchBooks());
+  if(user){
+    dispatch(fetchBorrowedBooks(user.uid));
+  }
+}, [dispatch,user]);
 
-  const categories = [
-    "all",
-    ...Array.from(new Set(books.map((book) => book.category))),
-  ];
+const { favourites } = useSelector((state: RootState) => state.favourites);
+
+useEffect(() => {
+  if (user) dispatch(fetchFavourites(user.uid));
+}, [dispatch, user]);
 
   const filteredBooks = books.filter((book) => {
     const matchesSearch =
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.author.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || book.category === selectedCategory;
-    const matchesAvailability = !availableOnly || book.available;
+    const matchesCategory = true;
+    const matchesAvailability = !availableOnly || book.copies > 0;
 
     return matchesSearch && matchesCategory && matchesAvailability;
   });
@@ -134,23 +77,7 @@ const LibraryCatalog: React.FC = () => {
               />
             </div>
 
-            {/* Category Filter */}
-            <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-text-secondary" />
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="input-field"
-              >
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat === "all"
-                      ? t("events.all")
-                      : cat.charAt(0).toUpperCase() + cat.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
+
 
             {/* Availability Toggle */}
             <label className="flex items-center gap-2 cursor-pointer">
@@ -167,6 +94,13 @@ const LibraryCatalog: React.FC = () => {
           </div>
         </div>
 
+                   {hasReachedLimit && (
+  <div className="mb-6 flex items-center gap-3 bg-yellow-500/10 border border-yellow-500/30 text-yellow-600 rounded-lg px-4 py-3 text-sm font-medium">
+    <AlertCircle className="w-5 h-5 shrink-0" />
+    You've reached the 5-book borrow limit. Please return a book before borrowing another.
+  </div>
+)}
+
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-text-secondary">
@@ -180,83 +114,139 @@ const LibraryCatalog: React.FC = () => {
 
         {/* Book Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBooks.map((book) => (
-            <div
-              key={book.id}
-              className="bg-surface rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
-            >
-              <div className="relative h-64 bg-background">
-                <img
-                  src={book.cover}
-                  alt={book.title}
-                  className="w-full h-full object-cover"
-                />
-                <div
-                  className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold ${
-                    book.available
-                      ? "bg-green-500 text-white"
-                      : "bg-red-500 text-white"
-                  }`}
-                >
-                  {book.available
-                    ? t("catalog.available")
-                    : t("catalog.checkedout")}
-                </div>
-              </div>
+  {filteredBooks.map((book) => {
+    const isBorrowed = borrowedBooks.some(
+      (b) => b.bookId === book.id && !b.returned
+    );
+    return (
+      <div
+        key={book.id}
+        className="bg-surface rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+      >
+        <div className="relative h-64 bg-gray-200 overflow-hidden">
+          {/* ✅ Flash label */}
+{recentlyFaved === book.id && (
+  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap">
+    ❤️ Added to favourites
+  </div>
+)}
+  {book.cover ? (
+    <img
+      src={book.cover}
+      alt={book.title}
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    <div className="w-full h-full flex items-center justify-center text-gray-500">
+      No Image
+    </div>
+  )}
 
-              <div className="p-5">
-                <h3 className="text-xl font-bold text-text-primary mb-1 line-clamp-1">
-                  {book.title}
-                </h3>
-                <p className="text-text-secondary mb-2">{book.author}</p>
+  <div
+    className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold ${
+      book.copies > 0
+        ? "bg-green-500 text-white"
+        : "bg-red-500 text-white"
+    }`}
+  >
+    {book.copies > 0
+      ? t("catalog.available")
+      : t("catalog.checkedout")}
+  </div>
+  {/*  Heart button */}
+  {(() => {
+  const fav = favourites.find((f) => f.bookId === book.id);
+  const isFav = !!fav;
+  return (
+    <button
+     onClick={() => {
+  if (!user) return;
+  if (fav) {
+    dispatch(removeFavouriteThunk(fav.id));
+  } else {
+    dispatch(addFavouriteThunk({
+      userId: user.uid,
+      book: {
+        bookId: book.id ?? "",
+        title: book.title ?? "",
+        author: book.author ?? "",
+        isbn: book.isbn ?? "",
+      },
+    }));
+    // ✅ show "Added!" label for 1.5s
+    setRecentlyFaved(book.id ?? null);
+    setTimeout(() => setRecentlyFaved(null), 1500);
+  }
+}}
+      className={`absolute top-3 left-3 p-1.5 rounded-full transition-all duration-200 ${
+        isFav
+          ? "bg-red-500/80 hover:bg-red-600/80 scale-110"  // ✅ red bg when favourited
+          : "bg-black/40 hover:bg-black/60"
+      }`}
+    >
+      <Heart
+        className={`w-4 h-4 transition-all duration-200 ${
+          isFav
+            ? "fill-white text-white scale-110"   // ✅ filled white on red bg
+            : "text-white"                         // outline on dark bg
+        }`}
+      />
+    </button>
+  );
+})()}
+</div>
 
-                <div className="flex items-center gap-1 mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < Math.floor(book.rating)
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "text-border"
-                      }`}
-                    />
-                  ))}
-                  <span className="text-sm text-text-secondary ml-1">
-                    {new Intl.NumberFormat(i18n.language).format(book.rating)}
-                  </span>
-                </div>
+        <div className="p-5">
+          <h3 className="text-xl font-bold text-text-primary mb-1 line-clamp-1">
+            {book.title}
+          </h3>
+          <p className="text-text-secondary mb-2">{book.author}</p>
 
-                <div className="space-y-1 text-sm text-text-secondary mb-4">
-                  <p>
-                    <span className="font-medium">{t("common.category")}:</span>{" "}
-                    {book.category}
-                  </p>
-                  <p>
-                    <span className="font-medium">{t("catalog.year")}:</span>{" "}
-                    {new Intl.NumberFormat(i18n.language).format(book.year)}
-                  </p>
-                  <p>
-                    <span className="font-medium">{t("catalog.isbn")}</span>{" "}
-                    {book.isbn}
-                  </p>
-                </div>
+          <div className="space-y-1 text-sm text-text-secondary mb-4">
+            <p>
+              <span className="font-medium">{t("catalog.isbn")}:</span>{" "}
+              {book.isbn}
+            </p>
+            <p>
+              <span className="font-medium">{t("catalog.copies")}:</span>{" "}
+              {new Intl.NumberFormat(i18n.language).format(book.copies)}
+            </p>
+          </div>
 
-                <button
-                  disabled={!book.available}
-                  className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
-                    book.available
-                      ? "btn-primary"
-                      : "bg-border text-text-secondary cursor-not-allowed"
-                  }`}
-                >
-                  {book.available
-                    ? t("catalog.borrowBook")
-                    : t("catalog.notAvailable")}
-                </button>
-              </div>
-            </div>
-          ))}
+       <button
+  disabled={book.copies <= 0 || isBorrowed || hasReachedLimit}
+  onClick={() => {
+    if (!user || book.copies <= 0 || isBorrowed || hasReachedLimit) return;
+    dispatch(borrowBookThunk({ userId: user.uid, book }))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchBooks());
+        dispatch(fetchBorrowedBooks(user.uid));
+      });
+  }}
+  className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
+    isBorrowed
+      ? "bg-yellow-400 text-white cursor-not-allowed"
+      : hasReachedLimit
+      ? "bg-border text-text-secondary cursor-not-allowed"
+      : book.copies > 0
+      ? "btn-primary"
+      : "bg-border text-text-secondary cursor-not-allowed"
+  }`}
+>
+  {isBorrowed
+    ? "Already Borrowed"
+    : hasReachedLimit
+    ? "Borrow Limit Reached"
+    : book.copies > 0
+    ? "Borrow Book"
+    : "Not Available"}
+</button>
         </div>
+      </div>
+    );
+  })}
+</div>
 
         {/* No Results */}
         {filteredBooks.length === 0 && (

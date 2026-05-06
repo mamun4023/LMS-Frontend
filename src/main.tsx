@@ -9,7 +9,6 @@ import "./i18n";
 import "./index.css";
 import About from "./pages/about";
 import Catalog from "./pages/catalog";
-import Dashboard from "./pages/dashboard";
 import Events from "./pages/events";
 import ForgotPassword from "./pages/forgotPassword";
 import ProfileUpdate from "./pages/profile";
@@ -42,10 +41,10 @@ const router = createBrowserRouter([
     path: "/forgot-password",
     element: <ForgotPassword />,
   },
-  {
-    path: "/dashboard",
-    element: <Dashboard />,
-  },
+  // {
+  //   path: "/dashboard",
+  //   element: <Dashboard />,
+  // },
   {
     path: "/about",
     element: <About />,

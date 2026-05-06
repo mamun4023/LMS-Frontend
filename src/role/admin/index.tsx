@@ -102,6 +102,7 @@ const [form, setForm] = useState({
   author: "",
   isbn: "",
   copies: 0,
+  cover: "",
 });
   const { t } = useTranslation();
   const [stats,setStats]=useState<Stats> ({
@@ -214,13 +215,19 @@ const handleLogout = async () => {
 
 const openAddModal = () => {
   setEditingBook(null);
-  setForm({ title: "", author: "", isbn: "", copies: 0 });
+  setForm({ title: "", author: "", isbn: "", copies: 0, cover: "" });
   setShowModal(true);
 };
 
 const openEditModal = (book: any) => {
   setEditingBook(book);
-  setForm(book);
+  setForm({
+    title: book.title || "",
+    author: book.author || "",
+    isbn: book.isbn || "",
+    copies: book.copies || 0,
+    cover: book.cover || "", 
+  });
   setShowModal(true);
 };
 
@@ -262,6 +269,7 @@ const handleSave = async () => {
     author: "",
     isbn: "",
     copies: 0,
+    cover:"",
   });
 
 } catch {
@@ -505,6 +513,7 @@ const renderBooks = () => {
             {filteredBooks.length > 0 ? (
               filteredBooks.map((book) => (
                 <tr key={book.id} className="hover:bg-surface">
+                  
                   <td className="px-6 py-4 text-sm font-medium text-text-primary">
                     {book.title}
                   </td>
@@ -1064,6 +1073,25 @@ const renderStudents = () => (
           className="w-full mt-1 px-3 py-2 rounded-lg bg-background border border-border focus:ring-2 focus:ring-primary outline-none"
         />
       </div>
+
+      {/* cover */}
+      <div>
+      <label className="text-sm text-text-secondary">Cover Image URL</label>
+      <input
+        value={form.cover}
+        onChange={(e) => setForm({ ...form, cover: e.target.value })}
+        className="w-full mt-1 px-3 py-2 rounded-lg bg-background border border-border focus:ring-2 focus:ring-primary outline-none"
+      />
+      {form.cover && (
+  <div className="flex justify-center mt-2">
+    <img
+      src={form.cover}
+      alt="Preview"
+      className="w-24 h-32 object-cover rounded shadow"
+    />
+  </div>
+)}
+    </div>
 
       {/* Buttons */}
       <div className="flex justify-end gap-3 pt-3">

@@ -52,11 +52,6 @@ const LibraryHomePage: React.FC = () => {
 
   const quickLinks = [
     {
-      icon: Book,
-      title: t("quickActions.browseCatalog"),
-      desc: t("quickActions.exploreCollection"),
-    },
-    {
       icon: Calendar,
       title: t("quickActions.bookStudyRoom"),
       desc: t("quickActions.reserveSpace"),
