@@ -41,7 +41,7 @@ interface ReservedBook {
 }
 
 interface Notification {
-  id: number;
+  id: string;
   type: "due" | "overdue";
   // message: string;
   // time: string;
@@ -175,7 +175,7 @@ useEffect(() => {
 const notifications = borrowedBooks
   .filter((b) => !b.returned)
   .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
-  .flatMap((book, index): Notification[] => {
+  .flatMap((book): Notification[] => {
     const status = getBookStatus(book.dueDate);
     const now = new Date();
     const due = new Date(book.dueDate);
@@ -187,7 +187,7 @@ const notifications = borrowedBooks
       const time: Notification["time"] =
         overdueHours < 24 ? "twoHoursAgo" : overdueHours < 48 ? "oneDayAgo" : "twoDaysAgo";
 
-      return [{ id: index, type: "overdue", title: book.title, time }];
+      return [{ id: `${book.id}-overdue`, type: "overdue", title: book.title, time }];
     }
 
   if (status === "due-soon") {
@@ -201,7 +201,7 @@ const notifications = borrowedBooks
     diffHours < 48 ? "oneDayAgo" :
     "twoDaysAgo";
 
-  return [{ id: index + 1000, type: "due", title: book.title, days: diffDays, time }];
+  return [{ id: `${book.id}-due`, type: "due", title: book.title, days: diffDays, time }];
 }
 
     return [];
@@ -517,7 +517,10 @@ const notifications = borrowedBooks
       alert("Cannot renew an overdue book. Please return it first.");
       return;
     }
-    dispatch(renewBookThunk(book.id))
+    dispatch(renewBookThunk({
+      borrowId: book.id,
+      currentDueDate:book.dueDate
+    }))
       .unwrap()
       .then(() => {
         if (user) dispatch(fetchBorrowedBooks(user.uid));
@@ -713,10 +716,24 @@ const notifications = borrowedBooks
 
            {activeTab === "favorites" && (
   <div>
+     <div className="flex items-center justify-between mb-4">
     <h3 className="text-lg font-semibold text-text-primary mb-4">
       {t("student.myFavoriteBooks")}
     </h3>
-
+ 
+  {favourites.length > 0 && (
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary w-4 h-4" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search favourites..."
+            className="input-field pl-10"
+          />
+        </div>
+      )}
+    </div>
     {favourites.length === 0 && (
       <div className="text-center py-12">
         <Heart className="w-12 h-12 text-text-secondary mx-auto mb-3 opacity-30" />
@@ -724,12 +741,21 @@ const notifications = borrowedBooks
       </div>
     )}
 
+
+
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-      {favourites.map((fav: FavouriteBook) => (
+      {
+      favourites
+  .filter(
+    (fav) =>
+      fav.title.toLowerCase().includes(search.toLowerCase()) ||
+      fav.author.toLowerCase().includes(search.toLowerCase())
+  )
+      .map((fav: FavouriteBook) => (
         <div key={fav.id} className="group relative">
           {/* Cover */}
           <div className="relative aspect-2/3 rounded-lg overflow-hidden shadow-md mb-2">
-            <FavCover isbn={fav.isbn} title={fav.title} />
+<FavCover isbn={fav.isbn} title={fav.title}/>
 
             {/* Remove heart on hover */}
             <button

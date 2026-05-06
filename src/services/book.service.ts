@@ -10,7 +10,7 @@ import {
 import { db } from "../firebase/firebase";
 
 export interface Book {
-  id?: string;
+  id: string;
   title: string;
   author: string;
   isbn: string;
@@ -18,9 +18,11 @@ export interface Book {
   cover?:string;
 }
 
+export type CreateBookInput = Omit<Book,"id">;
+
 const booksRef = collection(db, "books");
 
-export const createBook = async (data: Omit<Book, "id">) => {
+export const createBook = async (data: CreateBookInput) => {
   return await addDoc(booksRef, data);
 };
 
@@ -28,7 +30,7 @@ export const getBooks = async (): Promise<Book[]> => {
   const snapshot = await getDocs(booksRef);
   return snapshot.docs.map((doc) => ({
     id: doc.id,
-    ...(doc.data() as Omit<Book, "id">),
+    ...(doc.data() as CreateBookInput),
   }));
 };
 

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 import { AlertCircle, BookOpen, Heart, Search } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,14 +12,14 @@ import {
   fetchFavourites,
   removeFavouriteThunk,
 } from "../../store/slices/favouriteSlice";
-type Book = {
-  id: string;
-  title: string;
-  author: string;
-  isbn: string;      
-  copies: number;
-  cover?: string;    
-};
+// type Book = {
+//   id: string;
+//   title: string;
+//   author: string;
+//   isbn: string;      
+//   copies: number;
+//   cover?: string;    
+// };
 
 const LibraryCatalog: React.FC = () => {
   const { borrowedBooks } = useSelector((state: RootState) => state.books);
@@ -131,7 +131,7 @@ useEffect(() => {
   </div>
 )}
   {book.cover ? (
-    <img
+  <img
       src={book.cover}
       alt={book.title}
       className="w-full h-full object-cover"
@@ -167,14 +167,15 @@ useEffect(() => {
     dispatch(addFavouriteThunk({
       userId: user.uid,
       book: {
-        bookId: book.id ?? "",
-        title: book.title ?? "",
-        author: book.author ?? "",
-        isbn: book.isbn ?? "",
+        bookId: book.id ,
+        title: book.title ,
+        author: book.author ,
+        isbn: book.isbn ,
+        cover: book.cover ,
       },
     }));
     // ✅ show "Added!" label for 1.5s
-    setRecentlyFaved(book.id ?? null);
+    setRecentlyFaved(book.id);
     setTimeout(() => setRecentlyFaved(null), 1500);
   }
 }}

@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getBorrowedBooks } from "../../services/borrow.service";
 
-import { addDoc, collection, doc, increment, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, increment, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import type { Book } from "../../services/book.service";
 import {
@@ -12,11 +11,12 @@ import {
   getBooks,
   updateBook,
 } from "../../services/book.service";
+import type { BorrowedBook } from "../../services/borrow.service";
 interface BookState {
   books: Book[];
   loading: boolean;
   error: string | null;
-  borrowedBooks:any[];
+  borrowedBooks:BorrowedBook[];
 }
 
 const initialState: BookState = {
@@ -54,17 +54,35 @@ export const removeBook = createAsyncThunk("books/delete", async (id: string) =>
 // borrowBook
 export const borrowBookThunk = createAsyncThunk(
   "books/borrow",
-  async ({ userId, book }: { userId: string; book: any }) => {
+  async ({ userId, book }: { userId: string; book: Book }) => {
 
+    const existing = await getDocs(
+  query(
+    collection(db, "borrowedBooks"),
+    where("userId", "==", userId),
+    where("bookId", "==", book.id),
+    where("returned", "==", false)
+  )
+);
+if (!existing.empty) throw new Error("Already borrowed");
     // 1️⃣ Add to borrowedBooks
+
+    if(book.copies <=0){
+  throw new Error("No Copies Available");
+}
     await addDoc(collection(db, "borrowedBooks"), {
-      userId,
-      bookId: book.id,
-      title: book.title,
-      author: book.author,
-      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-      returned: false,
-    });
+  userId,
+  bookId: book.id,
+  title: book.title,
+  author: book.author,
+  borrowedAt: new Date().toISOString(),
+  dueDate: new Date(
+    Date.now() + 14 * 24 * 60 * 60 * 1000
+  ).toISOString(),
+  returned: false,
+});
+
+
 
     // 2️⃣ 🔥 DECREASE COPIES
     const bookRef = doc(db, "books", book.id);
@@ -73,7 +91,7 @@ export const borrowBookThunk = createAsyncThunk(
       copies: increment(-1),
     });
 
-    return true;
+    return { userId, bookId: book.id};
   }
 );
 
@@ -85,6 +103,7 @@ export const returnBookThunk = createAsyncThunk(
     const borrowRef = doc(db, "borrowedBooks", borrowId);
     await updateDoc(borrowRef, {
       returned: true,
+      returnedAt: new Date().toISOString(),
     });
 
     // 2️⃣ increase copies
@@ -97,7 +116,10 @@ export const returnBookThunk = createAsyncThunk(
   }
 );
 
-export const fetchBorrowedBooks = createAsyncThunk(
+export const fetchBorrowedBooks = createAsyncThunk<
+  BorrowedBook[],
+  string
+>(
   "books/fetchBorrowed",
   async (userId: string) => {
     return await getBorrowedBooks(userId);
@@ -107,13 +129,26 @@ export const fetchBorrowedBooks = createAsyncThunk(
 // renewBook
 export const renewBookThunk = createAsyncThunk(
   "books/renew",
-  async (borrowId: string) => {
+  async ({
+    borrowId,
+    currentDueDate,
+  }: {
+    borrowId: string;
+    currentDueDate: string;
+  }) => {
+
+    // extend from CURRENT due date
+    const current = new Date(currentDueDate);
+
     const newDueDate = new Date(
-      Date.now() + 14 * 24 * 60 * 60 * 1000
+      current.getTime() + 14 * 24 * 60 * 60 * 1000
     ).toISOString();
 
     const borrowRef = doc(db, "borrowedBooks", borrowId);
-    await updateDoc(borrowRef, { dueDate: newDueDate });
+
+    await updateDoc(borrowRef, {
+      dueDate: newDueDate,
+    });
 
     return { borrowId, newDueDate };
   }
@@ -149,11 +184,18 @@ const bookSlice = createSlice({
           book.id === id ? { ...book, ...data } : book
         );
       })
+     
       .addCase(returnBookThunk.fulfilled, (state, action) => {
   const { borrowId } = action.payload;
 
   state.borrowedBooks = state.borrowedBooks.map((b) =>
-    b.id === borrowId ? { ...b, returned: true } : b
+    b.id === borrowId
+      ? {
+          ...b,
+          returned: true,
+          returnedAt: new Date().toISOString(),
+        }
+      : b
   );
 })
 
@@ -167,6 +209,19 @@ const bookSlice = createSlice({
   state.borrowedBooks = state.borrowedBooks.map((b) =>
     b.id === borrowId ? { ...b, dueDate: newDueDate } : b
   );
+})
+
+.addCase(borrowBookThunk.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.error.message || "Borrow failed";
+})
+
+.addCase(returnBookThunk.rejected, (state, action) => {
+  state.error = action.error.message || "Return failed";
+})
+
+.addCase(renewBookThunk.rejected, (state, action) => {
+  state.error = action.error.message || "Renew failed";
 })
     //   DELETE
       .addCase(removeBook.fulfilled, (state, action) => {

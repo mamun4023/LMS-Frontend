@@ -1,16 +1,18 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-    collection, deleteDoc, doc, getDocs, query, setDoc, where,
+  collection, deleteDoc, doc, getDocs, query, setDoc, where,
 } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 
 export interface FavouriteBook {
-  id: string;       // Firestore doc id
+  id: string;      
+  userId: string;
   bookId: string;
   title: string;
   author: string;
   isbn: string;
+  cover?: string;
 }
 
 interface FavouriteState {
@@ -41,11 +43,20 @@ export const addFavouriteThunk = createAsyncThunk(
       title: string;
       author: string;
       isbn: string;
+      cover?:string;
     };
   }) => {
+    const existing = await getDocs(
+      query(
+        collection(db, "favourites"),
+        where("userId", "==", userId),
+        where("bookId", "==", book.bookId)
+      )
+    );
+    if (!existing.empty) throw new Error("Already favourite");
     const ref = doc(collection(db, "favourites"));
     await setDoc(ref, { userId, ...book });
-    return { id: ref.id, ...book } satisfies FavouriteBook;
+    return { id: ref.id,userId,...book } satisfies FavouriteBook;
   }
 );
 export const removeFavouriteThunk = createAsyncThunk(
