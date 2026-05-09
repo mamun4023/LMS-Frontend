@@ -1,4 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
+import {
+  collection,
+  doc,
+  increment,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+  where
+} from "firebase/firestore";
 import {
   AlertCircle,
   Book,
@@ -16,11 +27,13 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { db } from "../../firebase/firebase";
 import type { AppDispatch, RootState } from "../../store";
 import { logoutUser } from "../../store/slices/authSlice";
 import { addBook, editBook, fetchBooks, removeBook } from "../../store/slices/bookSlice";
+import { fetchSettings } from "../../store/slices/settingsSlice";
 import { fetchUsers } from "../../store/slices/userListSlice";
-
+import { calculateFine } from "../../utils/fine";
 // Types
 interface BookItem {
   id?: string;
@@ -46,7 +59,7 @@ interface Checkout {
   memberName: string;
   checkoutDate: string;
   dueDate: string;
-  status: "active" | "overdue";
+  status: "active" | "overdue" | "returned";
 }
 
 interface StatCardProps {
@@ -59,7 +72,12 @@ interface StatCardProps {
   color: string;
 }
 
-type TabType = "overview" | "books" | "members" | "checkouts";
+type TabType =
+  | "overview"
+  | "books"
+  | "members"
+  | "checkouts"
+  | "fines";
 type ModalType = "addBook" | "";
 
 interface Stats {
@@ -90,30 +108,53 @@ interface Stats {
     </div>
   );
 const LibrarianDashboard: React.FC = () => {
+  
     const dispatch = useDispatch<AppDispatch>();
 const navigate = useNavigate();
 
+  const [fines, setFines] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<ModalType>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { t, i18n } = useTranslation();
-
+const { settings } = useSelector((state: RootState) => state.settings);
+ const totalFineAmount = fines.reduce(
+  (sum, fine) =>
+    sum +
+    calculateFine({
+      dueDate: fine.dueDate,
+      returned: fine.returned,
+      finePerDay: settings?.finePerDay || 1,
+    }),
+  0
+);
   const formatNumber = (value: number) =>
     new Intl.NumberFormat(i18n.language).format(value);
 
   const isBangla = i18n.language?.toLowerCase().startsWith("bn");
 
-  const formatCheckoutStatus = (status: Checkout["status"]) => {
-    if (!isBangla) return status;
-    return status === "active" ? "সক্রিয়" : "বিলম্বিত";
-  };
+const formatCheckoutStatus = (status: Checkout["status"]) => {
+  if (!isBangla) return status;
+  if (status === "active") return "সক্রিয়";
+  if (status === "overdue") return "বিলম্বিত";
+  return "ফেরত";
+};
+  const getCheckoutStatus = (checkout: any) => {
+  if (checkout.returned) return "returned";
+
+  const due = new Date(checkout.dueDate);
+  const now = new Date();
+
+  return due < now ? "overdue" : "active";
+};
   
   // Books
   const { books } = useSelector((state: RootState) => state.books);
 
-  useEffect(() => {
+useEffect(() => {
   dispatch(fetchBooks());
+  dispatch(fetchSettings());
 }, [dispatch]);
 
 
@@ -125,25 +166,8 @@ useEffect(() => {
   dispatch(fetchUsers());
 }, [dispatch]);
 
-  const [checkouts, setCheckouts] = useState<Checkout[]>([
-    {
-      id: 1,
-      bookTitle: t("dashboard.loanRecords.record1.bookTitle"),
-      memberName: t("dashboard.loanRecords.record1.memberName"),
-      checkoutDate: t("dashboard.loanRecords.record1.checkoutDate"),
-      dueDate: t("dashboard.loanRecords.record1.dueDate"),
-      status: "active",
-    },
-    {
-      id: 2,
-      bookTitle: t("dashboard.loanRecords.record2.bookTitle"),
-      memberName: t("dashboard.loanRecords.record2.memberName"),
-      checkoutDate: t("dashboard.loanRecords.record2.checkoutDate"),
-      dueDate: t("dashboard.loanRecords.record2.dueDate"),
-      status: "overdue",
-    },
-  ]);
-
+  
+const [checkouts, setCheckouts] = useState<any[]>([]);
  const [formData, setFormData] = useState<Partial<BookItem>>({});
 
 
@@ -156,9 +180,11 @@ const handleLogout = async () => {
   const stats: Stats = {
     totalBooks: books.length,
     availableBooks: books.filter((b) => b.copies > 0).length,
-    checkedOutBooks: books.filter((b) => b.copies === 0).length,
+    checkedOutBooks: checkouts.filter((c) => !c.returned).length,
     totalMembers: members.length,
-    overdueBooks: checkouts.filter((c) => c.status === "overdue").length,
+    overdueBooks: checkouts.filter(
+  (c) => getCheckoutStatus(c) === "overdue"
+).length,
   };
 
   const openModal = (
@@ -175,6 +201,7 @@ const handleLogout = async () => {
   setFormData({});
   setModalType("");
 };
+
 
 const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
   e.preventDefault();
@@ -211,9 +238,89 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
   closeModal();
 };
 
+useEffect(() => {
+  const q = query(
+    collection(db, "borrowedBooks"),
+    where("returned", "==", false)
+  );
 
+  const unsub = onSnapshot(q, (snapshot) => {
+    const data = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
 
+    const overdueBooks = data.filter((book: any) => {
+      const due = new Date(book.dueDate);
+      const now = new Date();
 
+      return due < now;
+    });
+
+    setFines(overdueBooks);
+  });
+
+  return () => unsub();
+}, []);
+
+const markFinePaid = async (borrowId: string) => {
+  try {
+    const ref = doc(db, "borrowedBooks", borrowId);
+
+    await updateDoc(ref, {
+      finePaid: true,
+      paidAt: new Date().toISOString(),
+    });
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to mark fine as paid");
+  }
+};
+
+useEffect(() => {
+  const q = query(
+    collection(db, "borrowedBooks"),
+    orderBy("borrowedAt", "desc")
+  );
+
+  const unsub = onSnapshot(q, (snapshot) => {
+    const data = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    setCheckouts(data as any[]);
+  });
+
+  return () => unsub();
+}, []);
+
+const returnBookByLibrarian = async (
+  borrowId: string,
+  bookId: string
+) => {
+  try {
+    // update borrow
+    const borrowRef = doc(db, "borrowedBooks", borrowId);
+
+    await updateDoc(borrowRef, {
+      returned: true,
+      returnedAt: new Date().toISOString(),
+    });
+
+    // increase copies
+    const bookRef = doc(db, "books", bookId);
+
+    await updateDoc(bookRef, {
+      copies: increment(1),
+    });
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to return book");
+  }
+};
   return (
     <div className="min-h-screen bg-background">
        {/* Header */}
@@ -241,7 +348,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
       <div className="bg-surface shadow">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex space-x-8">
-            {(["overview", "books", "members", "checkouts"] as TabType[]).map(
+            {(["overview", "books", "members", "checkouts", "fines"] as TabType[]).map(
               (tab) => (
                 <button
                   key={tab}
@@ -290,6 +397,13 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
                 value={stats.overdueBooks}
                 color="#EF4444"
               />
+
+              <StatCard
+              icon={AlertCircle}
+              title="Unpaid Fines"
+              value={totalFineAmount}
+              color="#F59E0B"
+            />
             </div>
 
             <div className="bg-surface rounded-lg shadow p-6">
@@ -304,19 +418,23 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
                     className="flex items-center justify-between p-3 bg-surface rounded"
                   >
                     <div>
-                      <p className="font-medium">{checkout.bookTitle}</p>
+                      <p className="font-medium">{checkout.title}</p>
                       <p className="text-sm text-text-secondary">
-                        {t("dashboard.checkedOutBy")} {checkout.memberName}
+                        {t("dashboard.checkedOutBy")} {users.find((u) => u.id === checkout.userId)?.name || checkout.userId}
                       </p>
                     </div>
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        checkout.status === "overdue"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-green-100 text-green-700"
-                      }`}
+                          getCheckoutStatus(checkout) === "overdue"
+                            ? "bg-red-100 text-red-700"
+                            : getCheckoutStatus(checkout) === "returned"
+                            ? "bg-gray-100 text-gray-700"
+                            : "bg-green-100 text-green-700"
+                        }`}
                     >
-                      {formatCheckoutStatus(checkout.status)}
+                      {formatCheckoutStatus(
+                            getCheckoutStatus(checkout) as Checkout["status"]
+                          )}
                     </span>
                   </div>
                 ))}
@@ -553,31 +671,48 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
                 {checkouts.map((checkout) => (
                   <tr key={checkout.id}>
                     <td className="px-6 py-4 whitespace-nowrap font-medium">
-                      {checkout.bookTitle}
+                      {checkout.title}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
-                      {checkout.memberName}
+                      {users.find((u) => u.id === checkout.userId)?.name || checkout.userId}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
-                      {checkout.checkoutDate}
+                      {new Date(checkout.borrowedAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
-                      {checkout.dueDate}
+                      {new Date(checkout.dueDate).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          checkout.status === "overdue"
-                            ? "bg-red-500/10 text-red-500"
-                            : "bg-green-500/10 text-green-500"
-                        }`}
+                       className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        getCheckoutStatus(checkout) === "overdue"
+                          ? "bg-red-500/10 text-red-500"
+                          : getCheckoutStatus(checkout) === "returned"
+                          ? "bg-gray-500/10 text-gray-500"
+                          : "bg-green-500/10 text-green-500"
+                      }`}
                       >
-                        {formatCheckoutStatus(checkout.status)}
+                        {formatCheckoutStatus(
+                          getCheckoutStatus(checkout) as Checkout["status"]
+                        )}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button className="text-primary hover:text-primary/80 font-medium text-sm">
-                        {t("dashboard.returnBook")}
+                      <button
+                        disabled={checkout.returned}
+                        onClick={() =>
+                          returnBookByLibrarian(
+                            checkout.id,
+                            checkout.bookId
+                          )
+                        }
+                        className={`font-medium text-sm ${
+                          checkout.returned
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-primary hover:text-primary/80"
+                        }`}
+                      >
+                        {checkout.returned ? "Returned" : t("dashboard.returnBook")}
                       </button>
                     </td>
                   </tr>
@@ -586,6 +721,99 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
             </table>
           </div>
         )}
+
+        {/* Fines Tab */}
+{activeTab === "fines" && (
+  <div className="bg-surface rounded-lg shadow overflow-hidden">
+    
+    <div className="px-6 py-4 border-b border-border">
+      <h3 className="text-lg font-semibold">
+        Fine Management
+      </h3>
+    </div>
+
+    {fines.length === 0 ? (
+      <p className="p-6 text-text-secondary">
+        No fines found 🎉
+      </p>
+    ) : (
+      <table className="min-w-full divide-y divide-border">
+        <thead className="bg-surface">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">
+              Student
+            </th>
+
+            <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">
+              Book
+            </th>
+
+            <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">
+              Fine
+            </th>
+
+            <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">
+              Status
+            </th>
+
+            <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">
+              Action
+            </th>
+          </tr>
+        </thead>
+
+        <tbody className="divide-y divide-border">
+          {fines.map((fine) => (
+            <tr key={fine.id}>
+
+              <td className="px-6 py-4">
+               {users.find((u) => u.id === fine.userId)?.name || fine.userId}
+              </td>
+
+              <td className="px-6 py-4">
+                {fine.title}
+              </td>
+
+              <td className="px-6 py-4 font-semibold text-red-500">
+                    ৳{calculateFine({
+                      dueDate: fine.dueDate,
+                      returned: fine.returned,
+                      finePerDay: settings?.finePerDay || 1,
+                    })}
+                  </td>
+
+              <td className="px-6 py-4">
+                {fine.finePaid ? (
+                  <span className="px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-xs">
+                    Paid
+                  </span>
+                ) : (
+                  <span className="px-2 py-1 rounded-full bg-red-500/10 text-red-500 text-xs">
+                    Unpaid
+                  </span>
+                )}
+              </td>
+
+              <td className="px-6 py-4">
+
+                {!fine.finePaid && (
+                  <button
+                    onClick={() => markFinePaid(fine.id)}
+                    className="px-3 py-1 rounded-lg bg-primary text-white hover:bg-primary/90 text-sm"
+                  >
+                    Mark Paid
+                  </button>
+                )}
+
+              </td>
+
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
+  </div>
+)}
       </main>
 
       {/* Modal */}

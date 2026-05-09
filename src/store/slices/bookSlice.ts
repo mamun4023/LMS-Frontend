@@ -2,7 +2,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getBorrowedBooks } from "../../services/borrow.service";
 
-import { addDoc, collection, doc, getDocs, increment, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, increment, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import type { Book } from "../../services/book.service";
 import {
@@ -70,14 +70,22 @@ if (!existing.empty) throw new Error("Already borrowed");
     if(book.copies <=0){
   throw new Error("No Copies Available");
 }
-    await addDoc(collection(db, "borrowedBooks"), {
+    const settingsRef = doc(db, "settings", "system");
+
+const settingsSnap = await getDoc(settingsRef);
+
+const settings = settingsSnap.data();
+
+const loanDays = settings?.loanDuration || 14;
+
+await addDoc(collection(db, "borrowedBooks"), {
   userId,
   bookId: book.id,
   title: book.title,
   author: book.author,
   borrowedAt: new Date().toISOString(),
   dueDate: new Date(
-    Date.now() + 14 * 24 * 60 * 60 * 1000
+    Date.now() + loanDays * 24 * 60 * 60 * 1000
   ).toISOString(),
   returned: false,
 });
@@ -101,9 +109,42 @@ export const returnBookThunk = createAsyncThunk(
 
     // 1️⃣ mark as returned
     const borrowRef = doc(db, "borrowedBooks", borrowId);
+
+    const borrowSnap = await getDoc(borrowRef);
+
+const borrowData = borrowSnap.data();
+
+const settingsRef = doc(db, "settings", "system");
+
+const settingsSnap = await getDoc(settingsRef);
+
+const finePerDay =
+  settingsSnap.data()?.finePerDay || 1;
+
+let fine = 0;
+
+if (borrowData?.dueDate) {
+  const now = new Date();
+
+  const due = new Date(borrowData.dueDate);
+
+  if (now > due) {
+    const diffMs =
+      now.getTime() - due.getTime();
+
+    const overdueDays = Math.ceil(
+      diffMs / (1000 * 60 * 60 * 24)
+    );
+
+    fine = overdueDays * finePerDay;
+  }
+}
     await updateDoc(borrowRef, {
       returned: true,
       returnedAt: new Date().toISOString(),
+
+      fineAmount: fine,
+      finePaid:false,
     });
 
     // 2️⃣ increase copies
@@ -112,7 +153,7 @@ export const returnBookThunk = createAsyncThunk(
       copies: increment(1),
     });
 
-    return { borrowId };
+    return { borrowId,fine };
   }
 );
 
@@ -186,17 +227,19 @@ const bookSlice = createSlice({
       })
      
       .addCase(returnBookThunk.fulfilled, (state, action) => {
-  const { borrowId } = action.payload;
+  const { borrowId,fine } = action.payload;
 
   state.borrowedBooks = state.borrowedBooks.map((b) =>
-    b.id === borrowId
-      ? {
-          ...b,
-          returned: true,
-          returnedAt: new Date().toISOString(),
-        }
-      : b
-  );
+  b.id === borrowId
+    ? {
+        ...b,
+        returned: true,
+        returnedAt: new Date().toISOString(),
+        fineAmount: fine,
+        finePaid: false,
+      }
+    : b
+);
 })
 
       .addCase(fetchBorrowedBooks.fulfilled, (state, action) => {

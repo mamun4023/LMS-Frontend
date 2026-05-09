@@ -7,10 +7,15 @@ export interface BorrowedBook {
   bookId: string;
   title: string;
   author: string;
-  borrowedAt?: string;
+
+  borrowedAt: string;
   dueDate: string;
+
   returned: boolean;
   returnedAt?: string;
+
+  fineAmount?: number;
+  finePaid?: boolean;   
 }
 // export const borrowBook = async ({
 //   userId,

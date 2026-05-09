@@ -22,6 +22,8 @@ import {
   fetchFavourites,
   removeFavouriteThunk,
 } from "../../store/slices/favouriteSlice";
+import { fetchSettings } from "../../store/slices/settingsSlice";
+import { calculateFine } from "../../utils/fine";
 
 // interface BorrowedBook {
 //   id: string;
@@ -90,8 +92,33 @@ const StudentDashboard: React.FC = () => {
 const [search, setSearch] = useState("");
 
   const { borrowedBooks } = useSelector((state: RootState) => state.books);
-    const activeBorrowCount = borrowedBooks.filter((b) => !b.returned).length;
-const hasReachedLimit = activeBorrowCount >= 5;
+
+  const { settings } = useSelector(
+  (state: RootState) => state.settings
+);
+
+const activeBorrowCount =
+  borrowedBooks.filter((b) => !b.returned).length;
+
+const maxBooks =
+  settings?.maxBooksPerStudent ?? 5;
+
+const hasReachedLimit =
+  activeBorrowCount >= maxBooks;
+
+  const totalFine = borrowedBooks
+  .filter((b) => !b.returned)
+  .reduce((sum, book) => {
+    return (
+      sum +
+      calculateFine({
+        dueDate: book.dueDate,
+        returned: book.returned,
+        finePerDay: settings?.finePerDay || 1,
+      })
+    );
+  }, 0);
+
 const { user } = useSelector((state: RootState) => state.auth);
 const getBookStatus = (dueDate: string) => {
   const today = new Date();
@@ -140,6 +167,10 @@ useEffect(() => {
 
   return () => clearInterval(interval);
 }, [dispatch, user]);
+
+useEffect(() => {
+  dispatch(fetchSettings());
+}, [dispatch]);
 
 const handleLogout = async () => {
   await dispatch(logoutUser());
@@ -340,7 +371,7 @@ const notifications = borrowedBooks
         </div>
 
         {/* Stats Cards */}
-<div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
   {/* Borrowed */}
   <div className="bg-surface p-6 rounded-xl shadow-sm border border-border">
     <div className="flex items-center justify-between">
@@ -350,7 +381,7 @@ const notifications = borrowedBooks
         </p>
         <p className="text-3xl font-bold text-text-primary">
           {new Intl.NumberFormat(i18n.language).format(activeBorrowCount)}
-          <span className="text-sm font-normal text-text-secondary"> / 5</span>
+          <span className="text-sm font-normal text-text-secondary"> / {maxBooks}</span>
         </p>
         {hasReachedLimit && (
           <p className="text-xs text-yellow-500 mt-1 font-medium">Limit reached</p>
@@ -391,6 +422,23 @@ const notifications = borrowedBooks
       <AlertCircle className="w-12 h-12 text-red-600 opacity-20" />
     </div>
   </div>
+
+  {/* Total Fine */}
+<div className="bg-surface p-6 rounded-xl shadow-sm border border-border">
+  <div className="flex items-center justify-between">
+    <div>
+      <p className="text-sm text-text-secondary mb-1">
+        Total Fine
+      </p>
+
+      <p className="text-3xl font-bold text-red-500">
+        ৳ {totalFine}
+      </p>
+    </div>
+
+    <AlertCircle className="w-12 h-12 text-red-500 opacity-20" />
+  </div>
+</div>
 
   {/* Favorites */}
   <div className="bg-surface p-6 rounded-xl shadow-sm border border-border">
@@ -475,8 +523,16 @@ const notifications = borrowedBooks
                     .filter((b)=> !b.returned)
                     .filter((b) =>
                       b.title.toLowerCase().includes(search.toLowerCase())
-                    ).map((book) => (
+                    ).map((book) => {
                       
+                       const fine = book.finePaid
+                        ? book.fineAmount || 0
+                        : calculateFine({
+                            dueDate: book.dueDate,
+                            returned: book.returned,
+                            finePerDay: settings?.finePerDay || 1,
+                          });
+                   return(   
                       <div
                         key={book.id}
                         className="flex items-center justify-between p-4 bg-surface rounded-lg hover:bg-surface/70 transition"
@@ -497,6 +553,12 @@ const notifications = borrowedBooks
                             <p className="text-xs text-text-secondary mt-1">
                               {t("student.due")} {formatDate(book.dueDate)}
                             </p>
+
+                             {fine > 0 && (
+                                <p className="text-sm text-red-500 font-medium mt-1">
+                                  Fine: ${fine}
+                                </p>
+                              )}
                           </div>
                         </div>
                        <div className="flex items-center space-x-3">
@@ -510,7 +572,14 @@ const notifications = borrowedBooks
                       })()}
                       
             <button
-  disabled={getBookStatus(book.dueDate) === "overdue"}  // 👈 add this
+  disabled={
+  getBookStatus(book.dueDate) === "overdue"
+  || calculateFine({
+      dueDate: book.dueDate,
+      returned: book.returned,
+      finePerDay: settings?.finePerDay || 1,
+    }) > 0
+}
   onClick={() => {
     const status = getBookStatus(book.dueDate);
     if (status === "overdue") {
@@ -527,22 +596,27 @@ const notifications = borrowedBooks
       })
       .catch(() => alert("Renewal failed"));
   }}
-  className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
-    getBookStatus(book.dueDate) === "overdue"
-      ? "text-text-secondary cursor-not-allowed opacity-40"  // 👈 greyed out
-      : "text-blue-600 hover:bg-primary/10"
-  }`}
+ className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
+  getBookStatus(book.dueDate) === "overdue" ||
+  calculateFine({
+    dueDate: book.dueDate,
+    returned: book.returned,
+    finePerDay: settings?.finePerDay || 1,
+  }) > 0
+    ? "text-text-secondary cursor-not-allowed opacity-40"
+    : "text-blue-600 hover:bg-primary/10"
+}`}
 >
   {t("student.renew")}
 </button>
                         </div>
                       </div>
-                    ))}
+            )})}
                   </div>
                 </div>
 
                 {/* Reserved Books */}
-                <div>
+                {/* <div>
                   <h3 className="text-lg font-semibold text-text-primary mb-4">
                     {t("student.reservedBooks")}
                   </h3>
@@ -576,7 +650,7 @@ const notifications = borrowedBooks
                       </div>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </div>
             )}
 
@@ -607,7 +681,15 @@ const notifications = borrowedBooks
                       .filter((b) => !b.returned)
                       .filter((b) =>
                         b.title.toLowerCase().includes(search.toLowerCase())
-                      ).map((book) => (
+                      ).map((book) => {
+                                const fine = book.finePaid
+                                  ? book.fineAmount || 0
+                                  : calculateFine({
+                                      dueDate: book.dueDate,
+                                      returned: book.returned,
+                                      finePerDay: settings?.finePerDay || 1,
+                                    });
+    return(
                     <div
                       key={book.id}
                       className="flex items-center justify-between p-4 bg-surface rounded-lg"
@@ -628,6 +710,11 @@ const notifications = borrowedBooks
                           <p className="text-xs text-text-secondary mt-1">
                             {t("student.due")} {formatDate(book.dueDate)} 
                           </p>
+                          {fine > 0 && (
+                          <p className="text-sm text-red-500 font-medium mt-1">
+                            Fine: ৳{fine}
+                          </p>
+                        )}
                         </div>
                       </div>
                       <div className="flex items-center space-x-3">
@@ -641,7 +728,7 @@ const notifications = borrowedBooks
                         );
                       })()}
                         <button
-                        disabled={book.returned}
+                     disabled={book.returned || fine > 0}
                     onClick={() => {
                       dispatch(
                         returnBookThunk({
@@ -658,13 +745,17 @@ const notifications = borrowedBooks
                       })
                       .catch(()=> alert("Return failed"))
                     }}
-                    className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-100 rounded-lg transition"
+                   className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
+                              book.returned || fine > 0
+                                ? "text-text-secondary cursor-not-allowed opacity-40"
+                                : "text-red-600 hover:bg-red-100"
+                            }`}
                   >
                     {book.returned ? "Returned" : "Return"}
                   </button>
                       </div>
                     </div>
-                  ))}
+                  )})}
                 </div>
               </div>
             )}
@@ -705,6 +796,24 @@ const notifications = borrowedBooks
                     : ""}
                   {t("student.due")}: {formatDate(book.dueDate)}
                 </p>
+  
+                  {book.fineAmount && book.fineAmount > 0 && (
+                  <div className="flex items-center gap-2 mt-1">
+                    <p className="text-sm text-red-500 font-medium">
+                      Fine: ৳ {book.fineAmount}
+                    </p>
+
+                    <span
+                      className={`text-xs px-2 py-1 rounded-full font-medium ${
+                        book.finePaid
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
+                    >
+                      {book.finePaid ? "Paid" : "Unpaid"}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
             <CheckCircle className="w-6 h-6 text-green-600 shrink-0" />
@@ -790,7 +899,7 @@ const notifications = borrowedBooks
             </p>
           </button>
 
-          <button className="bg-surface p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition text-left">
+          {/* <button className="bg-surface p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition text-left">
             <Calendar className="w-10 h-10 text-green-600 mb-3" />
             <h3 className="font-semibold text-text-primary mb-2">
               {t("student.bookStudyRoom")}
@@ -798,7 +907,7 @@ const notifications = borrowedBooks
             <p className="text-sm text-text-secondary">
               {t("student.reserveSpaceForStudying")}
             </p>
-          </button>
+          </button> */}
 
           <button
             onClick={() => navigate("/profile")}
