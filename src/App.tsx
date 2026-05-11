@@ -1,72 +1,73 @@
   import {
-    Book,
-    Clock,
-    Mail,
-    MapPin,
-    Phone,
-    Search
-  } from "lucide-react";
-  import React, { useState } from "react";
-  import { useTranslation } from "react-i18next";
-  import { useNavigate } from "react-router-dom";
-  import { Text } from "./components/common/Text";
-  import Header from "./components/unique/Header";
-  import { HEADINGS } from "./constants/headings";
-  interface Book {
-    id: number;
-    title: string;
-    author: string;
-    cover: string;
-  }
+  Book,
+  Clock,
+  Mail,
+  MapPin,
+  Phone
+} from "lucide-react";
+import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Text } from "./components/common/Text";
+import Header from "./components/unique/Header";
+import { HEADINGS } from "./constants/headings";
+import type { AppDispatch, RootState } from "./store";
+import { fetchBooks } from "./store/slices/bookSlice";
 
   const LibraryHomePage: React.FC = () => {
+  
+    const { books } = useSelector((state: RootState) => state.books);
     const navigate = useNavigate();
-    const [searchQuery, setSearchQuery] = useState("");
+    // const [searchQuery, setSearchQuery] = useState("");
     const { t } = useTranslation();
-    const featuredBooks: Book[] = [
-      {
-        id: 1,
-        title: t("featuredBooks.theMidnightLibrary"),
-        author: t("featuredBooks.mattHaig"),
-        cover: "/book/the_midnight_library.jpg",
-      },
-      {
-        id: 2,
-        title: t("featuredBooks.atomicHabits"),
-        author: t("featuredBooks.jamesClear"),
-        cover: "/book/atomic_habits.jpg",
-      },
-      {
-        id: 3,
-        title: t("featuredBooks.projectHailMary"),
-        author: t("featuredBooks.andyWeir"),
-        cover: "/book/project_hail_mary.jpg",
-      },
-      {
-        id: 4,
-        title: t("featuredBooks.theSilentPatient"),
-        author: t("featuredBooks.alexMichaelides"),
-        cover: "/book/the_silent_patient.jpg",
-      },
-    ];
-
-    // const quickLinks = [
+    // const featuredBooks: Book[] = [
     //   {
-    //     icon: Calendar,
-    //     title: t("quickActions.bookStudyRoom"),
-    //     desc: t("quickActions.reserveSpace"),
+    //     id: 1,
+    //     title: t("featuredBooks.theMidnightLibrary"),
+    //     author: t("featuredBooks.mattHaig"),
+    //     cover: "/book/the_midnight_library.jpg",
     //   },
     //   {
-    //     icon: Users,
-    //     title: t("quickActions.eventsPrograms"),
-    //     desc: t("quickActions.joinCommunity"),
+    //     id: 2,
+    //     title: t("featuredBooks.atomicHabits"),
+    //     author: t("featuredBooks.jamesClear"),
+    //     cover: "/book/atomic_habits.jpg",
     //   },
     //   {
-    //     icon: Clock,
-    //     title: t("quickActions.hoursLocation"),
-    //     desc: t("quickActions.visitToday"),
+    //     id: 3,
+    //     title: t("featuredBooks.projectHailMary"),
+    //     author: t("featuredBooks.andyWeir"),
+    //     cover: "/book/project_hail_mary.jpg",
+    //   },
+    //   {
+    //     id: 4,
+    //     title: t("featuredBooks.theSilentPatient"),
+    //     author: t("featuredBooks.alexMichaelides"),
+    //     cover: "/book/the_silent_patient.jpg",
     //   },
     // ];
+    const featuredBooks = books.slice(0, 4);
+     const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+  dispatch(fetchBooks());
+}, [dispatch]);
+
+ const totalBooks = books.length;
+
+const availableBooks = books.filter(
+  (book) => book.copies > 0
+).length;
+
+const totalCopies = books.reduce(
+  (sum, book) => sum + book.copies,
+  0
+);
+
+const newArrivals = [...books]
+  .reverse()
+  .slice(0, 4);
     
 
     return (
@@ -89,7 +90,7 @@
           </div>
 
           {/* Search Bar */}
-          <div className="max-w-3xl mx-auto mb-16">
+          {/* <div className="max-w-3xl mx-auto mb-16">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
               <input
@@ -99,11 +100,16 @@
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="input-field pl-12 pr-4 text-lg shadow-sm"
               />
-              <button className="btn-primary absolute right-2 top-1/2 transform -translate-y-1/2 ">
-                {t("search.searchButton")}
-              </button>
+              <button
+                  onClick={() => {
+                    navigate(`/catalog?search=${searchQuery}`);
+                  }}
+                  className="btn-primary absolute right-2 top-1/2 transform -translate-y-1/2"
+                >
+                  {t("search.searchButton")}
+                </button>
             </div>
-          </div>
+          </div> */}
 
           {/* Quick Links */}
           {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
@@ -121,6 +127,36 @@
             ))}
           </div> */}
 
+          {/* Stats Bar */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+              <div className="bg-surface rounded-xl p-6 text-center shadow-lg">
+                <h3 className="text-4xl font-bold text-primary mb-2">
+                  {totalBooks}
+                </h3>
+                <p className="text-text-secondary">
+                  Total Books
+                </p>
+              </div>
+
+              <div className="bg-surface rounded-xl p-6 text-center shadow-lg">
+                <h3 className="text-4xl font-bold text-green-500 mb-2">
+                  {availableBooks}
+                </h3>
+                <p className="text-text-secondary">
+                  Available Titles
+                </p>
+              </div>
+
+              <div className="bg-surface rounded-xl p-6 text-center shadow-lg">
+                <h3 className="text-4xl font-bold text-blue-500 mb-2">
+                  {totalCopies}
+                </h3>
+                <p className="text-text-secondary">
+                  Total Copies
+                </p>
+              </div>
+            </div>
+
           {/* Featured Books */}
           <div className="mb-16">
             <h3 className="text-3xl font-bold text-text-primary mb-8">
@@ -133,13 +169,72 @@
                     className="aspect-2/3 bg-surface rounded-lg mb-3 flex items-end justify-center shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition"
                     // style={{ backgroundColor: book.cover }}
                   >
-                    <img src={book.cover} alt={book.title} />
-                    <Book className="w-16 h-16 text-white opacity-50" />
+                   {book.cover ? (
+                            <img
+                        src={book.cover}
+                        alt={book.title}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Book className="w-16 h-16 text-gray-400" />
+                            </div>
+                          )}
+                    
                   </div>
                   <h4 className="font-semibold text-text-primary mb-1">
                     {book.title}
                   </h4>
                   <p className="text-sm text-text-secondary">{book.author}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* New Arrivals */}
+          <div className="mb-16">
+            <h3 className="text-3xl font-bold text-text-primary mb-8">
+              New Arrivals
+            </h3>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {newArrivals.map((book) => (
+                <div
+                key={book.id}
+                className="group cursor-pointer"
+              >
+                <div
+                className="
+                  bg-surface rounded-xl p-4 shadow-lg
+                  group-hover:shadow-2xl
+                  group-hover:scale-105
+                  transition-all duration-300
+                "
+              >
+                  {book.cover ? (
+                    <img
+                      src={book.cover}
+                      alt={book.title}
+                      className="
+                      w-full h-64 object-cover rounded-lg mb-3
+                      group-hover:scale-105
+                      transition-transform duration-300
+                    "
+                    />
+                  ) : (
+                    <div className="w-full h-64 bg-gray-700 rounded-lg mb-3 flex items-center justify-center">
+                      <Book className="w-12 h-12 text-gray-400" />
+                    </div>
+                  )}
+
+                  <h4 className="font-semibold text-text-primary">
+                    {book.title}
+                  </h4>
+
+                  <p className="text-sm text-text-secondary">
+                    {book.author}
+                  </p>
+                  </div>
                 </div>
               ))}
             </div>
