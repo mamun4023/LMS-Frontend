@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import { registerUser } from "../../services/auth.service";
 import { createUserProfile, resolveRoleForEmail } from "../../services/user.service";
 import { formValidator } from "../../validator/formValidator";
-
+import { addActivity } from "../../services/activity.service";
 interface FormData {
   name: string;
   email: string;
@@ -107,6 +107,12 @@ export default function Register() {
         phone: formData.phone,
         role,
       });
+      await addActivity(
+        "New User Signup",
+        `${formData.email} registered as ${role}`,
+        "success",
+        formData.email
+      );
 
       // Show success message
       setErrors({ general: "Registration successful! You can now sign in." });

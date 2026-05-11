@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../firebase/firebase";
 import i18n from "../../i18n";
+import { addActivity, fetchRecentActivities, type Activity } from "../../services/activity.service";
 import type { Book } from "../../services/book.service";
 import type { AppDispatch, RootState } from "../../store";
 import { logoutUser } from "../../store/slices/authSlice";
@@ -43,13 +44,6 @@ interface Stats {
   students: number;
 }
 
-interface Activity {
-  id: number;
-  action: string;
-  user: string;
-  time: string;
-  type: "success" | "info" | "warning" | "error";
-}
 
 // interface Librarian {
 //   id: number;
@@ -94,6 +88,7 @@ const [selectedUserId, setSelectedUserId] = useState("");
 const [targetRole, setTargetRole] = useState<"librarian" | "student">("librarian");
 const [editingBook, setEditingBook] = useState<Book | null>(null);
 const { users } = useSelector((state: RootState) => state.usersList);
+const { profile } = useSelector((state: RootState) => state.user);
 const selectableUsers = users.filter(
   (u) => u.role !== targetRole
 );
@@ -158,37 +153,15 @@ const [form, setForm] = useState({
   });
 }, [books,users]);
 
-  const recentActivity: Activity[] = [
-    {
-      id: 1,
-      action: t("dashboard.recentActivityItems.newBook"),
-      user: t("dashboard.recentActivityItems.sarah"),
-      time: t("dashboard.recentActivityItems.time2h"),
-      type: "success",
-    },
-    {
-      id: 2,
-      action: t("dashboard.recentActivityItems.newUser"),
-      user: t("dashboard.recentActivityItems.john"),
-      time: t("dashboard.recentActivityItems.time3h"),
-      type: "info",
-    },
-    {
-      id: 3,
-      action: t("dashboard.recentActivityItems.overdueAlert"),
-      user: t("dashboard.recentActivityItems.janeSmith"),
-      time: t("dashboard.recentActivityItems.time5h"),
-      type: "warning",
-    },
-    {
-      id: 4,
-      action: t("dashboard.recentActivityItems.bookReturned"),
-      user: t("dashboard.recentActivityItems.mike"),
-      time: t("dashboard.recentActivityItems.time1d"),
-      type: "success",
-    },
-  ];
+// ADD state inside AdminDashboard component (near other useState calls):
+const [activities, setActivities] = useState<Activity[]>([]);
 
+// ADD useEffect (alongside the other useEffects):
+useEffect(() => {
+  fetchRecentActivities(10).then(setActivities);
+}, []);
+
+  const recentActivity=activities;
 
 
 
@@ -255,11 +228,30 @@ const handleSave = async () => {
   try {
   if (editingBook) {
     await dispatch(editBook({ id: editingBook.id!, data: form }));
+    await addActivity(
+  "Book Updated",
+  `${form.title} updated`,
+  "info",
+  profile?.email || "Unknown"
+);
+
+const updated = await fetchRecentActivities(10);
+setActivities(updated);
     setSuccess("Book updated");
   } else {
     await dispatch(addBook(form));
+    await addActivity(
+  "Book Added",
+  `${form.title} added`,
+  "success",
+  profile?.email || "Unknown"
+);
+
+  const updated = await fetchRecentActivities(10);
+setActivities(updated);
     setSuccess("Book added");
   }
+
 
   setTimeout(() => setSuccess(""), 2000);
   setShowModal(false);
@@ -277,9 +269,20 @@ const handleSave = async () => {
 }
 };
 
-const handleDelete = async (id: string) => {
+const handleDelete = async (id: string, title: string) => {
   if (!confirm("Are you sure?")) return;
+
   await dispatch(removeBook(id));
+
+  await addActivity(
+    "Book Deleted",
+    `${title} deleted`,
+    "warning",
+    profile?.email || "Unknown"
+  );
+
+  const updated = await fetchRecentActivities(10);
+  setActivities(updated);
 };
 
 const handleSettingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -294,6 +297,15 @@ const handleSettingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 const handleSaveSettings = async () => {
   try {
     await setDoc(doc(db, "settings", "system"), settings);
+    await addActivity(
+      "Settings Updated",
+      "System settings changed",
+      "info",
+      profile?.email || "Unknown"
+    );
+
+    const updated = await fetchRecentActivities(10);
+    setActivities(updated);
     setSuccess("Settings saved");
     setTimeout(() => setSuccess(""), 2000);
   } catch {
@@ -417,12 +429,15 @@ const handleSaveSettings = async () => {
                       {activity.action}
                     </p>
                     <p className="text-xs text-text-secondary">
+                      {activity.message}
+                    </p>
+                    <p className="text-xs text-text-secondary">
                       {activity.user}
                     </p>
                   </div>
                 </div>
                 <span className="text-xs text-text-secondary">
-                  {activity.time}
+                  {activity.createdAt?.toDate?.().toLocaleString() || "Now"}
                 </span>
               </div>
             ))}
@@ -554,7 +569,7 @@ const renderBooks = () => {
                         <Edit className="w-5 h-5" />
                       </button>
                       <button
-                      onClick={()=>handleDelete(book.id!)}
+                      onClick={()=>handleDelete(book.id!, book.title)}
                       className="text-red-600 hover:opacity-80">
                         <Trash2 className="w-5 h-5" />
                       </button>
@@ -676,16 +691,24 @@ const realLibrarians: User[] = users
 
             {/* DELETE (DEMOTE) */}
             <button
-              onClick={() => {
+              onClick={async () => {                       // ← add async
                 if (!confirm("Remove librarian role?")) return;
 
-                dispatch(updateUserRoleThunk({
+                await dispatch(updateUserRoleThunk({       // ← add await
                   uid: librarian.id,
                   role: "student",
                 }));
 
                 setSuccess("Librarian removed");
                 setTimeout(() => setSuccess(""), 2000);
+                await addActivity(
+                  "Librarian Removed",
+                  `${librarian.email} demoted to student`,
+                  "warning",
+                  profile?.email || "Unknown"
+                );
+                const updated = await fetchRecentActivities(10);
+                setActivities(updated);
               }}
               className="text-red-600 hover:opacity-80"
             >
@@ -826,13 +849,21 @@ const renderStudents = () => (
                         if (!confirm("Delete student?")) return;
 
                         dispatch(deleteUserThunk(student.id))
-                          .unwrap()
-                          .then(() => {
-                            dispatch(fetchUsers());
-                            setSuccess("Student deleted");
-                            setTimeout(() => setSuccess(""), 2000);
-                          })
-                          .catch(() => alert("Delete failed"));
+                        .unwrap()
+                        .then(async () => {                        // ← add async
+                          dispatch(fetchUsers());
+                          setSuccess("Student deleted");
+                          setTimeout(() => setSuccess(""), 2000);
+                          await addActivity(
+                            "Student Deleted",
+                            `${student.email} removed`,
+                            "warning",
+                            profile?.email || "Unknown"
+                          );
+                          const updated = await fetchRecentActivities(10);
+                          setActivities(updated);
+                        })
+                        .catch(() => alert("Delete failed"));
                       }}
                       className="text-red-600 hover:opacity-80"
                     >
@@ -1158,7 +1189,7 @@ const renderStudents = () => (
               role: targetRole,
             }))
               .unwrap()
-              .then(() => {
+              .then(async() => {
                 dispatch(fetchUsers());
                 setShowUserModal(false);
                 setSelectedUserId("");
@@ -1168,6 +1199,22 @@ const renderStudents = () => (
                     : "Student added"
                 );
                 setTimeout(() => setSuccess(""), 2000);
+                const selected = users.find((u) => u.id === selectedUserId);
+
+                  await addActivity(
+                    targetRole === "librarian"
+                      ? "Librarian Added"
+                      : "Student Added",
+
+                    `${selected?.email} assigned as ${targetRole}`,
+
+                    "success",
+
+                    profile?.email || "Unknown"
+                  );
+
+                  const updated = await fetchRecentActivities(10);
+                  setActivities(updated);
               });
           }}
           className="px-4 py-2 bg-primary text-white rounded-lg"
@@ -1222,12 +1269,20 @@ const renderStudents = () => (
               role: editRole,
             }))
               .unwrap()
-              .then(() => {
-                dispatch(fetchUsers());
-                setEditUserModal(false);
-                setSuccess("Role updated");
-                setTimeout(() => setSuccess(""), 2000);
-              });
+              .then(async () => {                          // ← add async
+              dispatch(fetchUsers());
+              setEditUserModal(false);
+              setSuccess("Role updated");
+              setTimeout(() => setSuccess(""), 2000);
+              await addActivity(
+                "Role Updated",
+                `${selectedUser?.email} changed to ${editRole}`,
+                "info",
+                profile?.email || "Unknown"
+              );
+              const updated = await fetchRecentActivities(10);
+              setActivities(updated);
+            })
           }}
           className="px-4 py-2 bg-primary text-white rounded"
         >
