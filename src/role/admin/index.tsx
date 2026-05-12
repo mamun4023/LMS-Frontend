@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/set-state-in-effect */
+ 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -15,8 +15,9 @@ import {
   Search,
   Settings,
   Trash2,
+  User,
   UserCog,
-  Users,
+  Users
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,10 +25,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../firebase/firebase";
 import i18n from "../../i18n";
+import ProfileUpdate from "../../pages/profile";
 import { addActivity, fetchRecentActivities, type Activity } from "../../services/activity.service";
 import type { Book } from "../../services/book.service";
 import type { AppDispatch, RootState } from "../../store";
 import { logoutUser } from "../../store/slices/authSlice";
+
 import {
   addBook,
   editBook,
@@ -70,7 +73,7 @@ interface User{
 }
 
 
-type TabType = "overview" | "books" | "librarians" | "students" | "settings";
+type TabType = "overview" | "books" | "librarians" | "students" | "settings" | "profile";
 
 export default function AdminDashboard() {
   const dispatch=useDispatch<AppDispatch>();
@@ -100,14 +103,22 @@ const [form, setForm] = useState({
   cover: "",
 });
   const { t } = useTranslation();
-  const [stats,setStats]=useState<Stats> ({
-    totalBooks: 0,
-    totalUsers: 0,
-    activeLoans: 0,
-    overdueBooks: 0,
-    librarians: 0,
-    students: 0,
-  });
+  // const [stats,setStats]=useState<Stats> ({
+  //   totalBooks: 0,
+  //   totalUsers: 0,
+  //   activeLoans: 0,
+  //   overdueBooks: 0,
+  //   librarians: 0,
+  //   students: 0,
+  // });
+const stats: Stats = {
+  totalBooks: books.length,
+  totalUsers: users.length,
+  librarians: users.filter((u) => u.role === "librarian").length,
+  students: users.filter((u) => u.role === "student").length,
+  activeLoans: 0,
+  overdueBooks: 0,
+};
   const [settings, setSettings] = useState({
   libraryName: "",
   maxBooksPerStudent: 0,
@@ -140,18 +151,18 @@ const [form, setForm] = useState({
   fetchSettings();
 }, []);
 
-  useEffect(() => {
-     const librarians = users.filter((u) => u.role === "librarian").length;
-  const students = users.filter((u) => u.role === "student").length;
-  setStats({
-    totalBooks: books.length,
-    totalUsers: users.length,
-    librarians,
-    students,
-    activeLoans: 0,
-    overdueBooks: 0,
-  });
-}, [books,users]);
+//   useEffect(() => {
+//      const librarians = users.filter((u) => u.role === "librarian").length;
+//   const students = users.filter((u) => u.role === "student").length;
+//   setStats({
+//     totalBooks: books.length,
+//     totalUsers: users.length,
+//     librarians,
+//     students,
+//     activeLoans: 0,
+//     overdueBooks: 0,
+//   });
+// }, [books,users]);
 
 // ADD state inside AdminDashboard component (near other useState calls):
 const [activities, setActivities] = useState<Activity[]>([]);
@@ -312,6 +323,7 @@ const handleSaveSettings = async () => {
     alert("Failed to save settings");
   }
 };
+const renderProfile = () => <ProfileUpdate />;
   const renderOverview = () => (
     <div className="space-y-6">
       {/* Stats Grid */}
@@ -444,6 +456,47 @@ const handleSaveSettings = async () => {
           </div>
         </div>
       </div>
+
+      {/* Quick Actions */}
+<div className="bg-surface rounded-lg shadow p-6">
+  
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+  
+
+   
+
+    
+
+    <button
+      onClick={() => navigate("/")}
+      className="bg-surface p-6 rounded-xl border border-border hover:shadow-md transition text-left"
+    >
+      <Search className="w-10 h-10 text-blue-600 mb-3" />
+      <h3 className="font-semibold text-text-primary mb-2">
+        Home Page
+      </h3>
+      <p className="text-sm text-text-secondary">
+        {t("catalog.searchAndDiscover")}
+      </p>
+    </button>
+
+
+     <button
+                    onClick={() => setActiveTab("profile")}
+                    className="bg-surface p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition text-left"
+                  >
+                    <User className="w-10 h-10 text-purple-600 mb-3" />
+                    <h3 className="font-semibold text-text-primary mb-2">
+                      {t("profile.myProfile")}
+                    </h3>
+                    <p className="text-sm text-text-secondary">
+                      {t("profile.updateAccountSettings")}
+                    </p>
+                  </button>
+
+  </div>
+</div>
     </div>
   );
 
@@ -1041,6 +1094,18 @@ const renderStudents = () => (
               <Settings className="w-5 h-5 mr-2" />
               {t("dashboard.settings")}
             </button>
+
+            <button
+            onClick={() => setActiveTab("profile")}
+            className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              activeTab === "profile"
+                ? "bg-primary text-white"
+                : "text-text-secondary hover:bg-surface/70"
+            }`}
+          >
+            <User className="w-5 h-5 mr-2" />
+            {t("profile.myProfile")}
+          </button>
           </nav>
         </div>
 
@@ -1050,6 +1115,7 @@ const renderStudents = () => (
         {activeTab === "librarians" && renderLibrarians()}
         {activeTab === "students" && renderStudents()}
         {activeTab === "settings" && renderSettings()}
+        {activeTab === "profile" && renderProfile()}
       </div>
       {/* ✅ ADD MODAL HERE */}
 {showModal && (

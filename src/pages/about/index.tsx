@@ -4,25 +4,23 @@ import {
   BookOpen,
   Globe,
   Heart,
-  Linkedin,
-  Mail,
   Target,
   TrendingUp,
-  Users,
+  Users
 } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Header from "../../components/unique/Header";
 
-interface TeamMember {
-  id: number;
-  name: string;
-  position: string;
-  bio: string;
-  image: string;
-  email: string;
-  linkedin?: string;
-}
+// interface TeamMember {
+//   id: number;
+//   name: string;
+//   position: string;
+//   bio: string;
+//   image: string;
+//   email: string;
+//   linkedin?: string;
+// }
 
 interface Stat {
   icon: React.ReactNode;
@@ -64,68 +62,68 @@ const LibraryAbout: React.FC = () => {
     },
   ];
 
-  const teamMembers: TeamMember[] = [
-    {
-      id: 1,
-      name: t("team.drEmilyRichardson"),
-      position: t("team.libraryDirector"),
-      bio: t("team.emilyBio"),
-      image:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
-      email: t("team.emilyEmail"),
-      linkedin: t("common.hash"),
-    },
-    {
-      id: 2,
-      name: t("team.marcusChen"),
-      position: t("team.headOfCollections"),
-      bio: t("team.marcusBio"),
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
-      email: t("team.marcusEmail"),
-      linkedin: t("common.hash"),
-    },
-    {
-      id: 3,
-      name: t("team.sarahWilliams"),
-      position: t("team.communityProgramsManager"),
-      bio: t("team.sarahBio"),
-      image:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
-      email: t("team.sarahEmail"),
-      linkedin: t("common.hash"),
-    },
-    {
-      id: 4,
-      name: t("team.jamesFoster"),
-      position: t("team.technologyServicesLead"),
-      bio: t("team.jamesBio"),
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-      email: t("team.jamesEmail"),
-      linkedin: t("common.hash"),
-    },
-    {
-      id: 5,
-      name: t("team.drPriyaPatel"),
-      position: t("team.youthServicesCoordinator"),
-      bio: t("team.priyaBio"),
-      image:
-        "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=400&fit=crop",
-      email: t("team.priyaEmail"),
-      linkedin: t("common.hash"),
-    },
-    {
-      id: 6,
-      name: t("team.davidMartinez"),
-      position: t("team.referenceLibrarian"),
-      bio: t("team.davidBio"),
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
-      email: t("team.davidEmail"),
-      linkedin: t("common.hash"),
-    },
-  ];
+  // const teamMembers: TeamMember[] = [
+  //   {
+  //     id: 1,
+  //     name: t("team.drEmilyRichardson"),
+  //     position: t("team.libraryDirector"),
+  //     bio: t("team.emilyBio"),
+  //     image:
+  //       "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
+  //     email: t("team.emilyEmail"),
+  //     linkedin: t("common.hash"),
+  //   },
+  //   {
+  //     id: 2,
+  //     name: t("team.marcusChen"),
+  //     position: t("team.headOfCollections"),
+  //     bio: t("team.marcusBio"),
+  //     image:
+  //       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
+  //     email: t("team.marcusEmail"),
+  //     linkedin: t("common.hash"),
+  //   },
+  //   {
+  //     id: 3,
+  //     name: t("team.sarahWilliams"),
+  //     position: t("team.communityProgramsManager"),
+  //     bio: t("team.sarahBio"),
+  //     image:
+  //       "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
+  //     email: t("team.sarahEmail"),
+  //     linkedin: t("common.hash"),
+  //   },
+  //   {
+  //     id: 4,
+  //     name: t("team.jamesFoster"),
+  //     position: t("team.technologyServicesLead"),
+  //     bio: t("team.jamesBio"),
+  //     image:
+  //       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+  //     email: t("team.jamesEmail"),
+  //     linkedin: t("common.hash"),
+  //   },
+  //   {
+  //     id: 5,
+  //     name: t("team.drPriyaPatel"),
+  //     position: t("team.youthServicesCoordinator"),
+  //     bio: t("team.priyaBio"),
+  //     image:
+  //       "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=400&fit=crop",
+  //     email: t("team.priyaEmail"),
+  //     linkedin: t("common.hash"),
+  //   },
+  //   {
+  //     id: 6,
+  //     name: t("team.davidMartinez"),
+  //     position: t("team.referenceLibrarian"),
+  //     bio: t("team.davidBio"),
+  //     image:
+  //       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+  //     email: t("team.davidEmail"),
+  //     linkedin: t("common.hash"),
+  //   },
+  // ];
 
   const values = [
     {
@@ -298,7 +296,7 @@ const LibraryAbout: React.FC = () => {
         </div>
 
         {/* Team Section */}
-        <div className="mb-16">
+        {/* <div className="mb-16">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-text-primary  mb-3">
               {t("team.meetOurTeam")}
@@ -351,7 +349,7 @@ const LibraryAbout: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Visit Us CTA */}
         <div className="bg-primary rounded-2xl shadow-xl p-8 md:p-12 text-center text-white">

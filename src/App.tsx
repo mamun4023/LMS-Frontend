@@ -173,7 +173,11 @@ const newArrivals = [...books]
                             <img
                         src={book.cover}
                         alt={book.title}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="
+                        w-full h-full object-cover rounded-lg
+                        group-hover:scale-105
+                        transition-transform duration-300
+                      "
                       />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">

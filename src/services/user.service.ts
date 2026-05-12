@@ -1,4 +1,4 @@
-import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, FieldValue, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { ADMIN_EMAILS, LIBRARIAN_EMAILS } from "../constants/roles";
 import { db } from "../firebase/firebase";
 export interface UserProfile {
@@ -7,17 +7,19 @@ export interface UserProfile {
   phone?: string;
   role: "admin" | "student" | "librarian";
   avatar?: string;
+  createdAt?: FieldValue;
 }
 
 // Create userprofile in firestore
 export const createUserProfile=async(
     uid:string,
     data:{
-        name:string;
-        email:string;
-        role:"admin" | "student" | "librarian";
-        phone?:string;
-    }
+    name:string;
+    email:string;
+    role:"admin" | "student" | "librarian";
+    phone?:string;
+    createdAt?: FieldValue;
+}
 )=>{
     await setDoc(doc(db,"users",uid),data);
 };

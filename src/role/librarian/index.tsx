@@ -20,6 +20,7 @@ import {
   Search,
   Trash2,
   TrendingUp,
+  User,
   Users,
   X
 } from "lucide-react";
@@ -28,6 +29,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../firebase/firebase";
+import ProfileUpdate from "../../pages/profile";
 import type { AppDispatch, RootState } from "../../store";
 import { logoutUser } from "../../store/slices/authSlice";
 import { addBook, editBook, fetchBooks, removeBook } from "../../store/slices/bookSlice";
@@ -44,14 +46,14 @@ interface BookItem {
   cover?:string;
 }
 
-interface Member {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  booksCheckedOut: number;
-  joinDate: string;
-}
+// interface Member {
+//   id: string;
+//   name: string;
+//   email: string;
+//   phone: string;
+//   booksCheckedOut: number;
+//   joinDate: string;
+// }
 
 interface Checkout {
   id: number;
@@ -77,7 +79,8 @@ type TabType =
   | "books"
   | "members"
   | "checkouts"
-  | "fines";
+  | "fines"
+  | "profile";
 type ModalType = "addBook" | "";
 
 interface Stats {
@@ -321,6 +324,16 @@ const returnBookByLibrarian = async (
     alert("Failed to return book");
   }
 };
+
+const ALL_TABS: { key: TabType; label: string }[] = [
+    { key: "overview",  label: "Overview"  },
+    { key: "books",     label: "Books"     },
+    { key: "members",   label: "Members"   },
+    { key: "checkouts", label: "Checkouts" },
+    { key: "fines",     label: "Fines"     },
+    { key: "profile",   label: "Profile"   },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
        {/* Header */}
@@ -348,18 +361,18 @@ const returnBookByLibrarian = async (
       <div className="bg-surface shadow">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex space-x-8">
-            {(["overview", "books", "members", "checkouts", "fines"] as TabType[]).map(
+            {ALL_TABS.map(
               (tab) => (
                 <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
                   className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                    activeTab === tab
+                    activeTab === tab.key
                       ? "border-primary text-primary"
                       : "border-transparent text-text-secondary hover:text-text-primary hover:border-border"
                   }`}
                 >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  {tab.label}
                 </button>
               )
             )}
@@ -369,6 +382,10 @@ const returnBookByLibrarian = async (
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
+
+        {/* ── Profile Tab ─────────────────────────────────────────────────── */}
+        {activeTab === "profile" && <ProfileUpdate />}
+        
         {/* Overview Tab */}
         {activeTab === "overview" && (
           <div className="space-y-6">
@@ -440,8 +457,40 @@ const returnBookByLibrarian = async (
                 ))}
               </div>
             </div>
+
+          
+       {/* ── Quick Actions ──────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <button
+                onClick={() => navigate("/")}
+                className="bg-surface p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition text-left"
+              >
+                <Search className="w-10 h-10 text-blue-600 mb-3" />
+                <h3 className="font-semibold text-text-primary mb-2">
+                 Home Page
+                </h3>
+                <p className="text-sm text-text-secondary">
+                  {t("catalog.searchAndDiscover")}
+                </p>
+              </button>
+ 
+              <button
+                onClick={() => setActiveTab("profile")}
+                className="bg-surface p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition text-left"
+              >
+                <User className="w-10 h-10 text-purple-600 mb-3" />
+                <h3 className="font-semibold text-text-primary mb-2">
+                  {t("profile.myProfile")}
+                </h3>
+                <p className="text-sm text-text-secondary">
+                  {t("profile.updateAccountSettings")}
+                </p>
+              </button>
+            </div>
           </div>
         )}
+
+        
 
         {/* Books Tab */}
         {activeTab === "books" && (
@@ -907,6 +956,8 @@ const returnBookByLibrarian = async (
                 </button>
               </div>
             </form>
+
+            
           </div>
         </div>
       )}
